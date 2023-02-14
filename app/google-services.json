@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "427774416456",
+    "project_id": "sellbuy-abe26",
+    "storage_bucket": "sellbuy-abe26.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:427774416456:android:936c2056afc90ef5c92a7d",
+        "android_client_info": {
+          "package_name": "com.example.sellbuy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "427774416456-dbo6anv90pus0nhu33o12f3mn23e3do8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBSu9P7tO2LNmogoDDtwbQQvckNWto_ZH0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "427774416456-dbo6anv90pus0nhu33o12f3mn23e3do8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

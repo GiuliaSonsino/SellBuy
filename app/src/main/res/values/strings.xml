@@ -1,0 +1,35 @@
+<resources>
+    <string name="app_name">Sell&amp;Buy</string>
+    <string name="splash">Seleziona il tuo ruolo</string>
+    <string-array name="ruoli">
+        <item>Amministratore</item>
+        <item>Utente</item>
+    </string-array>
+    <string name="prosegui">Prosegui</string>
+    <string name="btn_accedi">Hai già un account? Accedi</string>
+    <string name="str_accedi">Login</string>
+    <string name="loginBtn">Accedi</string>
+    <string name="titolo_add">Crea un nuovo annuncio</string>
+    <string name="nome_articolo">Nome</string>
+    <string name="cat_articolo">Categoria</string>
+    <string name="desc_articolo">Descrizione</string>
+    <string name="switch_spediz">Disponibilità a spedire</string>
+    <string name="crea_ann">CARICA ANNUNCIO</string>
+    <string-array name="categorie">
+        <item>Sport</item>
+        <item>Tecnologia</item>
+        <item>Motori</item>
+        <item>Giardinaggio</item>
+        <item>Abbigliamento</item>
+        <item>Arredamento</item>
+    </string-array>
+    <string-array name="condizioni">
+        <item>Nuovo</item>
+        <item>Usato ma in perfette condizioni</item>
+        <item>Qualche lieve difetto</item>
+        <item>Difettoso</item>
+    </string-array>
+    <string name="api_key">AIzaSyApg-_rad6qNXIy_7_cRsiRHeATejk-u9Q</string>
+
+
+</resources>
