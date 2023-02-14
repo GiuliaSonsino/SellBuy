@@ -52,7 +52,7 @@ class MainActivity : AppCompatActivity() {
                     count += 1
                    // val nomePrimaImg= record.foto?.get(0)
 
-                    data.add(AnnuncioViewModel(R.drawable.ic_launcher_background, nomeAn,"prova"),)
+                    data.add(AnnuncioViewModel(R.drawable.ic_launcher_background, nomeAn,"prova codice"),)
                 }
             }
 
