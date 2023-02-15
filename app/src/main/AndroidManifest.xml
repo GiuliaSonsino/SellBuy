@@ -57,6 +57,11 @@
             android:exported="false"
             ></activity>
 
+        <activity
+            android:name=".AnnuncioActivity"
+            android:exported="false"
+            ></activity>
+
     </application>
 
 </manifest>

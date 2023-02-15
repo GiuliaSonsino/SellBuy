@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".AnnuncioActivity"
+    >
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Titolo dell'annuncio"
+        android:textColor="@color/black"
+        android:textSize="25dp"
+        android:textStyle="bold"
+        android:paddingStart="5dp"
+        android:paddingBottom="5dp"/>
+
+
+    <!-- Immagine dell'oggetto in vendita -->
+    <ImageView
+        android:id="@+id/iv_image"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:src="@drawable/ic_launcher_background"
+        android:scaleType="centerCrop"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/imageRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        tools:listitem="@layout/image_item" />
+
+
+    <!-- Descrizione dell'annuncio -->
+    <TextView
+        android:id="@+id/tv_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Descrizione dell'annuncio"
+        android:textSize="16dp"
+        android:textColor="@color/black"
+        android:paddingStart="5dp"/>
+
+    <!-- Prezzo dell'oggetto in vendita -->
+    <TextView
+        android:id="@+id/tv_price"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Prezzo: €50"
+        android:textSize="16dp"
+        android:textColor="@color/black"
+        android:paddingStart="5dp"
+        />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Acquista"
+        />
+
+</LinearLayout>
