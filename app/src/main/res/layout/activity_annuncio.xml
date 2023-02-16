@@ -3,10 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".AnnuncioActivity"
-    >
+    android:orientation="vertical">
 
+    <!-- Titolo dell'oggetto in vendita -->
     <TextView
         android:id="@+id/tv_title"
         android:layout_width="match_parent"
@@ -19,7 +18,7 @@
         android:paddingBottom="5dp"/>
 
 
-    <!-- Immagine dell'oggetto in vendita -->
+    <!--
     <ImageView
         android:id="@+id/iv_image"
         android:layout_width="match_parent"
@@ -34,6 +33,59 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         tools:listitem="@layout/image_item" />
+    -->
+
+    <ImageView
+        android:id="@+id/main_image"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:src="@drawable/ic_launcher_background"
+        android:scaleType="centerCrop"
+        />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/image1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/icona_immagine"
+            android:scaleType="centerCrop"
+            android:adjustViewBounds="true"/>
+
+        <ImageView
+            android:id="@+id/image2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/icona_immagine"
+            android:scaleType="centerCrop"
+            android:adjustViewBounds="true"/>
+
+        <ImageView
+            android:id="@+id/image3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/icona_immagine"
+            android:scaleType="centerCrop"
+            android:adjustViewBounds="true"/>
+
+        <ImageView
+            android:id="@+id/image4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/icona_immagine"
+            android:scaleType="centerCrop"
+            android:adjustViewBounds="true"/>
+
+    </LinearLayout>
 
 
     <!-- Descrizione dell'annuncio -->

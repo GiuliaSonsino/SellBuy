@@ -18,12 +18,15 @@ class MainActivity : AppCompatActivity() {
 
     private val auth= FirebaseAuth.getInstance()
     @SuppressLint("MissingInflatedId")
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         // getting the recyclerview by its id
         val recyclerview = findViewById<RecyclerView>(R.id.recyclerview)
+
+
 
         // this creates a vertical layout Manager
         recyclerview.layoutManager = LinearLayoutManager(this)
@@ -55,7 +58,6 @@ class MainActivity : AppCompatActivity() {
                     data.add(AnnuncioViewModel(R.drawable.ic_launcher_background, nomeAn,"prova codice"),)
                 }
             }
-
         }
         else {
            for (i in 1..20) {
@@ -64,16 +66,13 @@ class MainActivity : AppCompatActivity() {
         }
 
 
-            // This will pass the ArrayList to our Adapter
-            val adapter = AnnuncioAdapter(data)
-
-            // Setting the Adapter with the recyclerview
-            recyclerview.adapter = adapter
+        // This will pass the ArrayList to our Adapter
+        val adapter = AnnuncioAdapter(applicationContext,data)
+        recyclerview.adapter = adapter
 
 
 
-
-}
+    }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_menu,menu)
@@ -95,7 +94,4 @@ class MainActivity : AppCompatActivity() {
         }
         return true
     }
-
-
-
 }
