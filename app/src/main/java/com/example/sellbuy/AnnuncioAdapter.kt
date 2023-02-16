@@ -39,7 +39,7 @@ class AnnuncioAdapter(context: Context, private val mList: List<AnnuncioViewMode
 
         //per rendere le card cliccabili
         holder.itemView.setOnClickListener{
-            Log.i(TAG,"hai cliccato su ${ItemsViewModel.codice}")
+            Log.i(TAG,"Hai cliccato su: ${ItemsViewModel.codice}")
             val intent = Intent(mcontext, AnnuncioActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             mcontext?.startActivity(intent)
