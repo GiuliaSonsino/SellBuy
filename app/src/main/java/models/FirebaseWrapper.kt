@@ -17,8 +17,6 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
-import kotlin.coroutines.resume
-import kotlin.coroutines.suspendCoroutine
 
 class FirebaseAuthWrapper(private val context: Context) {
 
@@ -217,52 +215,8 @@ class FirebaseStorageWrapper(private val context: Context) {
 
     private var storage = FirebaseStorage.getInstance().getReferenceFromUrl("gs://sellbuy-abe26.appspot.com")
 
-/*
-    fun getFotoFromName(nomeImg: String?): Bitmap? {
-        var bitmap:Bitmap?=null
-        val storageRef = FirebaseStorage.getInstance().reference.child("images/$nomeImg.jpg")
-        Log.i("tag","dkjd $nomeImg")
-        //The file from Firebase Storage will be stored locally
-        val localFile = File.createTempFile("tempImg", "jpg")
-
-        //If everything goes well, just inflate the image file into ImageView
-        storageRef.getFile(localFile).addOnSuccessListener {
-            bitmap = BitmapFactory.decodeFile(localFile.absolutePath)
-
-            //if something goes wrong, rise a toast message
-        }.addOnFailureListener {
-            //Toast.makeText(this, "Failed to retreive the image", Toast.LENGTH_LONG).show()
-
-        }
-        return bitmap
-    }
-    */
-suspend fun getFotoFromName(nomeImg: String?, nome:String): AnnuncioViewModel? = suspendCoroutine{ continuation ->
-
-    val storageRef = storage.child("images/$nomeImg")
-    Log.i("tag","dkjd $nomeImg")
-    var ann=AnnuncioViewModel()
-    storageRef.downloadUrl
-        .addOnSuccessListener { uri ->
-            val imageUrl = uri.toString()
-
-            // Creare un'istanza della classe AnnuncioViewModel utilizzando l'URL dell'immagine
-            ann =
-                AnnuncioViewModel(imageUrl, nome, "codice")
-            var n=ann.text
-                Log.i(TAG,"yuppi $n")
-                continuation.resume(ann)
-        }
-        .addOnFailureListener {
-            // Gestisci l'errore
-            Log.i(TAG,"errorrrrrrreeeeeee")
-            continuation.resume(null)
-        }
 
 }
-
-
-    }
 
 
 
