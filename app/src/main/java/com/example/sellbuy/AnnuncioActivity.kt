@@ -1,7 +1,9 @@
 package com.example.sellbuy
 
 import android.app.Dialog
+import android.content.ContentValues.TAG
 import android.os.Bundle
+import android.util.Log
 import android.view.WindowManager
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
@@ -11,7 +13,7 @@ class AnnuncioActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_annuncio)
-        /*
+
         val dialog = Dialog(this)
 
         // Imposta le proprietà del dialog, ad esempio le dimensioni
@@ -20,8 +22,8 @@ class AnnuncioActivity : AppCompatActivity() {
         lp.width = WindowManager.LayoutParams.MATCH_PARENT
         lp.height = WindowManager.LayoutParams.MATCH_PARENT
 
-        val image1 = dialog.findViewById<ImageView>(R.id.image1)
-        image1.setOnClickListener{
+        val im1= findViewById<ImageView>(R.id.image1)
+        im1?.setOnClickListener {
             val dialog = Dialog(this)
             dialog.setContentView(R.layout.dialog_box)
 
@@ -33,19 +35,45 @@ class AnnuncioActivity : AppCompatActivity() {
             dialog.show()
         }
 
-        val image2 = findViewById<ImageView>(R.id.image2)
-        image2.setOnClickListener{
+        val im2= findViewById<ImageView>(R.id.image2)
+        im2?.setOnClickListener {
+            val dialog = Dialog(this)
+            dialog.setContentView(R.layout.dialog_box)
 
+            // Trova la ImageView nella vista del dialog
+            val dialogImage = dialog.findViewById<ImageView>(R.id.imgDialog)
+            // Imposta l'immagine ingrandita sulla ImageView del dialog
+            dialogImage.setImageResource(R.drawable.person)
+            // Mostra il dialog
+            dialog.show()
         }
 
-        val image3 = findViewById<ImageView>(R.id.image3)
-        image3.setOnClickListener{
+        val im3= findViewById<ImageView>(R.id.image3)
+        im3?.setOnClickListener {
+            val dialog = Dialog(this)
+            dialog.setContentView(R.layout.dialog_box)
 
+            // Trova la ImageView nella vista del dialog
+            val dialogImage = dialog.findViewById<ImageView>(R.id.imgDialog)
+            // Imposta l'immagine ingrandita sulla ImageView del dialog
+            dialogImage.setImageResource(R.drawable.person)
+            // Mostra il dialog
+            dialog.show()
         }
 
-        val image4 = findViewById<ImageView>(R.id.image4)
-        image4.setOnClickListener{
+        val im4= findViewById<ImageView>(R.id.image4)
+        im4?.setOnClickListener {
+            val dialog = Dialog(this)
+            dialog.setContentView(R.layout.dialog_box)
 
-        }*/
+            // Trova la ImageView nella vista del dialog
+            val dialogImage = dialog.findViewById<ImageView>(R.id.imgDialog)
+            // Imposta l'immagine ingrandita sulla ImageView del dialog
+            dialogImage.setImageResource(R.drawable.plus)
+            // Mostra il dialog
+            dialog.show()
+        }
+
+
     }
 }
