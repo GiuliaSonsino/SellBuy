@@ -1,8 +1,10 @@
 package com.example.sellbuy
 
 import android.annotation.SuppressLint
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
@@ -34,20 +36,39 @@ class MainActivity : AppCompatActivity() {
         recyclerview.adapter = adapter
 
 
+
         if (auth.currentUser != null) {
+            var codici:MutableList<String?> = mutableListOf()
             GlobalScope.launch {
                 var an =
                     FirebaseDbWrapper(applicationContext).getAnnunciFromEmail(applicationContext)
-                for (record in an) {
-                    val nomeAn = record.nome
-                    val imageName = record.foto?.get(0) //get the filename from the edit text
-                    val nuovoan = imageName?.let { AnnuncioViewModel(it, nomeAn, "codic") }
-                    if (nuovoan != null) {
-                        mList.add(nuovoan)
+
+                  //  codici =
+                  //      FirebaseDbWrapper(applicationContext).getKeyFromEmail(applicationContext)
+                 //   Log.i(ContentValues.TAG, "eccoccoc i codici $codici")
+
+
+
+                    var count=0
+                    for (record in an) {
+                        val nomeAn = record.nome
+                        val imageName = record.foto?.get(0) //get the filename from the edit text
+                        val prezzoAn = record.prezzo
+
+                       // val codice = codici[count]
+                       // Log.i(TAG,"un codiceee $codice")
+
+                        val nuovoan =
+                            imageName?.let { AnnuncioViewModel(it, nomeAn, prezzoAn, "codice") }
+                        if (nuovoan != null) {
+                            Log.i(TAG,"non è nullo")
+                            mList.add(nuovoan)
+                        }
+                        count += 1
+
                     }
 
-                }
-            }
+            } //qui
 
         }
     }

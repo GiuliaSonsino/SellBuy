@@ -18,23 +18,6 @@
         android:paddingBottom="5dp"/>
 
 
-    <!--
-    <ImageView
-        android:id="@+id/iv_image"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:src="@drawable/ic_launcher_background"
-        android:scaleType="centerCrop"
-        />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/imageRecyclerView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        tools:listitem="@layout/image_item" />
-    -->
-
     <ImageView
         android:id="@+id/main_image"
         android:layout_width="match_parent"
@@ -113,6 +96,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Acquista"
+        />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Chiedi informazioni"
         />
 
 </LinearLayout>

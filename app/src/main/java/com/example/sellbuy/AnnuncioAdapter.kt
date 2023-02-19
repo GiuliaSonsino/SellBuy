@@ -24,7 +24,6 @@ class AnnuncioAdapter(context: Context, private val mList: List<AnnuncioViewMode
 
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.item_annuncio, parent, false)
-
         return ViewHolder(view)
     }
 
@@ -37,15 +36,16 @@ class AnnuncioAdapter(context: Context, private val mList: List<AnnuncioViewMode
         //holder.imageView.setImageBitmap(ItemsViewModel.image)
         //holder.textView.text=ItemsViewModel.image
         holder.textView.text=ItemsViewModel.text
-
+        holder.tvPrice.text=ItemsViewModel.price
+        holder.tvCode.text=ItemsViewModel.codice
         var im=ItemsViewModel.image
+        //var price=ItemsViewModel.price
         val storag= Firebase.storage.reference.child("images/$im")
         storag.downloadUrl.addOnSuccessListener { url ->
             if (mcontext != null) {
                 Glide.with(mcontext).load(url).into(holder.imageView)
             }
         }
-
 
         //per rendere le card cliccabili
         holder.itemView.setOnClickListener{
@@ -55,15 +55,12 @@ class AnnuncioAdapter(context: Context, private val mList: List<AnnuncioViewMode
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             mcontext?.startActivity(intent)
         }
-
     }
+
     // return the number of the items in the list
     override fun getItemCount(): Int {
         return mList.size
     }
-
-
-
 
 
 
@@ -72,6 +69,9 @@ class AnnuncioAdapter(context: Context, private val mList: List<AnnuncioViewMode
 
         val textView: TextView = itemView.findViewById(R.id.textView)
         val imageView: ImageView = itemView.findViewById(R.id.imageview)
+        val tvPrice: TextView = itemView.findViewById(R.id.price)
+        val tvCode: TextView = itemView.findViewById(R.id.code)
+
 
     }
 }
