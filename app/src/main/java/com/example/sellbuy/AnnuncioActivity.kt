@@ -2,9 +2,11 @@ package com.example.sellbuy
 
 import android.app.Dialog
 import android.content.ContentValues.TAG
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.WindowManager
+import android.widget.Button
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
 
@@ -74,6 +76,11 @@ class AnnuncioActivity : AppCompatActivity() {
             dialog.show()
         }
 
+        val btnChat = findViewById<Button>(R.id.btnChat)
+        btnChat.setOnClickListener{
+            val intent = Intent(this, ChatActivity::class.java)
+            startActivity(intent)
+        }
 
     }
 }
