@@ -21,17 +21,13 @@ class MainActivity : AppCompatActivity() {
 
     private val auth = FirebaseAuth.getInstance()
     //private var storage = FirebaseStorage.getInstance().getReferenceFromUrl("gs://sellbuy-abe26.appspot.com")
-
     private var adapter = AnnuncioAdapter(this, mutableListOf())
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        // getting the recyclerview by its id
 
-
-        // this creates a vertical layout Manager
         val recyclerview = findViewById<RecyclerView>(R.id.recyclerview)
         var mList: MutableList<AnnuncioViewModel> = mutableListOf()
         mList= createList()
@@ -39,9 +35,8 @@ class MainActivity : AppCompatActivity() {
         recyclerview.layoutManager = LinearLayoutManager(this)
         adapter = AnnuncioAdapter(applicationContext, mList)
         recyclerview.adapter = adapter
-        adapter.updateData(mList)
-
-
+        //adapter.updateData(mList)
+        adapter.notifyDataSetChanged()
     }
 
 

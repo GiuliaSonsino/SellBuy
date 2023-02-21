@@ -33,17 +33,15 @@ class AnnuncioAdapter(context: Context, private val mList: List<AnnuncioViewMode
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-
-        val ItemsViewModel = mList[position]
-
+        val currentAnnuncio = mList[position]
         // sets the image to the imageview from our itemHolder class
         //holder.imageView.setImageResource(ItemsViewModel.image)
         //holder.imageView.setImageBitmap(ItemsViewModel.image)
         //holder.textView.text=ItemsViewModel.image
-        holder.textView.text=ItemsViewModel.text
-        holder.tvPrice.text=ItemsViewModel.price
-        holder.tvCode.text=ItemsViewModel.codice
-        var im=ItemsViewModel.image
+        holder.textView.text=currentAnnuncio.text
+        holder.tvPrice.text=currentAnnuncio.price
+        holder.tvCode.text=currentAnnuncio.codice
+        var im=currentAnnuncio.image
         //var price=ItemsViewModel.price
         val storag= Firebase.storage.reference.child("images/$im")
         storag.downloadUrl.addOnSuccessListener { url ->
@@ -54,15 +52,15 @@ class AnnuncioAdapter(context: Context, private val mList: List<AnnuncioViewMode
 
         //per rendere le card cliccabili
         holder.itemView.setOnClickListener{
-            Log.i(TAG,"Hai cliccatoo su: ${ItemsViewModel.codice}")
-            val codiceAnn=ItemsViewModel.codice
-           // Toast.makeText( this@AnnuncioAdapter,"hai cliccato su ${ItemsViewModel.text}",Toast.LENGTH_SHORT).show()
+            Log.i(TAG,"Hai cliccatoo su: ${currentAnnuncio.codice}")
+            val codiceAnn=currentAnnuncio.codice
             val intent= Intent(mcontext,AnnuncioActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             intent.putExtra("codice", codiceAnn)
             mcontext?.startActivity(intent)
         }
     }
+
 
     // return the number of the items in the list
     override fun getItemCount(): Int {
@@ -71,15 +69,12 @@ class AnnuncioAdapter(context: Context, private val mList: List<AnnuncioViewMode
 
 
 
-    // Holds the views for adding it to image and text
      class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView){
 
         val textView: TextView = itemView.findViewById(R.id.textView)
         val imageView: ImageView = itemView.findViewById(R.id.imageview)
         val tvPrice: TextView = itemView.findViewById(R.id.price)
         val tvCode: TextView = itemView.findViewById(R.id.code)
-
-
     }
 }
 

@@ -19,24 +19,25 @@ import models.Utente
 
 class ChatActivity : AppCompatActivity() {
 
+    /*
     private var auth: FirebaseAuth = FirebaseAuth.getInstance()
     var messages: ArrayList<Message> = arrayListOf()
     val textview = findViewById<TextView>(R.id.txtvChat)
     val recycler = findViewById<RecyclerView>(R.id.recyclerMessages)
     val editext = findViewById<EditText>(R.id.edtText)
     val freccia = findViewById<ImageView>(R.id.imgFreccia)
-
+*/
 
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
 
-        setUpChatRoom()
-        textview.text = "Nome di prova"
+        //setUpChatRoom()
+        //textview.text = "Nome di prova"
     }
 
-
+/*
     var emailLoggato = Firebase.auth.currentUser?.email
     var emailAltroUtente = "gigi@prova.it"
     var codAnnuncio = "DNSI34U"
@@ -80,6 +81,6 @@ class ChatActivity : AppCompatActivity() {
 
 
     }
-
+*/
 
 }
