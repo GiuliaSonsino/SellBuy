@@ -195,6 +195,40 @@ class FirebaseDbWrapper(context: Context) {
         return keyList
     }
 
+
+    fun getAnnuncioFromCodice(context: Context, codice:String): Annuncio {
+        val lock = ReentrantLock()
+        val condition = lock.newCondition()
+        var annuncio= Annuncio()
+
+        if (codice != null) {
+            GlobalScope.launch {
+                FirebaseDbWrapper(context).dbref.addValueEventListener(object :
+                    ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val children = snapshot.child("Annunci").children
+                        for (child in children) {
+                            Log.i(TAG,"il codice univoco ${child.key}")
+                            if(child.key==codice) {
+                                annuncio = child.getValue(Annuncio::class.java)!!
+                            }
+
+                        }
+                        lock.withLock { condition.signal() }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.w(ContentValues.TAG, "Failed to read value", error.toException())
+                    }
+                })
+            }
+            lock.withLock { condition.await() }
+        }
+        return annuncio
+    }
+
+
+
     fun creaAmministratore(amministratore: Amministratore) {
         dbref.child("Amministratori").push().setValue(amministratore)
     }

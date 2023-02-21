@@ -4,19 +4,17 @@ import android.content.Context
 import android.os.Message
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
 class MessageAdapter(context: Context): RecyclerView.Adapter<MessageAdapter.MessageHolder>() {
 
     val messages : ArrayList<Message> = arrayListOf()
     val mcontext : Context = context
-
+/*
     constructor() : (
 
     )
-
+*/
 
 
 

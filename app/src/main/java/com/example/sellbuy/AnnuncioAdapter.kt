@@ -49,10 +49,12 @@ class AnnuncioAdapter(context: Context, private val mList: List<AnnuncioViewMode
 
         //per rendere le card cliccabili
         holder.itemView.setOnClickListener{
-            Log.i(TAG,"Hai cliccatoo su: ${ItemsViewModel.image}")
+            Log.i(TAG,"Hai cliccatoo su: ${ItemsViewModel.codice}")
+            val codiceAnn=ItemsViewModel.codice
            // Toast.makeText( this@AnnuncioAdapter,"hai cliccato su ${ItemsViewModel.text}",Toast.LENGTH_SHORT).show()
             val intent= Intent(mcontext,AnnuncioActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            intent.putExtra("codice", codiceAnn)
             mcontext?.startActivity(intent)
         }
     }

@@ -1,6 +1,7 @@
 package com.example.sellbuy
 
 import android.annotation.SuppressLint
+import android.content.ContentValues
 import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Bundle
@@ -43,10 +44,11 @@ class MainActivity : AppCompatActivity() {
                 var an =
                     FirebaseDbWrapper(applicationContext).getAnnunciFromEmail(applicationContext)
 
-                  //  codici =
-                  //      FirebaseDbWrapper(applicationContext).getKeyFromEmail(applicationContext)
-                 //   Log.i(ContentValues.TAG, "eccoccoc i codici $codici")
-
+                  var codici =
+                       FirebaseDbWrapper(applicationContext).getKeyFromEmail(applicationContext)
+                   Log.i(ContentValues.TAG, "eccoccoc i codici $codici")
+                //var prova= codici[0]
+                //Log.i(ContentValues.TAG, "eccoccoc i codici $prova")
 
 
                     var count=0
@@ -54,12 +56,11 @@ class MainActivity : AppCompatActivity() {
                         val nomeAn = record.nome
                         val imageName = record.foto?.get(0) //get the filename from the edit text
                         val prezzoAn = record.prezzo
-
-                       // val codice = codici[count]
+                        var codice = codici[count]
                        // Log.i(TAG,"un codiceee $codice")
 
                         val nuovoan =
-                            imageName?.let { AnnuncioViewModel(it, nomeAn, prezzoAn, "codice") }
+                            imageName?.let { AnnuncioViewModel(it, nomeAn, prezzoAn, codice!!) }
                         if (nuovoan != null) {
                             Log.i(TAG,"non è nullo")
                             mList.add(nuovoan)
