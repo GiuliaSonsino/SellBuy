@@ -14,6 +14,7 @@
         android:textStyle="bold"
         android:text="I TUOI ANNUNCI:"/>
 
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview"
         android:layout_width="match_parent"

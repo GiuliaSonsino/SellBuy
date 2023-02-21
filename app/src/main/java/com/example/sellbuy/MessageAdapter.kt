@@ -8,13 +8,16 @@ import androidx.recyclerview.widget.RecyclerView
 
 class MessageAdapter(context: Context): RecyclerView.Adapter<MessageAdapter.MessageHolder>() {
 
-    val messages : ArrayList<Message> = arrayListOf()
-    val mcontext : Context = context
-/*
-    constructor() : (
+    var messages : ArrayList<Message> = arrayListOf()
+    var mcontext : Context = context
 
-    )
-*/
+    constructor(messages: ArrayList<Message>, mcontext: Context) : this(mcontext) {
+        this.messages=messages
+        this.mcontext=mcontext
+    }
+
+
+
 
 
 
@@ -28,7 +31,7 @@ class MessageAdapter(context: Context): RecyclerView.Adapter<MessageAdapter.Mess
     }
 
     override fun getItemCount(): Int {
-        TODO("Not yet implemented")
+        return messages.size
     }
 
     override fun onBindViewHolder(holder: MessageHolder, position: Int) {

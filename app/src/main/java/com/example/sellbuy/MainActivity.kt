@@ -19,64 +19,34 @@ import models.FirebaseDbWrapper
 
 class MainActivity : AppCompatActivity() {
 
-    private val auth= FirebaseAuth.getInstance()
+    private val auth = FirebaseAuth.getInstance()
     //private var storage = FirebaseStorage.getInstance().getReferenceFromUrl("gs://sellbuy-abe26.appspot.com")
 
-    private var adapter=AnnuncioAdapter(this, mutableListOf())
+    private var adapter = AnnuncioAdapter(this, mutableListOf())
+
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         // getting the recyclerview by its id
+
+
+        // this creates a vertical layout Manager
         val recyclerview = findViewById<RecyclerView>(R.id.recyclerview)
         var mList: MutableList<AnnuncioViewModel> = mutableListOf()
-        // this creates a vertical layout Manager
+        mList= createList()
+        Log.i(TAG,"lista finale $mList")
         recyclerview.layoutManager = LinearLayoutManager(this)
-
         adapter = AnnuncioAdapter(applicationContext, mList)
         recyclerview.adapter = adapter
+        adapter.updateData(mList)
 
 
-
-        if (auth.currentUser != null) {
-            var codici:MutableList<String?> = mutableListOf()
-            GlobalScope.launch {
-                var an =
-                    FirebaseDbWrapper(applicationContext).getAnnunciFromEmail(applicationContext)
-
-                  var codici =
-                       FirebaseDbWrapper(applicationContext).getKeyFromEmail(applicationContext)
-                   Log.i(ContentValues.TAG, "eccoccoc i codici $codici")
-                //var prova= codici[0]
-                //Log.i(ContentValues.TAG, "eccoccoc i codici $prova")
-
-
-                    var count=0
-                    for (record in an) {
-                        val nomeAn = record.nome
-                        val imageName = record.foto?.get(0) //get the filename from the edit text
-                        val prezzoAn = record.prezzo
-                        var codice = codici[count]
-                       // Log.i(TAG,"un codiceee $codice")
-
-                        val nuovoan =
-                            imageName?.let { AnnuncioViewModel(it, nomeAn, prezzoAn, codice!!) }
-                        if (nuovoan != null) {
-                            Log.i(TAG,"non è nullo")
-                            mList.add(nuovoan)
-                        }
-                        count += 1
-
-                    }
-
-            } //qui
-
-        }
     }
 
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.main_menu,menu)
+        menuInflater.inflate(R.menu.main_menu, menu)
         return true
     }
 
@@ -95,6 +65,43 @@ class MainActivity : AppCompatActivity() {
         }
         return true
     }
+
+
+    fun createList(): MutableList<AnnuncioViewModel> {
+        var mList:MutableList<AnnuncioViewModel> = mutableListOf()
+        var count = 0
+        if (auth.currentUser != null) {
+            GlobalScope.launch {
+                var an =
+                    FirebaseDbWrapper(applicationContext).getAnnunciFromEmail(applicationContext)
+                var codici =
+                    FirebaseDbWrapper(applicationContext).getKeyFromEmail(applicationContext)
+                Log.i(ContentValues.TAG, "eccoccoc i codici $codici")
+                //var prova= codici[0]
+                //Log.i(ContentValues.TAG, "eccoccoc i codici $prova")
+
+                for (record in an) {
+                    val nomeAn = record.nome
+                    val imageName = record.foto?.get(0) //get the filename from the edit text
+                    val prezzoAn = record.prezzo
+                    var codice = codici[count]
+                    Log.i(TAG,"contatore : $count")
+                    // Log.i(TAG,"un codiceee $codice")
+                    val nuovoan =
+                        imageName?.let { AnnuncioViewModel(it, nomeAn, prezzoAn, codice!!) }
+                    if (nuovoan != null) {
+                        Log.i(TAG, "non è nullo")
+                        mList.add(nuovoan)
+                    }
+                    count += 1
+                }
+                Log.i(TAG, "quiiiiiiiiiiiii $mList")
+            } //qui
+            Log.i(TAG, "aaaaaaa $mList")
+        }
+        return mList
+    }
+
 
 
 

@@ -19,6 +19,11 @@ import models.AnnuncioViewModel
 class AnnuncioAdapter(context: Context, private val mList: List<AnnuncioViewModel>) : RecyclerView.Adapter<AnnuncioAdapter.ViewHolder>() {
 
     private val mcontext:Context?=context
+    private var data: List<AnnuncioViewModel> = emptyList()
+    fun updateData(newData: List<AnnuncioViewModel>) {
+        data = newData
+        notifyDataSetChanged()
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder{
 
