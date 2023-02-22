@@ -15,9 +15,11 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.ktx.Firebase
+import models.FirebaseDbWrapper
 import models.Utente
 
 
@@ -29,7 +31,10 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var sendButton: ImageView
     private lateinit var messageAdapter: MessageAdapter
     private lateinit var messageList: ArrayList<models.Message>
+    private lateinit var mDbRef : DatabaseReference
 
+    var receiverRoom: String? = null
+    var senderRoom: String? = null
 
     /*
     private var auth: FirebaseAuth = FirebaseAuth.getInstance()
@@ -46,20 +51,33 @@ class ChatActivity : AppCompatActivity() {
         setContentView(R.layout.activity_chat)
 
 
-        val receiver = intent.getStringExtra("emailProprietarioAnn")
-        Log.i(TAG,"il receiver $receiver")
-        val sender = intent.getStringExtra("currentEmail")
+        val receiver = intent.getStringExtra("idProprietario")
+        val emailProprietarioAnn = intent.getStringExtra("emailProprietarioAnn")
+        val sender = intent.getStringExtra("idCurrentUser")
+        val codiceAnn = intent.getStringExtra("codiceAnn")
+        senderRoom = receiver + sender + codiceAnn
+        receiverRoom = sender + receiver + codiceAnn
 
+        mDbRef= FirebaseDatabase.getInstance().getReference()
 
         var nomeReceiver= findViewById<TextView>(R.id.txtvChat)
-        nomeReceiver.text=receiver
+        nomeReceiver.text=emailProprietarioAnn
         chatRecyclerView = findViewById(R.id.recyclerMessages)
         messageBox = findViewById(R.id.edtText)
         sendButton = findViewById(R.id.imgFreccia)
         messageList = ArrayList()
         messageAdapter = MessageAdapter(this, messageList)
 
-        //sendButton.setOnClickListener()
+        sendButton.setOnClickListener{
+            val message = messageBox.text.toString()
+            val messageObject = models.Message(message,sender)
+
+            FirebaseDbWrapper(applicationContext).creaChat(senderRoom,messageObject)
+            FirebaseDbWrapper(applicationContext).creaChat(receiverRoom,messageObject)
+            /*mDbRef.child("chats").child(senderRoom!!).child("messages").push().setValue(messageObject).addOnSuccessListener {
+                mDbRef.child("chats").child(receiverRoom!!).child("messages").push().setValue(messageObject)
+            }*/
+        }
 
 
 

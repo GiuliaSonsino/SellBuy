@@ -2,14 +2,14 @@ package models
 
 class Message {
 
-    var sender: String? = null
     var contenuto: String? = null
+    var sender: String? = null
 
     constructor(){}
 
-    constructor(sender: String?, contenuto: String?) {
-        this.sender=sender
+    constructor( contenuto: String?,sender: String?) {
         this.contenuto=contenuto
+        this.sender=sender
     }
 
 }

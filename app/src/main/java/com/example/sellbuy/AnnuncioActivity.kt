@@ -1,4 +1,4 @@
-package com.example .sellbuy
+package com.example.sellbuy
 
 import android.app.Dialog
 import android.content.ContentValues.TAG
@@ -12,6 +12,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import com.example.sellbuy.ChatActivity
+import com.example.sellbuy.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageReference
@@ -26,6 +28,13 @@ class AnnuncioActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_annuncio)
+
+        var em=FirebaseAuth.getInstance().currentUser?.email
+        var idCurrentUser:String?=null
+        var idProprietario:String?=null
+        GlobalScope.launch {
+            idCurrentUser=FirebaseDbWrapper(applicationContext).getIdUtenteFromEmail(applicationContext,em!!)
+        }
 
         var ann: Annuncio
         var emailProprietarioAnn: String? = "*"
@@ -42,8 +51,11 @@ class AnnuncioActivity : AppCompatActivity() {
         val im4=findViewById<ImageView>(R.id.image4)
         val mainImmagine= findViewById<ImageView>(R.id.main_image)
 
+        val codiceAnn = intent.getStringExtra("codice")
+
+
         GlobalScope.launch {
-            val codiceAnn = intent.getStringExtra("codice")
+            //val codiceAnn = intent.getStringExtra("codice")
             ann =
                 FirebaseDbWrapper(applicationContext).getAnnuncioFromCodice(
                     applicationContext,
@@ -54,7 +66,7 @@ class AnnuncioActivity : AppCompatActivity() {
             val descrizione = findViewById<TextView>(R.id.tv_description)
             descrizione.text = ann.descrizione
             emailProprietarioAnn= ann.email
-
+            idProprietario=FirebaseDbWrapper(applicationContext).getIdUtenteFromEmail(applicationContext,emailProprietarioAnn!!)
 
             immagini = ann.foto
             strMainImm = immagini?.get(0)
@@ -184,8 +196,10 @@ class AnnuncioActivity : AppCompatActivity() {
         val btnChat = findViewById<Button>(R.id.btnChat)
         btnChat.setOnClickListener {
             val intent = Intent(this, ChatActivity::class.java)
-            intent.putExtra("emailProprietarioAnn",emailProprietarioAnn)
-            intent.putExtra("currentEmail",FirebaseAuth.getInstance().currentUser?.email)
+            intent.putExtra("idProprietario",idProprietario)
+            intent.putExtra("codiceAnn",codiceAnn)
+            intent.putExtra("idCurrentUser",idCurrentUser)
+            intent.putExtra("emailProprietarioAnn", emailProprietarioAnn)
             startActivity(intent)
         }
 

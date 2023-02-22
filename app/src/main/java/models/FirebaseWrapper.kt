@@ -226,7 +226,41 @@ class FirebaseDbWrapper(context: Context) {
         }
         return annuncio
     }
+    fun getIdUtenteFromEmail(context: Context, email:String): String? {
+        val lock = ReentrantLock()
+        val condition = lock.newCondition()
+        var annuncio= Annuncio()
+        var idUtente:String?=null
+        var keyList: MutableList<String?> = mutableListOf()
+        if (email != null) {
+            GlobalScope.launch {
+                FirebaseDbWrapper(context).dbref.addValueEventListener(object :
+                    ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val children = snapshot.child("Utenti").children
+                        for (child in children) {
+                            idUtente=child.key.toString()
+                            val list = child.getValue() as HashMap<String, String>
+                            for (record in list) {
+                                if(!record.key.equals("foto")) {
+                                    if(record.key.equals("email") && record.value.equals(email)) {
+                                        keyList.add(idUtente)
+                                    }
+                                }
+                            }
+                        }
+                        lock.withLock { condition.signal() }
+                    }
 
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.w(ContentValues.TAG, "Failed to read value", error.toException())
+                    }
+                })
+            }
+            lock.withLock { condition.await() }
+        }
+        return keyList[0]
+    }
 
 
     fun creaAmministratore(amministratore: Amministratore) {
@@ -239,6 +273,10 @@ class FirebaseDbWrapper(context: Context) {
 
     fun creaAnnuncio(annuncio: Annuncio) {
         dbref.child("Annunci").push().setValue(annuncio)
+    }
+
+    fun creaChat( senderRoom: String?, messaggio: Message) {
+        dbref.child("chats").child(senderRoom!!).child("messages").push().setValue(messaggio)
     }
 }
 
