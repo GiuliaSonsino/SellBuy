@@ -2,13 +2,13 @@ package models
 
 class Message {
 
-    lateinit var sender: String
-    lateinit var receiver: String
-    lateinit var contenuto: String
+    var sender: String? = null
+    var contenuto: String? = null
 
-    constructor(sender: String, receiver: String, contenuto: String) {
+    constructor(){}
+
+    constructor(sender: String?, contenuto: String?) {
         this.sender=sender
-        this.receiver=receiver
         this.contenuto=contenuto
     }
 

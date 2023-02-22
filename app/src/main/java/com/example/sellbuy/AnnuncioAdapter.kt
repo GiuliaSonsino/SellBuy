@@ -19,11 +19,7 @@ import models.AnnuncioViewModel
 class AnnuncioAdapter(context: Context, private val mList: List<AnnuncioViewModel>) : RecyclerView.Adapter<AnnuncioAdapter.ViewHolder>() {
 
     private val mcontext:Context?=context
-    private var data: List<AnnuncioViewModel> = emptyList()
-    fun updateData(newData: List<AnnuncioViewModel>) {
-        data = newData
-        notifyDataSetChanged()
-    }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder{
 
@@ -34,15 +30,10 @@ class AnnuncioAdapter(context: Context, private val mList: List<AnnuncioViewMode
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val currentAnnuncio = mList[position]
-        // sets the image to the imageview from our itemHolder class
-        //holder.imageView.setImageResource(ItemsViewModel.image)
-        //holder.imageView.setImageBitmap(ItemsViewModel.image)
-        //holder.textView.text=ItemsViewModel.image
         holder.textView.text=currentAnnuncio.text
         holder.tvPrice.text=currentAnnuncio.price
         holder.tvCode.text=currentAnnuncio.codice
         var im=currentAnnuncio.image
-        //var price=ItemsViewModel.price
         val storag= Firebase.storage.reference.child("images/$im")
         storag.downloadUrl.addOnSuccessListener { url ->
             if (mcontext != null) {

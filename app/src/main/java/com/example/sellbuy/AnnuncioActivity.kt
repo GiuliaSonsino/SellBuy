@@ -12,6 +12,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
@@ -27,6 +28,7 @@ class AnnuncioActivity : AppCompatActivity() {
         setContentView(R.layout.activity_annuncio)
 
         var ann: Annuncio
+        var emailProprietarioAnn: String? = "*"
         var immagini: MutableList<String>? = mutableListOf()
         var strMainImm : String?
         var strImmagine1: String?
@@ -51,6 +53,8 @@ class AnnuncioActivity : AppCompatActivity() {
             titolo.text = ann.nome
             val descrizione = findViewById<TextView>(R.id.tv_description)
             descrizione.text = ann.descrizione
+            emailProprietarioAnn= ann.email
+
 
             immagini = ann.foto
             strMainImm = immagini?.get(0)
@@ -180,6 +184,8 @@ class AnnuncioActivity : AppCompatActivity() {
         val btnChat = findViewById<Button>(R.id.btnChat)
         btnChat.setOnClickListener {
             val intent = Intent(this, ChatActivity::class.java)
+            intent.putExtra("emailProprietarioAnn",emailProprietarioAnn)
+            intent.putExtra("currentEmail",FirebaseAuth.getInstance().currentUser?.email)
             startActivity(intent)
         }
 

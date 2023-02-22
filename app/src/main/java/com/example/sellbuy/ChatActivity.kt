@@ -1,8 +1,11 @@
 package com.example.sellbuy
 
 import android.annotation.SuppressLint
+import android.content.ContentValues.TAG
+import android.content.Intent
 import android.os.Bundle
 import android.os.Message
+import android.util.Log
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
@@ -17,7 +20,16 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.ktx.Firebase
 import models.Utente
 
+
+
 class ChatActivity : AppCompatActivity() {
+
+    private lateinit var chatRecyclerView : RecyclerView
+    private lateinit var messageBox: EditText
+    private lateinit var sendButton: ImageView
+    private lateinit var messageAdapter: MessageAdapter
+    private lateinit var messageList: ArrayList<models.Message>
+
 
     /*
     private var auth: FirebaseAuth = FirebaseAuth.getInstance()
@@ -32,6 +44,24 @@ class ChatActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
+
+
+        val receiver = intent.getStringExtra("emailProprietarioAnn")
+        Log.i(TAG,"il receiver $receiver")
+        val sender = intent.getStringExtra("currentEmail")
+
+
+        var nomeReceiver= findViewById<TextView>(R.id.txtvChat)
+        nomeReceiver.text=receiver
+        chatRecyclerView = findViewById(R.id.recyclerMessages)
+        messageBox = findViewById(R.id.edtText)
+        sendButton = findViewById(R.id.imgFreccia)
+        messageList = ArrayList()
+        messageAdapter = MessageAdapter(this, messageList)
+
+        //sendButton.setOnClickListener()
+
+
 
         //setUpChatRoom()
         //textview.text = "Nome di prova"
