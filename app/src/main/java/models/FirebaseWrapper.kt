@@ -84,6 +84,31 @@ class FirebaseDbWrapper(context: Context) {
     }
 
 
+    fun getTuttiAnnunci(context: Context): MutableList<Annuncio> {
+        val lock = ReentrantLock()
+        val condition = lock.newCondition()
+        var annList: MutableList<Annuncio> = mutableListOf()
+        if (context != null) {
+            GlobalScope.launch {
+                FirebaseDbWrapper(context).dbref.addValueEventListener(object :
+                    ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val children = snapshot.child("Annunci").children
+                        for (child in children) {
+                            annList!!.add(child.getValue(Annuncio::class.java)!!)
+                        }
+                        lock.withLock { condition.signal() }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.w(ContentValues.TAG, "Failed to read value", error.toException())
+                    }
+                })
+            }
+            lock.withLock { condition.await() }
+        }
+        return annList
+    }
 
     fun getUtenteFromEmail(context: Context): Utente? {
         val lock = ReentrantLock()
@@ -157,12 +182,10 @@ class FirebaseDbWrapper(context: Context) {
     }
 
 
-
     fun getKeyFromEmail(context: Context): MutableList<String?> {
         val lock = ReentrantLock()
         val condition = lock.newCondition()
         val maill = Firebase.auth.currentUser?.email
-
         var codicetmp=""
         var keyList: MutableList<String?> = mutableListOf()
         if (maill != null) {
@@ -196,11 +219,40 @@ class FirebaseDbWrapper(context: Context) {
     }
 
 
+    fun getTutteKeysAnnunci(context: Context): MutableList<String?> {
+        val lock = ReentrantLock()
+        val condition = lock.newCondition()
+        var codicetmp=""
+        var keyList: MutableList<String?> = mutableListOf()
+        if (context != null) {
+            GlobalScope.launch {
+                FirebaseDbWrapper(context).dbref.addValueEventListener(object :
+                    ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val children = snapshot.child("Annunci").children
+                        for (child in children) {
+                            codicetmp = child.key.toString()
+                            Log.i(TAG, "prova codiciiii $codicetmp")
+                            keyList.add(codicetmp)
+                        }
+                        lock.withLock { condition.signal() }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.w(ContentValues.TAG, "Failed to read value", error.toException())
+                    }
+                })
+            }
+            lock.withLock { condition.await() }
+        }
+        return keyList
+    }
+
+
     fun getAnnuncioFromCodice(context: Context, codice:String): Annuncio {
         val lock = ReentrantLock()
         val condition = lock.newCondition()
         var annuncio= Annuncio()
-
         if (codice != null) {
             GlobalScope.launch {
                 FirebaseDbWrapper(context).dbref.addValueEventListener(object :
@@ -212,7 +264,6 @@ class FirebaseDbWrapper(context: Context) {
                             if(child.key==codice) {
                                 annuncio = child.getValue(Annuncio::class.java)!!
                             }
-
                         }
                         lock.withLock { condition.signal() }
                     }
@@ -226,6 +277,8 @@ class FirebaseDbWrapper(context: Context) {
         }
         return annuncio
     }
+
+
     fun getIdUtenteFromEmail(context: Context, email:String): String? {
         val lock = ReentrantLock()
         val condition = lock.newCondition()
@@ -275,8 +328,10 @@ class FirebaseDbWrapper(context: Context) {
         dbref.child("Annunci").push().setValue(annuncio)
     }
 
-    fun creaChat( senderRoom: String?, messaggio: Message) {
-        dbref.child("chats").child(senderRoom!!).child("messages").push().setValue(messaggio)
+    fun creaChat( senderRoom: String?, receiverRoom: String?, messaggio: Message) {
+        dbref.child("chats").child(senderRoom!!).child("messages").push().setValue(messaggio).addOnSuccessListener {
+            dbref.child("chats").child(receiverRoom!!).child("messages").push().setValue(messaggio)
+        }
     }
 }
 

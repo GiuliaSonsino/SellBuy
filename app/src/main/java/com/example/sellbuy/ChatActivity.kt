@@ -10,6 +10,7 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -68,15 +69,35 @@ class ChatActivity : AppCompatActivity() {
         messageList = ArrayList()
         messageAdapter = MessageAdapter(this, messageList)
 
+        chatRecyclerView.layoutManager = LinearLayoutManager(this)
+        chatRecyclerView.adapter = messageAdapter
+
+
+        // logica per aggiungere i dati alla RecyclerView
+        mDbRef.child("chats").child(senderRoom!!).child("messages").addValueEventListener(object: ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                messageList.clear()
+                for (postSnapshot in snapshot.children){
+                    val message = postSnapshot.getValue(models.Message::class.java)
+                    messageList.add(message!!)
+                }
+                messageAdapter.notifyDataSetChanged()
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                TODO("Not yet implemented")
+            }
+        })
+
+
+
+
         sendButton.setOnClickListener{
             val message = messageBox.text.toString()
             val messageObject = models.Message(message,sender)
 
-            FirebaseDbWrapper(applicationContext).creaChat(senderRoom,messageObject)
-            FirebaseDbWrapper(applicationContext).creaChat(receiverRoom,messageObject)
-            /*mDbRef.child("chats").child(senderRoom!!).child("messages").push().setValue(messageObject).addOnSuccessListener {
-                mDbRef.child("chats").child(receiverRoom!!).child("messages").push().setValue(messageObject)
-            }*/
+            FirebaseDbWrapper(applicationContext).creaChat(senderRoom,receiverRoom,messageObject)
+            messageBox.setText("")
         }
 
 

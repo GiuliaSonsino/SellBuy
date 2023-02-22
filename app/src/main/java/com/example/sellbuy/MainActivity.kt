@@ -23,7 +23,7 @@ class MainActivity : AppCompatActivity() {
     //private var storage = FirebaseStorage.getInstance().getReferenceFromUrl("gs://sellbuy-abe26.appspot.com")
     private var adapter = AnnuncioAdapter(this, mutableListOf())
     var count = 0
-    @SuppressLint("MissingInflatedId")
+    //@SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -68,9 +68,9 @@ class MainActivity : AppCompatActivity() {
         if (auth.currentUser != null) {
             GlobalScope.launch {
                 var an =
-                    FirebaseDbWrapper(applicationContext).getAnnunciFromEmail(applicationContext)
+                    FirebaseDbWrapper(applicationContext).getTuttiAnnunci(applicationContext)
                 var codici =
-                    FirebaseDbWrapper(applicationContext).getKeyFromEmail(applicationContext)
+                    FirebaseDbWrapper(applicationContext).getTutteKeysAnnunci(applicationContext)
                 Log.i(ContentValues.TAG, "eccoccoc i codici $codici")
                 //var prova= codici[0]
                 //Log.i(ContentValues.TAG, "eccoccoc i codici $prova")
