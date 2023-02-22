@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
     private val auth = FirebaseAuth.getInstance()
     //private var storage = FirebaseStorage.getInstance().getReferenceFromUrl("gs://sellbuy-abe26.appspot.com")
     private var adapter = AnnuncioAdapter(this, mutableListOf())
-
+    var count = 0
     @SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity() {
 
     fun createList(): MutableList<AnnuncioViewModel> {
         var mList:MutableList<AnnuncioViewModel> = mutableListOf()
-        var count = 0
+
         if (auth.currentUser != null) {
             GlobalScope.launch {
                 var an =
