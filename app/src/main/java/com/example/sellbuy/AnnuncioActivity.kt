@@ -1,10 +1,8 @@
 package com.example.sellbuy
 
 import android.app.Dialog
-import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.Button
@@ -12,8 +10,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
-import com.example.sellbuy.ChatActivity
-import com.example.sellbuy.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageReference
@@ -85,7 +81,7 @@ class AnnuncioActivity : AppCompatActivity() {
                     }
                 }
             } else {
-                im1.visibility= View.INVISIBLE
+                View.INVISIBLE.also { im1.visibility = it }
             }
 
             if(immagini?.size!! >=3) {
