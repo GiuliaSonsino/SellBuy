@@ -1,7 +1,10 @@
 package com.example.sellbuy
 
+import android.content.ContentValues.TAG
 import android.content.Context
 import android.os.Message
+import android.provider.Settings
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +12,9 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.ktx.Firebase
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import models.FirebaseDbWrapper
 
 class MessageAdapter(val context: Context, val messageList: ArrayList<models.Message>): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -34,9 +40,14 @@ class MessageAdapter(val context: Context, val messageList: ArrayList<models.Mes
 
 
     override fun getItemViewType(position: Int): Int {
+        var idUser:String?=null
+        GlobalScope.launch {idUser= FirebaseDbWrapper(context).getIdUtenteFromEmail(context,FirebaseAuth.getInstance().currentUser?.email!!)
+            Log.i(TAG,"quiiiiiii id loggatooo $idUser")}
+
         val currentMessage = messageList[position]
         // così sono io che mando
-        if(FirebaseAuth.getInstance().currentUser?.email.equals(currentMessage.sender)) {
+       // if(FirebaseAuth.getInstance().currentUser?.email.equals(currentMessage.sender)) {
+        if(idUser.equals(currentMessage.sender)) {
             return ITEM_SENT
         }
         else {
