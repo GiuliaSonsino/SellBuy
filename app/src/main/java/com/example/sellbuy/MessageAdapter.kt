@@ -45,8 +45,7 @@ class MessageAdapter(val context: Context, val messageList: ArrayList<models.Mes
             Log.i(TAG,"quiiiiiii id loggatooo $idUser")}
 
         val currentMessage = messageList[position]
-        // così sono io che mando
-       // if(FirebaseAuth.getInstance().currentUser?.email.equals(currentMessage.sender)) {
+        // così sono io che mando // if(FirebaseAuth.getInstance().currentUser?.email.equals(currentMessage.sender)) {
         if(idUser.equals(currentMessage.sender)) {
             return ITEM_SENT
         }
