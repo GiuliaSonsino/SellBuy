@@ -1,6 +1,5 @@
 package com.example.sellbuy
 
-import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.ContentValues.TAG
 import android.content.Intent
@@ -12,7 +11,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.coroutines.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import models.AnnuncioViewModel
 import models.FirebaseDbWrapper
 
@@ -57,6 +57,7 @@ class MainActivity : AppCompatActivity() {
                 val intent = Intent(applicationContext, AddActivity::class.java)
                 startActivity(intent)
             }
+
         }
         return true
     }

@@ -4,6 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
 
     <item
+        android:id="@+id/chat"
+        android:icon="@drawable/chat"
+        app:showAsAction="always"
+        android:title="chat"/>
+    <item
         android:id="@+id/plus"
         android:icon="@drawable/plus"
         app:showAsAction="always"

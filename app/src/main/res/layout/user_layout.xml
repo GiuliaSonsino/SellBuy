@@ -4,7 +4,7 @@
     android:layout_height="match_parent">
     
     <TextView
-        android:id="@+id/txtName"
+        android:id="@+id/txtName_utenteChat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Prova"
@@ -16,7 +16,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_below="@id/txtName"
+        android:layout_below="@id/txtName_utenteChat"
         android:background="@color/black"
         android:layout_marginTop="5dp"/>
 
