@@ -69,10 +69,7 @@
             android:theme="@style/StyleNoToolbar"
             ></activity>
 
-        <activity
-            android:name=".ElencoChatActivity"
-            android:exported="false"
-            ></activity>
+
     </application>
 
 </manifest>
