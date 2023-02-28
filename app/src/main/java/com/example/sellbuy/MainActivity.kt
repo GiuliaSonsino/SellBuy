@@ -57,6 +57,10 @@ class MainActivity : AppCompatActivity() {
                 val intent = Intent(applicationContext, AddActivity::class.java)
                 startActivity(intent)
             }
+            R.id.chat -> {
+                val intent = Intent(applicationContext, ElencoChatActivity::class.java)
+                startActivity(intent)
+            }
 
         }
         return true

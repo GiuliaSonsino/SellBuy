@@ -316,6 +316,50 @@ class FirebaseDbWrapper(context: Context) {
     }
 
 
+    fun getChats(context: Context, id:String): MutableList<Message> {
+        val lock = ReentrantLock()
+        val condition = lock.newCondition()
+        var chatList: MutableList<Message> = mutableListOf()
+        Log.i(TAG,"valore id $id")
+        if (id != null) {
+            GlobalScope.launch {
+                FirebaseDbWrapper(context).dbref.addValueEventListener(object :
+                    ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        chatList.clear()
+                        val children = snapshot.child("chats").children
+                        for (child in children) {
+                            Log.i(TAG, "Prima provaaaaaaa $child")
+                            //val messages= child.getValue() as HashMap<String, String>
+                            val messages=child.child("messages").children
+                            //val messages = snapshot.child("/messages").children
+                            Log.i(TAG, "messsagesss $messages")
+                            for(message in messages) {
+                                Log.i(TAG, "primo message $message")
+                                var e=message.getValue() as HashMap<String, String>
+                                for(y in e) {
+                                    Log.i(TAG,"ci entroooooo $y")
+                                    if ((y.key.equals("receiver") && y.value.equals(id)) || (y.key.equals("sender") && y.value.equals(id))) {
+                                        chatList!!.add(message.getValue(Message::class.java)!!)
+                                    }
+                                }
+
+                            }
+                        }
+                        lock.withLock { condition.signal() }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.w(ContentValues.TAG, "Failed to read value", error.toException())
+                    }
+                })
+            }
+            lock.withLock { condition.await() }
+        }
+        return chatList
+    }
+
+
     fun creaAmministratore(amministratore: Amministratore) {
         dbref.child("Amministratori").push().setValue(amministratore)
     }

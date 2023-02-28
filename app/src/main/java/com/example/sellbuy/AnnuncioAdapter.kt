@@ -45,6 +45,7 @@ class AnnuncioAdapter(context: Context, private val mList: List<AnnuncioViewMode
         holder.itemView.setOnClickListener{
             Log.i(TAG,"Hai cliccatoo su: ${currentAnnuncio.codice}")
             val codiceAnn=currentAnnuncio.codice
+            val nomeAnn= currentAnnuncio.text
             val intent= Intent(mcontext,AnnuncioActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             intent.putExtra("codice", codiceAnn)

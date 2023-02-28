@@ -28,6 +28,7 @@ class AnnuncioActivity : AppCompatActivity() {
         var em=FirebaseAuth.getInstance().currentUser?.email
         var idCurrentUser:String?=null
         var idProprietario:String?=null
+        var nomeArticolo:String?=null
         GlobalScope.launch {
             idCurrentUser=FirebaseDbWrapper(applicationContext).getIdUtenteFromEmail(applicationContext,em!!)
         }
@@ -62,6 +63,7 @@ class AnnuncioActivity : AppCompatActivity() {
             val descrizione = findViewById<TextView>(R.id.tv_description)
             descrizione.text = ann.descrizione
             emailProprietarioAnn= ann.email
+            nomeArticolo=ann.nome
             idProprietario=FirebaseDbWrapper(applicationContext).getIdUtenteFromEmail(applicationContext,emailProprietarioAnn!!)
 
             immagini = ann.foto
@@ -196,6 +198,7 @@ class AnnuncioActivity : AppCompatActivity() {
             intent.putExtra("codiceAnn",codiceAnn)
             intent.putExtra("idCurrentUser",idCurrentUser)
             intent.putExtra("emailProprietarioAnn", emailProprietarioAnn)
+            intent.putExtra("nomeArticolo", nomeArticolo)
             startActivity(intent)
         }
 
