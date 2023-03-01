@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -28,6 +29,11 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val bottone= findViewById<Button>(R.id.bottonechat)
+        bottone.setOnClickListener {
+            val intent= Intent(this,ElencoChatActivity::class.java)
+            startActivity(intent)
+        }
         val recyclerview = findViewById<RecyclerView>(R.id.recyclerview)
         var mList: MutableList<AnnuncioViewModel> = mutableListOf()
         mList= createList()

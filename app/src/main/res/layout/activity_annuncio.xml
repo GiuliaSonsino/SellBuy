@@ -14,8 +14,52 @@
         android:textColor="@color/black"
         android:textSize="25dp"
         android:textStyle="bold"
+        android:layout_marginTop="5dp"
         android:paddingStart="5dp"
         android:paddingBottom="5dp"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/quantum_grey"/>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Caricato da: "
+            android:textSize="15dp"
+            android:layout_marginTop="5dp"
+            android:paddingStart="5dp"
+            android:paddingBottom="5dp"/>
+
+        <TextView
+            android:id="@+id/tv_autore"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Giorgio"
+            android:textColor="@color/black"
+            android:textSize="20dp"
+            android:layout_marginTop="5dp"
+            android:paddingStart="5dp"
+            android:paddingBottom="5dp"/>
+
+        <Button
+            android:id="@+id/btnChat"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/verde_past"
+            android:shadowColor="@color/verde_past"
+            android:text="Chiedi informazioni"
+            android:layout_marginLeft="35dp"
+            android:layout_marginRight="5dp"
+            />
+    </LinearLayout>
+
 
 
     <ImageView
@@ -30,7 +74,8 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp">
 
         <ImageView
             android:id="@+id/image1"
@@ -39,7 +84,9 @@
             android:layout_weight="1"
             android:src="@drawable/icona_immagine"
             android:scaleType="centerCrop"
-            android:adjustViewBounds="true"/>
+            android:adjustViewBounds="true"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"/>
 
         <ImageView
             android:id="@+id/image2"
@@ -48,7 +95,8 @@
             android:layout_weight="1"
             android:src="@drawable/icona_immagine"
             android:scaleType="centerCrop"
-            android:adjustViewBounds="true"/>
+            android:adjustViewBounds="true"
+            android:layout_marginRight="5dp"/>
 
         <ImageView
             android:id="@+id/image3"
@@ -57,7 +105,8 @@
             android:layout_weight="1"
             android:src="@drawable/icona_immagine"
             android:scaleType="centerCrop"
-            android:adjustViewBounds="true"/>
+            android:adjustViewBounds="true"
+            android:layout_marginRight="5dp"/>
 
         <ImageView
             android:id="@+id/image4"
@@ -66,43 +115,157 @@
             android:layout_weight="1"
             android:src="@drawable/icona_immagine"
             android:scaleType="centerCrop"
-            android:adjustViewBounds="true"/>
+            android:adjustViewBounds="true"
+            android:layout_marginRight="5dp"/>
 
     </LinearLayout>
 
 
     <!-- Descrizione dell'annuncio -->
-    <TextView
-        android:id="@+id/tv_description"
-        android:layout_width="match_parent"
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Descrizione dell'annuncio"
-        android:textSize="16dp"
-        android:textColor="@color/black"
-        android:paddingStart="5dp"/>
+        android:orientation="vertical"
+        android:layout_marginTop="8dp">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="DESCRIZIONE: "
+            android:textSize="15dp"
+            android:paddingStart="5dp"/>
+        <TextView
+            android:id="@+id/tv_description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Descrizione dell'annunciooooddhdh jdjdjdj dididididiid DKDDF"
+            android:textSize="15sp"
+            android:textColor="@color/black"
+            android:paddingStart="5dp"/>
+    </LinearLayout>
 
-    <!-- Prezzo dell'oggetto in vendita -->
-    <TextView
-        android:id="@+id/tv_price"
-        android:layout_width="match_parent"
+
+    <LinearLayout
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Prezzo: €50"
-        android:textSize="16dp"
-        android:textColor="@color/black"
-        android:paddingStart="5dp"
-        />
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="PREZZO: "
+            android:textSize="15sp"
+            android:paddingStart="5dp"/>
+
+        <TextView
+            android:id="@+id/tv_price"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="159"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:paddingStart="5dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="€"
+            android:textSize="15sp"
+            android:paddingStart="5dp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="CONDIZIONI: "
+            android:textSize="15sp"
+            android:paddingStart="5dp"/>
+
+        <TextView
+            android:id="@+id/tv_condition"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="nuovo"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:paddingStart="5dp" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="CATEGORIA: "
+            android:textSize="15sp"
+            android:paddingStart="5dp"/>
+
+        <TextView
+            android:id="@+id/tv_category"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="giardinaggio"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:paddingStart="5dp" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Il venditore"
+            android:textColor="@color/black"
+            android:textSize="15sp"
+            android:paddingStart="5dp"/>
+
+        <TextView
+            android:id="@+id/tv_spedizione"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="è disposto"
+            android:textSize="16sp"
+            android:textColor="@color/black"
+            android:paddingStart="5dp" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="a spedire"
+            android:textSize="15sp"
+            android:textColor="@color/black"
+            android:paddingStart="5dp"/>
+
+    </LinearLayout>
 
     <Button
+        android:id="@+id/btnAcquista"
+        android:backgroundTint="@color/verde_scuro"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Acquista"
-        />
-
-    <Button
-        android:id="@+id/btnChat"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Chiedi informazioni"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="20dp"
         />
 
 </LinearLayout>

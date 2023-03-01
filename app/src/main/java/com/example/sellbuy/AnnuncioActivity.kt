@@ -60,8 +60,24 @@ class AnnuncioActivity : AppCompatActivity() {
                 )
             val titolo = findViewById<TextView>(R.id.tv_title)
             titolo.text = ann.nome
+            val autore = findViewById<TextView>(R.id.tv_autore)
+            autore.text = ann.email
             val descrizione = findViewById<TextView>(R.id.tv_description)
             descrizione.text = ann.descrizione
+            val prezzo = findViewById<TextView>(R.id.tv_price)
+            prezzo.text = ann.prezzo
+            val condizione = findViewById<TextView>(R.id.tv_condition)
+            condizione.text = ann.stato
+            val categoria = findViewById<TextView>(R.id.tv_category)
+            categoria.text = ann.categoria
+            val spedizione = findViewById<TextView>(R.id.tv_spedizione)
+            if(ann.spedizione) {
+                spedizione.text= "è disposto"
+            }
+            else {
+                spedizione.text= "non è disposto"
+            }
+
             emailProprietarioAnn= ann.email
             nomeArticolo=ann.nome
             idProprietario=FirebaseDbWrapper(applicationContext).getIdUtenteFromEmail(applicationContext,emailProprietarioAnn!!)

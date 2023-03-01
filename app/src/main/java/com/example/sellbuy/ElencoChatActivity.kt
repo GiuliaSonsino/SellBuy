@@ -1,18 +1,18 @@
 package com.example.sellbuy
 
 import android.annotation.SuppressLint
-import android.content.ContentValues
+
 import android.content.ContentValues.TAG
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.database.DatabaseReference
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import models.AnnuncioViewModel
+
+import kotlinx.coroutines.*
+
 import models.FirebaseDbWrapper
 import models.ItemChat
 import models.Message
@@ -23,9 +23,10 @@ class ElencoChatActivity : AppCompatActivity() {
     private lateinit var chatAdapter: ItemChatAdapter
     //private lateinit var mDbRef : DatabaseReference
     private val auth = FirebaseAuth.getInstance()
+
     //private var adapter = ItemChatAdapter( this,mutableListOf())
     //var chatList: MutableList<ItemChat> = mutableListOf()
-
+    private var dataloaded=false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_elenco_chat)
@@ -34,8 +35,23 @@ class ElencoChatActivity : AppCompatActivity() {
         chatList= createList()
         Log.i(TAG,"lista messssaggi $chatList")
 
-
         recyclerView.layoutManager = LinearLayoutManager(this)
+
+        /*
+        GlobalScope.launch {
+            chatList=createList()
+            chatAdapter=ItemChatAdapter(applicationContext,chatList)
+            dataloaded=true
+            Log.i(TAG,"1dataloaded $dataloaded")
+        }
+        Log.i(TAG,"dataloaded $dataloaded")
+        if(dataloaded) {
+            recyclerView.visibility= View.VISIBLE
+        } else {
+            recyclerView.visibility=View.GONE
+        }*/
+
+
         chatAdapter=ItemChatAdapter(this,chatList)
         recyclerView.adapter = chatAdapter
         //adapter.updateData(mList)
@@ -58,35 +74,52 @@ class ElencoChatActivity : AppCompatActivity() {
         var emailUtente= FirebaseAuth.getInstance().currentUser?.email
         if (auth.currentUser != null) {
             GlobalScope.launch {
-                var idUtente =
-                    FirebaseDbWrapper(applicationContext).getIdUtenteFromEmail(
-                        applicationContext,
-                        emailUtente!!
-                    )
-                var elencoMessages =
-                    FirebaseDbWrapper(applicationContext).getChats(applicationContext, idUtente!!)
-                Log.i(TAG, "elenco messsagggini $elencoMessages")
+                     var idUtente =
+                            FirebaseDbWrapper(applicationContext).getIdUtenteFromEmail(
+                                applicationContext,
+                                emailUtente!!
+                            )
 
-                for (record in elencoMessages) {
-                    Log.i(TAG, "singolo messsaggino $record")
-                    val nomeUtente = record.sender
-                    Log.i(TAG, "nomeutente $nomeUtente")
-                    val nomeAn = record.articolo
-                    Log.i(TAG, "nomeann $nomeAn")
-                    val nuovaChat = ItemChat(nomeUtente, nomeAn)
-                    if (nuovaChat != null) {
-                        Log.i(TAG, "ho aggiunto un messsss")
-                        chatList.add(nuovaChat)
-                        Log.i(TAG, "messaggiotti $chatList")
+
+                    var elencoMessages =
+                        FirebaseDbWrapper(applicationContext).getChats(
+                            applicationContext,
+                            idUtente!!
+                        )
+                    Log.i(TAG, "elenco messsagggini $elencoMessages")
+
+                    for (record in elencoMessages) {
+                        Log.i(TAG, "singolo messsaggino $record")
+                        val nomeUtente = record.sender
+                        Log.i(TAG, "nomeutente $nomeUtente")
+                        val nomeAn = record.articolo
+                        Log.i(TAG, "nomeann $nomeAn")
+                        val nuovaChat = ItemChat(nomeUtente, nomeAn)
+                        if (nuovaChat != null) {
+                            Log.i(TAG, "ho aggiunto un messsss")
+                            chatList.add(nuovaChat)
+                            Log.i(TAG, "messaggiotti $chatList")
+                        }
+
                     }
-
                 }
             }
-        }
+
+        Log.i(TAG,"stampa messaggi $chatList")
         return chatList
     }
 
+    /*
+    override fun onStart() {
+        super.onStart()
+        chatAdapter.startListening()
+    }
 
+    override fun onStop() {
+        super.onStop()
+        adapter!!.stopListening()
+    }
+*/
 }
 
 

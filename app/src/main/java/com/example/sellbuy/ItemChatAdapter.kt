@@ -15,6 +15,7 @@ import models.ItemChat
 class ItemChatAdapter( context: Context,private val chatList: MutableList<ItemChat>): RecyclerView.Adapter<ItemChatAdapter.ViewHolder>() {
     private val mcontext:Context?=context
 
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
             .inflate(R.layout.user_layout, parent, false)
@@ -30,11 +31,12 @@ class ItemChatAdapter( context: Context,private val chatList: MutableList<ItemCh
         holder.nomeUtente.text=currentChat.nomeUtente
         holder.nomeArticolo.text=currentChat.nomeArticolo
 
+/*
         holder.itemView.setOnClickListener{
             val intent= Intent(mcontext,SplashActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             mcontext?.startActivity(intent)
-        }
+        }*/
     }
 
 

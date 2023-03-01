@@ -9,6 +9,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
@@ -52,6 +53,7 @@ class FirebaseAuthWrapper(private val context: Context) {
 class FirebaseDbWrapper(context: Context) {
     private val db = Firebase.database("https://sellbuy-abe26-default-rtdb.firebaseio.com/")
     var dbref = db.reference
+
 
     fun isOrganizzatore(context: Context): Boolean {
 
