@@ -1,5 +1,6 @@
 package com.example.sellbuy
 
+import android.app.AlertDialog
 import android.app.ProgressDialog
 import android.content.ContentValues.TAG
 import android.content.Intent
@@ -7,7 +8,11 @@ import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.util.Log
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewManager
 import android.widget.*
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
@@ -33,7 +38,14 @@ class AddActivity: AppCompatActivity() {
     //private val apiKey= "AIzaSyApg-_rad6qNXIy_7_cRsiRHeATejk-u9Q"
     private val AUTOCOMPLETE_REQUEST_CODE = 1
 
-
+    private var pickup: Button? = null
+    private var upload: Button? = null
+    /*
+    private var progressBar: ProgressBar? = null
+    private var i = 0
+    private val handler = android.os.Handler()
+    private var txtView: TextView? = null
+    */
 
     /*
     private val AUTOCOMPLETE_REQUEST_CODE = 1
@@ -73,7 +85,6 @@ class AddActivity: AppCompatActivity() {
         val nomeObj = findViewById<AutoCompleteTextView>(R.id.nomeAcTv)
         val descrizioneObj = findViewById<AutoCompleteTextView>(R.id.descrizioneAcTv)
         val prezzoObj = findViewById<TextInputLayout>(R.id.prezzo)
-
         val categorie = resources.getStringArray(R.array.categorie)
         val adapterCat = ArrayAdapter(this, R.layout.list_item, categorie)
         val autoCompleteTextViewCat = findViewById<AutoCompleteTextView>(R.id.categoriaAcTv)
@@ -84,11 +95,21 @@ class AddActivity: AppCompatActivity() {
         val autoCompleteTextViewCond = findViewById<AutoCompleteTextView>(R.id.statoAcTv)
         autoCompleteTextViewCond.setAdapter(adapterCond)
 
+        //progressBar = findViewById<ProgressBar>(R.id.progress_Bar) as ProgressBar
+        //txtView = findViewById<TextView>(R.id.text_view)
+
+        val builder = AlertDialog.Builder(this)
+        val dialogView = layoutInflater.inflate(R.layout.progress_bar, null)
+        val message = dialogView.findViewById<TextView>(R.id.message)
 
 
-        val pickup = findViewById<Button>(R.id.pickUpImg)
-        val upload = findViewById<Button>(R.id.uploadImg)
+
+
+        pickup = findViewById(R.id.pickUpImg)
+        upload = findViewById(R.id.uploadImg)
         val imagev = findViewById<ImageView>(R.id.iv)
+
+
 
         //Create a registry to act a getContent action
         val getImage = registerForActivityResult(
@@ -102,18 +123,52 @@ class AddActivity: AppCompatActivity() {
 
         //Execute the action defined above that is:
         //Pick up an image from image gallery and load it into ImageView widget
-        pickup.setOnClickListener{
+        pickup!!.setOnClickListener{
             getImage.launch("image/*") //here we specify the type of content we want
         }
 
 
         var fileName: MutableList<String> = mutableListOf()
         //Upload the image in the imageview widget
-        upload.setOnClickListener{
-            //val progressDialog = ProgressDialog(this)
-            //progressDialog.setMessage("Uploading file...")
-            //progressDialog.setCancelable(false)
-            //progressDialog.show()
+        upload!!.setOnClickListener{
+            // execute the progress bar
+            message.text = "Uploading..."
+            builder.setView(dialogView)
+            builder .setCancelable(false)
+            var dialog = builder.create()
+            dialog.show()
+            Handler().postDelayed({dialog.dismiss()}, 5000)
+
+
+
+            /*
+            pickup!!.visibility=View.INVISIBLE
+            upload!!.visibility=View.INVISIBLE
+            progressBar!!.visibility = View.VISIBLE
+            txtView!!.visibility=View.VISIBLE
+            i = progressBar!!.progress
+            Thread(Runnable {
+                while (i < 100) {
+                    i += 1
+                    handler.post(Runnable {
+                        progressBar!!.progress = i
+                        txtView!!.text = "Caricamento..." + i.toString() + "/" + progressBar!!.max
+                    })
+                    try {
+                        Thread.sleep(100)
+                    } catch (e: InterruptedException) {
+                        e.printStackTrace()
+                    }
+                }
+
+                progressBar!!.visibility = View.INVISIBLE
+                txtView!!.visibility=View.INVISIBLE
+
+            }).start()
+
+            pickup!!.visibility=View.VISIBLE
+            upload!!.visibility=View.VISIBLE
+        */
 
             //The filename is set by using current hour and day
             val formatter = SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.getDefault())
