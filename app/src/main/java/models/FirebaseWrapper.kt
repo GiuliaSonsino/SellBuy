@@ -317,6 +317,48 @@ class FirebaseDbWrapper(context: Context) {
         return keyList[0]
     }
 
+    fun getEmailFromIdUtente(context: Context, id:String): String? {
+        val lock = ReentrantLock()
+        val condition = lock.newCondition()
+        var annuncio= Annuncio()
+        var email: MutableList<String?> = mutableListOf()
+        var idUtente:String?=null
+        var mail:String?=null
+        if (id != null) {
+            GlobalScope.launch {
+                FirebaseDbWrapper(context).dbref.addValueEventListener(object :
+                    ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val children = snapshot.child("Utenti").children
+                        for (child in children) {
+                            idUtente=child.key.toString()
+                            if(idUtente==id) {
+                                val list = child.getValue() as HashMap<String, String>
+                                for (record in list) {
+                                    if(!record.key.equals("foto")) {
+                                        if(record.key.equals("email")) {
+                                            mail=record.value
+                                            Log.i(TAG,"emaillllllllll $mail")
+                                            email.add(mail)
+                                        }
+                                    }
+                                }
+                            }
+
+                        }
+                        lock.withLock { condition.signal() }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.w(ContentValues.TAG, "Failed to read value", error.toException())
+                    }
+                })
+            }
+            lock.withLock { condition.await() }
+        }
+        return email[0]
+    }
+
 
     fun getChats(context: Context, id:String): MutableList<Message> {
         val lock = ReentrantLock()

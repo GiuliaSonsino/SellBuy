@@ -94,7 +94,7 @@ class ChatActivity : AppCompatActivity() {
 
         sendButton.setOnClickListener{
             val message = messageBox.text.toString()
-            val messageObject = models.Message(message,sender,receiver,nomeArticolo)
+            val messageObject = models.Message(message,sender,receiver,nomeArticolo,codiceAnn)
 
             FirebaseDbWrapper(applicationContext).creaChat(senderRoom,receiverRoom,messageObject)
             messageBox.setText("")

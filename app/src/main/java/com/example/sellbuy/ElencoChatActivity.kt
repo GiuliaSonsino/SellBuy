@@ -37,44 +37,20 @@ class ElencoChatActivity : AppCompatActivity() {
 
         recyclerView.layoutManager = LinearLayoutManager(this)
 
-        /*
-        GlobalScope.launch {
-            chatList=createList()
-            chatAdapter=ItemChatAdapter(applicationContext,chatList)
-            dataloaded=true
-            Log.i(TAG,"1dataloaded $dataloaded")
-        }
-        Log.i(TAG,"dataloaded $dataloaded")
-        if(dataloaded) {
-            recyclerView.visibility= View.VISIBLE
-        } else {
-            recyclerView.visibility=View.GONE
-        }*/
-
-
         chatAdapter=ItemChatAdapter(this,chatList)
         recyclerView.adapter = chatAdapter
         //adapter.updateData(mList)
         chatAdapter.notifyDataSetChanged()
-
-
-
-        /*chatAdapter = ItemChatAdapter(chatList)
-        recyclerview.layoutManager = LinearLayoutManager(this)
-        recyclerview.adapter = chatAdapter
-        chatAdapter.notifyDataSetChanged()*/
-
-
-
     }
 
     @SuppressLint("NotifyDataSetChanged")
     private fun createList(): ArrayList<ItemChat> {
         var chatList:ArrayList<ItemChat> = arrayListOf()
         var emailUtente= FirebaseAuth.getInstance().currentUser?.email
+        var nomeReceiver:String?=null
         if (auth.currentUser != null) {
             GlobalScope.launch {
-                     var idUtente =
+                     var idUserLoggato =
                             FirebaseDbWrapper(applicationContext).getIdUtenteFromEmail(
                                 applicationContext,
                                 emailUtente!!
@@ -84,17 +60,30 @@ class ElencoChatActivity : AppCompatActivity() {
                     var elencoMessages =
                         FirebaseDbWrapper(applicationContext).getChats(
                             applicationContext,
-                            idUtente!!
+                            idUserLoggato!!
+                        )
+                    var nomeUtente=
+                        FirebaseDbWrapper(applicationContext).getEmailFromIdUtente(
+                            applicationContext,
+                            idUserLoggato!!
                         )
                     Log.i(TAG, "elenco messsagggini $elencoMessages")
 
                     for (record in elencoMessages) {
                         Log.i(TAG, "singolo messsaggino $record")
-                        val nomeUtente = record.sender
+                        val idUtente = record.receiver
                         Log.i(TAG, "nomeutente $nomeUtente")
+                        GlobalScope.launch {
+                             nomeReceiver=
+                                FirebaseDbWrapper(applicationContext).getEmailFromIdUtente(
+                                    applicationContext,
+                                    idUtente!!
+                                )
+                        }
                         val nomeAn = record.articolo
                         Log.i(TAG, "nomeann $nomeAn")
-                        val nuovaChat = ItemChat(nomeUtente, nomeAn)
+                        val codiceAn=record.codiceArticolo
+                        val nuovaChat = ItemChat(idUserLoggato,nomeUtente,idUtente, nomeReceiver, nomeAn,codiceAn)
                         if (nuovaChat != null) {
                             Log.i(TAG, "ho aggiunto un messsss")
                             chatList.add(nuovaChat)
