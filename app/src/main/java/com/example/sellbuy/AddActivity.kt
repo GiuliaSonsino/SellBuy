@@ -118,17 +118,24 @@ class AddActivity: AppCompatActivity() {
                 imagev.setImageURI(it) //once the user has selected the image, I get the URI of
                 // the image and I use it to set the image into the
                 //imageview widget
+                if(it!=null) {
+                    upload!!.isEnabled=true
+                    pickup!!.isEnabled=false
+                }
+
             }
         )
+
 
         //Execute the action defined above that is:
         //Pick up an image from image gallery and load it into ImageView widget
         pickup!!.setOnClickListener{
             getImage.launch("image/*") //here we specify the type of content we want
-            upload!!.isClickable=true
+           /* upload!!.isClickable=true
             upload!!.setBackgroundColor(color)
             pickup!!.isClickable=false
-            pickup!!.setBackgroundColor(Color.WHITE)
+            pickup!!.setBackgroundColor(Color.WHITE)*/
+
         }
 
 
@@ -200,10 +207,12 @@ class AddActivity: AppCompatActivity() {
                 Toast.makeText(applicationContext, "Upload failed", Toast.LENGTH_LONG).show()
             }.addOnSuccessListener {
                 Toast.makeText(applicationContext, "Uploaded successfully", Toast.LENGTH_LONG).show()
-                upload!!.isClickable=false
+                /*upload!!.isClickable=false
                 upload!!.setBackgroundColor(Color.WHITE)
                 pickup!!.isClickable=true
-                pickup!!.setBackgroundColor(color)
+                pickup!!.setBackgroundColor(color)*/
+                pickup!!.isEnabled=true
+                upload!!.isEnabled=false
             }
         }
 

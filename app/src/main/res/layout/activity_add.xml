@@ -176,10 +176,9 @@
             android:layout_height="wrap_content"
             android:text="Carica"
             android:textColor="@color/black"
-            android:backgroundTint="@color/white"
+            android:backgroundTint="@color/verde_past"
             android:layout_gravity="center_horizontal"
-            android:visibility="visible"
-            android:clickable="false"/>
+            android:enabled="false"/>
 
         <View
             android:layout_width="match_parent"
