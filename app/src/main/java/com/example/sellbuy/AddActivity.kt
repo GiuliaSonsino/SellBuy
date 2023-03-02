@@ -21,8 +21,7 @@ import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import models.Annuncio
 import models.FirebaseDbWrapper
 import java.io.ByteArrayOutputStream
@@ -36,47 +35,10 @@ class AddActivity: AppCompatActivity() {
     private val auth= FirebaseAuth.getInstance()
     private val database=FirebaseDatabase.getInstance()
     //private val apiKey= "AIzaSyApg-_rad6qNXIy_7_cRsiRHeATejk-u9Q"
-    private val AUTOCOMPLETE_REQUEST_CODE = 1
 
     private var pickup: Button? = null
     private var upload: Button? = null
     val color = Color.rgb(179,238,179)
-    /*
-    private var progressBar: ProgressBar? = null
-    private var i = 0
-    private val handler = android.os.Handler()
-    private var txtView: TextView? = null
-    */
-
-    /*
-    private val AUTOCOMPLETE_REQUEST_CODE = 1
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
-            when (resultCode) {
-                Activity.RESULT_OK -> {
-                    data?.let {
-                        val place = Autocomplete.getPlaceFromIntent(data)
-                        Log.i(TAG, "Place: ${place.name}, ${place.id}")
-                    }
-                }
-                AutocompleteActivity.RESULT_ERROR -> {
-                    // TODO: Handle the error.
-                    data?.let {
-                        val status = Autocomplete.getStatusFromIntent(data)
-                        Log.i(TAG, status.statusMessage ?: "")
-                    }
-                }
-                Activity.RESULT_CANCELED -> {
-                    // The user canceled the operation.
-                }
-            }
-            return
-        }
-        super.onActivityResult(requestCode, resultCode, data)
-    }
-*/
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -96,19 +58,15 @@ class AddActivity: AppCompatActivity() {
         val autoCompleteTextViewCond = findViewById<AutoCompleteTextView>(R.id.statoAcTv)
         autoCompleteTextViewCond.setAdapter(adapterCond)
 
-        //progressBar = findViewById<ProgressBar>(R.id.progress_Bar) as ProgressBar
-        //txtView = findViewById<TextView>(R.id.text_view)
-
         val builder = AlertDialog.Builder(this)
         val dialogView = layoutInflater.inflate(R.layout.progress_bar, null)
         val message = dialogView.findViewById<TextView>(R.id.message)
 
 
-
-
         pickup = findViewById(R.id.pickUpImg)
         upload = findViewById(R.id.uploadImg)
         val imagev = findViewById<ImageView>(R.id.iv)
+        val btnAggiungi = findViewById<Button>(R.id.btnCaricaAnn)
 
 
         //Create a registry to act a getContent action
@@ -122,22 +80,13 @@ class AddActivity: AppCompatActivity() {
                     upload!!.isEnabled=true
                     pickup!!.isEnabled=false
                 }
-
             }
         )
 
-
-        //Execute the action defined above that is:
-        //Pick up an image from image gallery and load it into ImageView widget
+        //Choose an image from image gallery and load it into ImageView widget
         pickup!!.setOnClickListener{
-            getImage.launch("image/*") //here we specify the type of content we want
-           /* upload!!.isClickable=true
-            upload!!.setBackgroundColor(color)
-            pickup!!.isClickable=false
-            pickup!!.setBackgroundColor(Color.WHITE)*/
-
+            getImage.launch("image/*")
         }
-
 
         var fileName: MutableList<String> = mutableListOf()
         //Upload the image in the imageview widget
@@ -151,40 +100,7 @@ class AddActivity: AppCompatActivity() {
             parent?.removeView(dialogView)
             var dialog = builder.create()
             dialog.show()
-            Handler().postDelayed({dialog.dismiss()}, 5000)
-
-
-
-            /*
-            pickup!!.visibility=View.INVISIBLE
-            upload!!.visibility=View.INVISIBLE
-            progressBar!!.visibility = View.VISIBLE
-            txtView!!.visibility=View.VISIBLE
-            i = progressBar!!.progress
-            Thread(Runnable {
-                while (i < 100) {
-                    i += 1
-                    handler.post(Runnable {
-                        progressBar!!.progress = i
-                        txtView!!.text = "Caricamento..." + i.toString() + "/" + progressBar!!.max
-                    })
-                    try {
-                        Thread.sleep(100)
-                    } catch (e: InterruptedException) {
-                        e.printStackTrace()
-                    }
-                }
-
-                progressBar!!.visibility = View.INVISIBLE
-                txtView!!.visibility=View.INVISIBLE
-
-            }).start()
-
-            pickup!!.visibility=View.VISIBLE
-            upload!!.visibility=View.VISIBLE
-        */
-
-            //The filename is set by using current hour and day
+            //Handler().postDelayed({dialog.dismiss()}, 5000)
             val formatter = SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.getDefault())
             val now = Date()
             val nameImg = formatter.format(now)
@@ -201,27 +117,18 @@ class AddActivity: AppCompatActivity() {
 
             //Upload the image
             val uploadTask = storageReference.putBytes(data)
-
-            //Check if everything is ok
+            //When the image is uploaded the dialog will be closed
+            uploadTask.addOnCompleteListener {
+                dialog.dismiss()
+            }
             uploadTask.addOnFailureListener {
                 Toast.makeText(applicationContext, "Upload failed", Toast.LENGTH_LONG).show()
             }.addOnSuccessListener {
                 Toast.makeText(applicationContext, "Uploaded successfully", Toast.LENGTH_LONG).show()
-                /*upload!!.isClickable=false
-                upload!!.setBackgroundColor(Color.WHITE)
-                pickup!!.isClickable=true
-                pickup!!.setBackgroundColor(color)*/
                 pickup!!.isEnabled=true
                 upload!!.isEnabled=false
             }
         }
-
-
-
-
-
-
-        val btnAggiungi = findViewById<Button>(R.id.btnCaricaAnn)
 
         fun checkAdd(): Boolean {
             if (nomeObj.text.toString() == "" || descrizioneObj.text.toString() == "" || fileName.size==0) {
@@ -257,28 +164,7 @@ class AddActivity: AppCompatActivity() {
             }
         }
 
-/*
-        val selezionaImmagine = findViewById<ImageButton>(R.id.selezionaImg)
 
-
-        selezionaImmagine.setOnClickListener {
-            ImagePicker.with(this@AddActivity)
-                .crop()                    //Crop image(Optional), Check Customization for more option
-                .compress(1024)            //Final image size will be less than 1 MB(Optional)
-                .maxResultSize(
-                    1080,
-                    1080
-                )    //Final image resolution will be less than 1080 x 1080(Optional)
-                .galleryMimeTypes(  //Exclude gif images
-                    mimeTypes = arrayOf(
-                        "image/png",
-                        "image/jpg",
-                        "image/jpeg"
-                    )
-                )
-                .start()
-        }
-*/
 /*
         val placeSearchTv= findViewById<TextView>(R.id.placeSearch_Tv)
         if(!Places.isInitialized()) {
@@ -298,9 +184,6 @@ class AddActivity: AppCompatActivity() {
         val autocompleteFragment =
             supportFragmentManager.findFragmentById(R.id.map)
                     as AutocompleteSupportFragment
-
-
-
 */
 
 /*
@@ -335,20 +218,7 @@ class AddActivity: AppCompatActivity() {
                 Log.i(TAG, "An error occurred: $p0")
 
             }
-
-
-
-
         })
-*/
-        /*
-        val user= FirebaseAuth.getInstance().currentUser
-        user?.getIdToken(true)?.addOnCompleteListener { task ->
-            if(task.isSuccessful) {
-                val idToken=task.result?.token
-                val claims=FirebaseAuth.getInstance().verify
-            }
-        }
 */
 
         var switchSped = false
@@ -359,72 +229,44 @@ class AddActivity: AppCompatActivity() {
             }
         }
 
-/*
-        val user=FirebaseAuth.getInstance().currentUser
-        val email=user?.email
-        val id=auth.uid
-        var telefono=""
-        val myref=database.getReference()
-        myref.child("id_"+id.toString().replace(".","_")+"/numTel")
-            .addListenerForSingleValueEvent(object :ValueEventListener{
-                override fun onDataChange(dataSnapshot: DataSnapshot) {
-                    val value= dataSnapshot.getValue(String::class.java)
-                    telefono=value.toString()
+        // Check data and go to AddActivity
+        GlobalScope.launch {
+            var tel = FirebaseDbWrapper(applicationContext).getUtenteFromEmail(applicationContext)
+            val n = tel?.numTel
+
+            btnAggiungi.setOnClickListener {
+                if (checkAdd()) {
+                    val annuncio = Annuncio(
+                        nomeObj.text.toString(),
+                        autoCompleteTextViewCat.text.toString(),
+                        "Prova localizzazione",
+                        descrizioneObj.text.toString(),
+                        prezzoObj.editText?.text.toString(),
+                        autoCompleteTextViewCond.text.toString(),
+                        //foto.text.toString(),
+                        fileName,
+                        auth.currentUser?.email.toString(),
+                        n!!.toLong(),
+                        switchSped
+                    )
+                    FirebaseDbWrapper(applicationContext).creaAnnuncio(annuncio)
+                    val intent = Intent(this@AddActivity, MainActivity::class.java)
+                    startActivity(intent)
+                    Toast.makeText(
+                        applicationContext,
+                        "Annuncio creato correttamente",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    Toast.makeText(
+                        applicationContext,
+                        "Annuncio creato non correttamente",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
-
-                override fun onCancelled(error: DatabaseError) {
-                    TODO("Not yet implemented")
-                }
-            })
-*/
-
-GlobalScope.launch {
-
-    var tel = FirebaseDbWrapper(applicationContext).getUtenteFromEmail(applicationContext)
-    val n = tel?.numTel
-    Log.d(TAG, "il numerooooo $n")
-
-
-
-
-
-
-    btnAggiungi.setOnClickListener {
-        if (checkAdd()) {
-            val annuncio = Annuncio(
-                nomeObj.text.toString(),
-                autoCompleteTextViewCat.text.toString(),
-                "Prova localizzazione",
-                descrizioneObj.text.toString(),
-                prezzoObj.editText?.text.toString(),
-                autoCompleteTextViewCond.text.toString(),
-                //foto.text.toString(),
-                fileName,
-                auth.currentUser?.email.toString(),
-                n!!.toLong(),
-                switchSped
-            )
-            FirebaseDbWrapper(applicationContext).creaAnnuncio(annuncio)
-            val intent = Intent(this@AddActivity, MainActivity::class.java)
-            startActivity(intent)
-            Toast.makeText(
-                applicationContext,
-                "Annuncio creato correttamente",
-                Toast.LENGTH_SHORT
-            ).show()
-        } else {
-            Toast.makeText(
-                applicationContext,
-                "Annuncio creato non correttamente",
-                Toast.LENGTH_SHORT
-            ).show()
+            }
         }
     }
-}
-
-
-    }
-
 }
 
 

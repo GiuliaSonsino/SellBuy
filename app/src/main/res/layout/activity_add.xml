@@ -10,7 +10,6 @@
         android:layout_marginStart="5dp"
         android:layout_marginEnd="5dp">
 
-
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -122,7 +121,7 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Inserisci da 1 a 5 immagini (carica singolarmente ogni immagine subito dopo averla scelta)."
+            android:text="@string/fraseImmagini"
             android:textSize="12dp"
             android:layout_marginTop="3dp"
             android:textColor="@color/black"/>
@@ -135,29 +134,6 @@
             android:src="@drawable/undraw_camera"
             android:layout_margin="10dp"
             />
-
-        <!--
-        <ProgressBar
-            android:id="@+id/progress_Bar"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="99dp"
-            android:layout_height="101dp"
-            android:background="#F1EFF4"
-            android:indeterminate="true"
-            android:max="100"
-            android:minWidth="200dp"
-            android:minHeight="50dp"
-            android:progress="0"
-            android:visibility="invisible" />
-
-
-        <TextView
-            android:id="@+id/text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="invisible"/>
-
-           -->
 
         <Button
             android:id="@+id/pickUpImg"
