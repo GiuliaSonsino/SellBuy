@@ -14,7 +14,7 @@
     <string name="cat_articolo">Categoria</string>
     <string name="desc_articolo">Descrizione</string>
     <string name="switch_spediz">Disponibilità a spedire</string>
-    <string name="crea_ann">CARICA ANNUNCIO</string>
+    <string name="crea_ann">CREA ANNUNCIO</string>
     <string-array name="categorie">
         <item>Sport</item>
         <item>Tecnologia</item>

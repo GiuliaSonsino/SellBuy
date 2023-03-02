@@ -4,16 +4,19 @@ import android.app.AlertDialog
 import android.content.ContentValues.TAG
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
+import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
@@ -37,6 +40,7 @@ class AddActivity: AppCompatActivity() {
 
     private var pickup: Button? = null
     private var upload: Button? = null
+    val color = Color.rgb(179,238,179)
     /*
     private var progressBar: ProgressBar? = null
     private var i = 0
@@ -107,7 +111,6 @@ class AddActivity: AppCompatActivity() {
         val imagev = findViewById<ImageView>(R.id.iv)
 
 
-
         //Create a registry to act a getContent action
         val getImage = registerForActivityResult(
             ActivityResultContracts.GetContent(), //here we specify that we want pick up a content
@@ -122,6 +125,10 @@ class AddActivity: AppCompatActivity() {
         //Pick up an image from image gallery and load it into ImageView widget
         pickup!!.setOnClickListener{
             getImage.launch("image/*") //here we specify the type of content we want
+            upload!!.isClickable=true
+            upload!!.setBackgroundColor(color)
+            pickup!!.isClickable=false
+            pickup!!.setBackgroundColor(Color.WHITE)
         }
 
 
@@ -193,6 +200,10 @@ class AddActivity: AppCompatActivity() {
                 Toast.makeText(applicationContext, "Upload failed", Toast.LENGTH_LONG).show()
             }.addOnSuccessListener {
                 Toast.makeText(applicationContext, "Uploaded successfully", Toast.LENGTH_LONG).show()
+                upload!!.isClickable=false
+                upload!!.setBackgroundColor(Color.WHITE)
+                pickup!!.isClickable=true
+                pickup!!.setBackgroundColor(color)
             }
         }
 

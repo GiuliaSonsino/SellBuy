@@ -114,6 +114,19 @@
             android:layout_height="50dp"
             android:text="@string/switch_spediz" />
 
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="15dp"
+            android:background="@color/quantum_grey"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Inserisci da 1 a 5 immagini (carica singolarmente ogni immagine subito dopo averla scelta)."
+            android:textSize="12dp"
+            android:layout_marginTop="3dp"
+            android:textColor="@color/black"/>
+
         <ImageView
             android:id="@+id/iv"
             android:layout_width="100dp"
@@ -123,6 +136,7 @@
             android:layout_margin="10dp"
             />
 
+        <!--
         <ProgressBar
             android:id="@+id/progress_Bar"
             style="?android:attr/progressBarStyle"
@@ -143,46 +157,61 @@
             android:layout_height="wrap_content"
             android:visibility="invisible"/>
 
+           -->
+
         <Button
             android:id="@+id/pickUpImg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Scegli dalla galleria"
+            android:text="Scegli"
+            android:backgroundTint="@color/verde_past"
+            android:textColor="@color/black"
             android:layout_gravity="center_horizontal"
-            android:visibility="visible"/>
+            android:visibility="visible"
+            android:clickable="true"/>
 
         <Button
             android:id="@+id/uploadImg"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Carica immagine"
+            android:text="Carica"
+            android:textColor="@color/black"
+            android:backgroundTint="@color/white"
             android:layout_gravity="center_horizontal"
-            android:visibility="visible"/>
+            android:visibility="visible"
+            android:clickable="false"/>
 
-        <TextView
-            android:id="@+id/testoLuogo"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginTop="1dp"
-            android:text="Aggiungi la tua localizzazione"
-            android:textStyle="bold"
-            android:textSize="16sp" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="15dp"
+            android:background="@color/quantum_grey"/>
+        <!--
+                <TextView
+                    android:id="@+id/testoLuogo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="1dp"
+                    android:text="Aggiungi la tua localizzazione"
+                    android:textStyle="bold"
+                    android:textSize="16sp" />
 
-        <TextView
-            android:id="@+id/placeSearch_Tv"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:hint="Place Search"/>
 
+                <TextView
+                    android:id="@+id/placeSearch_Tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:hint="Place Search"/>
+                -->
 
         <Button
             android:id="@+id/btnCaricaAnn"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/crea_ann"
             android:layout_marginTop="30dp"
-            android:layout_gravity="center_horizontal" />
+            android:layout_gravity="center_horizontal"
+            android:backgroundTint="@color/verde_scuro"/>
 
     </LinearLayout>
 
