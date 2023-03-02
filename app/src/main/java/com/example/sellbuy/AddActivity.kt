@@ -1,7 +1,6 @@
 package com.example.sellbuy
 
 import android.app.AlertDialog
-import android.app.ProgressDialog
 import android.content.ContentValues.TAG
 import android.content.Intent
 import android.graphics.Bitmap
@@ -10,9 +9,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewManager
+import android.view.ViewGroup
 import android.widget.*
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
@@ -135,6 +132,9 @@ class AddActivity: AppCompatActivity() {
             message.text = "Uploading..."
             builder.setView(dialogView)
             builder .setCancelable(false)
+            // Remove dialogView from its current parent
+            val parent = dialogView.parent as ViewGroup?
+            parent?.removeView(dialogView)
             var dialog = builder.create()
             dialog.show()
             Handler().postDelayed({dialog.dismiss()}, 5000)
