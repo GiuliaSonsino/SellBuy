@@ -69,7 +69,7 @@ class ChatActivity : AppCompatActivity() {
         messageBox = findViewById(R.id.edtText)
         sendButton = findViewById(R.id.imgFreccia)
         messageList = ArrayList()
-        messageAdapter = MessageAdapter(this, messageList)
+        messageAdapter = MessageAdapter(this, messageList, sender!!)
 
         chatRecyclerView.layoutManager = LinearLayoutManager(this)
         chatRecyclerView.adapter = messageAdapter
