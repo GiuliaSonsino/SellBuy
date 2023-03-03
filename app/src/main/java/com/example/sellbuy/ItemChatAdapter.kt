@@ -34,6 +34,7 @@ class ItemChatAdapter( context: Context,private val chatList: MutableList<Messag
             val nomeArticolo= currentChat.articolo
             val codiceAnn= currentChat.codiceArticolo
             var idProprietario= currentChat.receiver
+
             GlobalScope.launch {
                 emailProprietario =
                     FirebaseDbWrapper(mcontext!!).getEmailFromIdUtente(
@@ -60,5 +61,6 @@ class ItemChatAdapter( context: Context,private val chatList: MutableList<Messag
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         val nomeArticolo: TextView = itemView.findViewById(R.id.txtName_annuncioChat)
+        val nomeSullaChat: TextView = itemView.findViewById(R.id.txtName_Utente)
     }
 }

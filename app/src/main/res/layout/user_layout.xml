@@ -7,7 +7,6 @@
     android:layout_height="80dp"
     android:layout_margin="10dp"
     app:cardElevation="6dp"
-    app:cardBackgroundColor="@color/verde_past"
     app:cardCornerRadius="20dp"
     >
 
@@ -24,6 +23,16 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <TextView
+                android:id="@+id/txtName_Utente"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginLeft="15dp"
+                android:text="Ludovico"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/black" />
 
             <TextView
                 android:id="@+id/txtName_annuncioChat"
@@ -32,9 +41,8 @@
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="15dp"
                 android:text="annuncio"
-                android:textSize="20sp"
-                android:textColor="@color/black"
-                 />
+                android:textSize="16sp"
+                android:textColor="@color/black" />
 
 
         </LinearLayout>

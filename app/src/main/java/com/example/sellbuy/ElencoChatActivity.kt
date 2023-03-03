@@ -74,6 +74,20 @@ class ElencoChatActivity : AppCompatActivity() {
                         val nomeAn = record.articolo
                         val codiceAn=record.codiceArticolo
                         val nuovaChat = Message(mess, idUserLoggato, idUtente,nomeAn,codiceAn)
+                        /*if(nuovaChat!= null) {
+                            if (chatList.size == 0) {
+                                chatList.add(nuovaChat)
+                            } else {
+                                for (i in chatList) {
+                                    if (i.codiceArticolo != codiceAn) {
+                                        chatList.add(nuovaChat)
+                                    }
+                                }
+
+                            }
+                        }*/
+
+
                         if (nuovaChat != null) {
                             chatList.add(nuovaChat)
                         }
