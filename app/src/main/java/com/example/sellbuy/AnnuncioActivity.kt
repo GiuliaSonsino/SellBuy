@@ -147,6 +147,21 @@ class AnnuncioActivity : AppCompatActivity() {
         lp.width = WindowManager.LayoutParams.MATCH_PARENT
         lp.height = WindowManager.LayoutParams.MATCH_PARENT
 
+        mainImmagine?.setOnClickListener {
+            val dialog = Dialog(this)
+            dialog.setContentView(R.layout.dialog_box)
+            // Trova la ImageView nella vista del dialog
+            val dialogImage = dialog.findViewById<ImageView>(R.id.imgDialog)
+            strMainImm = immagini?.get(0)
+            storag = Firebase.storage.reference.child("images/$strMainImm")
+            storag.downloadUrl.addOnSuccessListener { url ->
+                if (applicationContext != null) {
+                    Glide.with(applicationContext).load(url).into(dialogImage)
+                }
+            }
+            dialog.show()
+        }
+
 
         //val im1 = findViewById<ImageView>(R.id.image1)
         im1?.setOnClickListener {

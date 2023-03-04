@@ -59,6 +59,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Registrati"
-        android:backgroundTint="@color/verde_scuro"/>
+        android:backgroundTint="@color/verde_scuro"
+        android:layout_marginStart="5dp"
+        android:layout_marginEnd="5dp" />
 
 </LinearLayout>
