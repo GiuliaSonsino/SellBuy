@@ -24,6 +24,9 @@ class MainActivity : AppCompatActivity() {
     //private var storage = FirebaseStorage.getInstance().getReferenceFromUrl("gs://sellbuy-abe26.appspot.com")
     private var adapter = AnnuncioAdapter(this, mutableListOf())
     var count = 0
+    var mList: MutableList<AnnuncioViewModel> = mutableListOf()
+
+
     //@SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,7 +38,7 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
         val recyclerview = findViewById<RecyclerView>(R.id.recyclerview)
-        var mList: MutableList<AnnuncioViewModel> = mutableListOf()
+        //var mList: MutableList<AnnuncioViewModel> = mutableListOf()
         mList= createList()
         Log.i(TAG,"lista finale $mList")
         recyclerview.layoutManager = LinearLayoutManager(this)
@@ -43,6 +46,16 @@ class MainActivity : AppCompatActivity() {
         recyclerview.adapter = adapter
         //adapter.updateData(mList)
         adapter.notifyDataSetChanged()
+
+
+    }
+
+    override fun onStart() {
+        super.onStart()
+        if (auth.currentUser == null) {
+            val intent = Intent(applicationContext, LoginActivity::class.java)
+            startActivity(intent)
+        }
     }
 
 
