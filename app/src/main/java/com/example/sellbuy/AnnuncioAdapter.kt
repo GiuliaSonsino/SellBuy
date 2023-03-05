@@ -16,7 +16,7 @@ import com.google.firebase.storage.ktx.storage
 import models.AnnuncioViewModel
 
 //RecyclerView.Adapter<AnnuncioAdapter.ViewHolder>()
-class AnnuncioAdapter(context: Context, private val mList: List<AnnuncioViewModel>) : RecyclerView.Adapter<AnnuncioAdapter.ViewHolder>()   {
+class AnnuncioAdapter(context: Context, private val mList: List<AnnuncioViewModel>) : RecyclerView.Adapter<AnnuncioAdapter.ViewHolder>()    {
 
     private val mcontext:Context?=context
 

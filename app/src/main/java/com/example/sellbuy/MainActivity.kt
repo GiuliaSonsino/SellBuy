@@ -22,7 +22,6 @@ class MainActivity : AppCompatActivity() {
 
     private val auth = FirebaseAuth.getInstance()
     //private var storage = FirebaseStorage.getInstance().getReferenceFromUrl("gs://sellbuy-abe26.appspot.com")
-
     private var adapter = AnnuncioAdapter(this, mutableListOf())
     //private var adapter= AnnuncioAdapter()
     var count = 0
@@ -34,6 +33,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+
         val bottone= findViewById<Button>(R.id.bottonechat)
         bottone.setOnClickListener {
             val intent= Intent(this,ElencoChatActivity::class.java)
@@ -44,7 +44,7 @@ class MainActivity : AppCompatActivity() {
         mList= createList()
         Log.i(TAG,"lista finale $mList")
         recyclerview.layoutManager = LinearLayoutManager(this)
-        adapter = AnnuncioAdapter(applicationContext, mList)
+        adapter = AnnuncioAdapter(applicationContext, mList )
         recyclerview.adapter = adapter
         //adapter.updateData(mList)
         adapter.notifyDataSetChanged()
