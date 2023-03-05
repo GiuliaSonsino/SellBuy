@@ -13,11 +13,6 @@
         android:layout_marginStart="5dp"
         android:textStyle="bold"
         android:text="I TUOI ANNUNCI:"/>
-    <Button
-        android:id="@+id/bottonechat"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="chat"/>
 
 
     <androidx.recyclerview.widget.RecyclerView

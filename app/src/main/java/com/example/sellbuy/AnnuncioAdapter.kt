@@ -29,8 +29,6 @@ class AnnuncioAdapter(context: Context, private val mList: List<AnnuncioViewMode
     }
 
 
-
-
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val currentAnnuncio = mList[position]
         holder.textView.text=currentAnnuncio.text
@@ -58,7 +56,6 @@ class AnnuncioAdapter(context: Context, private val mList: List<AnnuncioViewMode
 
 
     // return the number of the items in the list
-
     override fun getItemCount(): Int {
         return mList.size
     }
