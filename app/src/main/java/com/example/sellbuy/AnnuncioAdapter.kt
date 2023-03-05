@@ -15,8 +15,8 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import models.AnnuncioViewModel
 
-
-class AnnuncioAdapter(context: Context, private val mList: List<AnnuncioViewModel>) : RecyclerView.Adapter<AnnuncioAdapter.ViewHolder>() {
+//RecyclerView.Adapter<AnnuncioAdapter.ViewHolder>()
+class AnnuncioAdapter(context: Context, private val mList: List<AnnuncioViewModel>) : RecyclerView.Adapter<AnnuncioAdapter.ViewHolder>()   {
 
     private val mcontext:Context?=context
 
@@ -27,6 +27,9 @@ class AnnuncioAdapter(context: Context, private val mList: List<AnnuncioViewMode
             .inflate(R.layout.item_annuncio, parent, false)
         return ViewHolder(view)
     }
+
+
+
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val currentAnnuncio = mList[position]
@@ -55,6 +58,7 @@ class AnnuncioAdapter(context: Context, private val mList: List<AnnuncioViewMode
 
 
     // return the number of the items in the list
+
     override fun getItemCount(): Int {
         return mList.size
     }

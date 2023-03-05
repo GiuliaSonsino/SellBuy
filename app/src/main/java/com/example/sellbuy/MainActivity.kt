@@ -22,7 +22,9 @@ class MainActivity : AppCompatActivity() {
 
     private val auth = FirebaseAuth.getInstance()
     //private var storage = FirebaseStorage.getInstance().getReferenceFromUrl("gs://sellbuy-abe26.appspot.com")
+
     private var adapter = AnnuncioAdapter(this, mutableListOf())
+    //private var adapter= AnnuncioAdapter()
     var count = 0
     var mList: MutableList<AnnuncioViewModel> = mutableListOf()
 
@@ -49,15 +51,25 @@ class MainActivity : AppCompatActivity() {
 
 
     }
-
+/*
     override fun onStart() {
         super.onStart()
         if (auth.currentUser == null) {
             val intent = Intent(applicationContext, LoginActivity::class.java)
             startActivity(intent)
         }
+    }*/
+/*
+    override fun onStart() {
+        super.onStart()
+        adapter!!.startListening()
     }
 
+    override fun onStop() {
+        super.onStop()
+        adapter!!.stopListening()
+    }
+*/
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
