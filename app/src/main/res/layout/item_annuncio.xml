@@ -8,7 +8,7 @@
     android:layout_height="80dp"
     android:layout_margin="10dp"
     app:cardElevation="6dp"
-    app:cardBackgroundColor="@color/verde_past"
+    app:cardBackgroundColor="@color/panna"
     app:cardCornerRadius="20dp"
     >
 
