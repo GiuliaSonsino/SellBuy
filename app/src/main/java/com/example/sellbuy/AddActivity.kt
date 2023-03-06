@@ -1,27 +1,23 @@
 package com.example.sellbuy
 
 import android.app.AlertDialog
-import android.content.ContentValues.TAG
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
-import android.util.Log
-import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
-import kotlinx.coroutines.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import models.Annuncio
 import models.FirebaseDbWrapper
 import java.io.ByteArrayOutputStream
@@ -163,7 +159,6 @@ class AddActivity: AppCompatActivity() {
                 return true
             }
         }
-
 
 /*
         val placeSearchTv= findViewById<TextView>(R.id.placeSearch_Tv)
