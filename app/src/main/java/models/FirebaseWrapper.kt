@@ -9,7 +9,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
@@ -378,16 +377,21 @@ class FirebaseDbWrapper(context: Context) {
                             val messages=child.child("messages").children
                             //val messages = snapshot.child("/messages").children
                             Log.i(TAG, "messsagesss $messages")
+                            var c=0
                             for(message in messages) {
-                                Log.i(TAG, "primo message $message")
-                                var e=message.getValue() as HashMap<String, String>
-                                for(y in e) {
-                                    Log.i(TAG,"ci entroooooo $y")
-                                    if ((y.key.equals("receiver") && y.value.equals(id)) || (y.key.equals("sender") && y.value.equals(id))) {
-                                        chatList!!.add(message.getValue(Message::class.java)!!)
+                                if(c==0) {
+                                    var e = message.getValue() as HashMap<String, String>
+                                    for (y in e) {
+                                        Log.i(TAG, "ci entroooooo $y")
+                                        if ((y.key.equals("receiver") && y.value.equals(id)) || (y.key.equals(
+                                                "sender"
+                                            ) && y.value.equals(id))
+                                        ) {
+                                            chatList!!.add(message.getValue(Message::class.java)!!)
+                                        }
                                     }
                                 }
-
+                                c+=1
                             }
                         }
                         lock.withLock { condition.signal() }

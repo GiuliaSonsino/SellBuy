@@ -28,34 +28,35 @@ class ItemChatAdapter( context: Context,private val chatList: MutableList<Messag
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val currentChat = chatList[position]
+
         holder.nomeArticolo.text=currentChat.articolo
         var emailProprietario:String?=null
         holder.itemView.setOnClickListener{
-            val nomeArticolo= currentChat.articolo
-            val codiceAnn= currentChat.codiceArticolo
-            var idProprietario= currentChat.receiver
+        val nomeArticolo= currentChat.articolo
+        val codiceAnn= currentChat.codiceArticolo
+        var idProprietario= currentChat.receiver
 
-            GlobalScope.launch {
-                emailProprietario =
-                    FirebaseDbWrapper(mcontext!!).getEmailFromIdUtente(
-                        mcontext,
-                        idProprietario!!
-                    )
+        GlobalScope.launch {
+            emailProprietario =
+                FirebaseDbWrapper(mcontext!!).getEmailFromIdUtente(
+                    mcontext,
+                    idProprietario!!
+                )
 
-                var idCurrentUser = currentChat.sender
+            var idCurrentUser = currentChat.sender
 
-                val intent = Intent(mcontext, ChatActivity::class.java)
-                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                intent.putExtra("nomeArticolo", nomeArticolo)
-                intent.putExtra("emailProprietarioAnn", emailProprietario)
-                intent.putExtra("idCurrentUser", idCurrentUser)
-                intent.putExtra("idProprietario", idProprietario)
-                intent.putExtra("codiceAnn", codiceAnn)
+            val intent = Intent(mcontext, ChatActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            intent.putExtra("nomeArticolo", nomeArticolo)
+            intent.putExtra("emailProprietarioAnn", emailProprietario)
+            intent.putExtra("idCurrentUser", idCurrentUser)
+            intent.putExtra("idProprietario", idProprietario)
+            intent.putExtra("codiceAnn", codiceAnn)
 
-                mcontext?.startActivity(intent)
-            }
+            mcontext?.startActivity(intent)
         }
     }
+}
 
 
 

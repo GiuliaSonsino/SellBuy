@@ -1,7 +1,6 @@
 package com.example.sellbuy
 
 import android.annotation.SuppressLint
-
 import android.content.ContentValues.TAG
 import android.os.Bundle
 import android.util.Log
@@ -9,10 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
-
 import kotlinx.coroutines.*
-import models.AnnuncioViewModel
-
 import models.FirebaseDbWrapper
 import models.Message
 
@@ -43,6 +39,7 @@ class ElencoChatActivity : AppCompatActivity() {
     @SuppressLint("NotifyDataSetChanged")
     private fun createList(): MutableList<Message> {
         var emailUtente= FirebaseAuth.getInstance().currentUser?.email
+        var listaKeyChat: MutableList<String> = mutableListOf()
         if (auth.currentUser != null) {
             GlobalScope.launch {
                  var idUserLoggato =
@@ -59,7 +56,7 @@ class ElencoChatActivity : AppCompatActivity() {
                     )
 
                 Log.i(TAG, "elenco messsagggini $elencoMessages")
-
+                chatList.clear()
                 for (record in elencoMessages) {
                     var idUtente:String?=null
                     var mess=record.contenuto
@@ -85,7 +82,10 @@ class ElencoChatActivity : AppCompatActivity() {
 
                         }
                     }*/
-                    if (nuovaChat != null) {
+                    var id= idUtente + codiceAn
+                    //check if nuovaChat exists and if it is already present in the list
+                    if (nuovaChat != null && id !in listaKeyChat)  {
+                        listaKeyChat.add(id)
                         chatList.add(nuovaChat)
                     }
                 }
