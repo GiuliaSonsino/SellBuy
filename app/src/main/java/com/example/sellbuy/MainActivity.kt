@@ -22,7 +22,7 @@ class MainActivity : AppCompatActivity() {
     //private var storage = FirebaseStorage.getInstance().getReferenceFromUrl("gs://sellbuy-abe26.appspot.com")
     private var adapter = AnnuncioAdapter(this, mutableListOf())
     //private var adapter= AnnuncioAdapter()
-    var count = 0
+    //var count = 0
     var mList: MutableList<AnnuncioViewModel> = mutableListOf()
 
 
@@ -46,7 +46,7 @@ class MainActivity : AppCompatActivity() {
 
     fun createList(): MutableList<AnnuncioViewModel>{
         //var mList:MutableList<AnnuncioViewModel> = mutableListOf()
-
+        var count = 0
         if (auth.currentUser != null) {
             GlobalScope.launch {
                 var an =
