@@ -49,6 +49,10 @@ class AnnuncioActivity : AppCompatActivity() {
         val mainImmagine= findViewById<ImageView>(R.id.main_image)
 
         val codiceAnn = intent.getStringExtra("codice")
+        val btnChat = findViewById<Button>(R.id.btnChat)
+        val btnElimina= findViewById<Button>(R.id.btnElimina)
+        val btnModifica= findViewById<Button>(R.id.btnModifica)
+        val btnAcquista= findViewById<Button>(R.id.btnAcquista)
 
 
         GlobalScope.launch {
@@ -137,6 +141,20 @@ class AnnuncioActivity : AppCompatActivity() {
             } else {
                 im4.visibility= View.INVISIBLE
             }
+
+
+            //handle visibility button
+            if(em.equals(ann.email)) {
+                btnElimina.visibility= View.VISIBLE
+                btnModifica.visibility= View.VISIBLE
+                btnAcquista.visibility= View.INVISIBLE
+                btnChat.visibility= View.INVISIBLE
+            } else {
+                btnElimina.visibility= View.INVISIBLE
+                btnModifica.visibility= View.INVISIBLE
+                btnAcquista.visibility= View.VISIBLE
+                btnChat.visibility= View.VISIBLE
+            }
         }
 
 
@@ -222,7 +240,7 @@ class AnnuncioActivity : AppCompatActivity() {
             dialog.show()
         }
 
-        val btnChat = findViewById<Button>(R.id.btnChat)
+
         btnChat.setOnClickListener {
             val intent = Intent(this, ChatActivity::class.java)
             intent.putExtra("idProprietario",idProprietario)

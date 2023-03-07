@@ -263,6 +263,7 @@
             android:textColor="@color/black"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
+            android:visibility="visible"
             />
 
         <Button
@@ -273,6 +274,7 @@
             android:text="Acquista"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
+            android:visibility="visible"
             />
 
         <LinearLayout
@@ -291,7 +293,8 @@
                 android:text="Modifica"
                 android:textColor="@color/white"
                 android:layout_weight="50"
-                android:layout_marginRight="5dp"
+                android:layout_marginEnd="5dp"
+                android:visibility="visible"
                 />
 
             <Button
@@ -301,7 +304,8 @@
                 android:layout_height="wrap_content"
                 android:text="Elimina"
                 android:layout_weight="50"
-                android:layout_marginLeft="5dp"
+                android:layout_marginStart="5dp"
+                android:visibility="visible"
                 />
 
         </LinearLayout>
