@@ -324,6 +324,7 @@ class FirebaseDbWrapper(context: Context) {
         var idUtente:String?=null
         var mail:String?=null
         if (id != null) {
+            email.clear()
             GlobalScope.launch {
                 FirebaseDbWrapper(context).dbref.addValueEventListener(object :
                     ValueEventListener {
@@ -363,7 +364,6 @@ class FirebaseDbWrapper(context: Context) {
         val lock = ReentrantLock()
         val condition = lock.newCondition()
         var chatList: MutableList<Message> = mutableListOf()
-        Log.i(TAG,"valore id $id")
         if (id != null) {
             GlobalScope.launch {
                 FirebaseDbWrapper(context).dbref.addValueEventListener(object :
@@ -372,17 +372,12 @@ class FirebaseDbWrapper(context: Context) {
                         chatList.clear()
                         val children = snapshot.child("chats").children
                         for (child in children) {
-                            Log.i(TAG, "Prima provaaaaaaa $child")
-                            //val messages= child.getValue() as HashMap<String, String>
                             val messages=child.child("messages").children
-                            //val messages = snapshot.child("/messages").children
-                            Log.i(TAG, "messsagesss $messages")
                             var c=0
                             for(message in messages) {
                                 if(c==0) {
                                     var e = message.getValue() as HashMap<String, String>
                                     for (y in e) {
-                                        Log.i(TAG, "ci entroooooo $y")
                                         if ((y.key.equals("receiver") && y.value.equals(id)) || (y.key.equals(
                                                 "sender"
                                             ) && y.value.equals(id))

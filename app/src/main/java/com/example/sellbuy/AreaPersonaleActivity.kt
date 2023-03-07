@@ -1,11 +1,7 @@
 package com.example.sellbuy
 
-import android.content.Intent
 import android.os.Bundle
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.widget.*
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -17,44 +13,37 @@ import kotlinx.coroutines.withContext
 import models.AnnuncioViewModel
 import models.FirebaseDbWrapper
 
-
-class MainActivity : AppCompatActivity() {
+class AreaPersonaleActivity: AppCompatActivity() {
 
     private val auth = FirebaseAuth.getInstance()
-    //private var storage = FirebaseStorage.getInstance().getReferenceFromUrl("gs://sellbuy-abe26.appspot.com")
     private var adapter = AnnuncioAdapter(this, mutableListOf())
     var mList: MutableList<AnnuncioViewModel> = mutableListOf()
 
-
-    //@SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        val recyclerview = findViewById<RecyclerView>(R.id.recyclerview)
-        //mList= createList()
+        setContentView(R.layout.area_personale)
+        val emailUtente: String? = auth.currentUser?.email
+        val nomeUtente = findViewById<TextView>(R.id.nomeUtente)
+        nomeUtente.text = emailUtente
+        val recyclerview = findViewById<RecyclerView>(R.id.recyclerviewPersonale)
         recyclerview.layoutManager = LinearLayoutManager(this)
         adapter = AnnuncioAdapter(applicationContext, mList)
         recyclerview.adapter = adapter
-
-
     }
-
 
     override fun onStart() {
         super.onStart()
         mList = createList()
     }
 
-
     fun createList(): MutableList<AnnuncioViewModel> {
-        //var mList:MutableList<AnnuncioViewModel> = mutableListOf()
         var count = 0
         if (auth.currentUser != null) {
             GlobalScope.launch {
                 var an =
-                    FirebaseDbWrapper(applicationContext).getTuttiAnnunci(applicationContext)
+                    FirebaseDbWrapper(applicationContext).getAnnunciFromEmail(applicationContext)
                 var codici =
-                    FirebaseDbWrapper(applicationContext).getTutteKeysAnnunci(applicationContext)
+                    FirebaseDbWrapper(applicationContext).getKeyFromEmail(applicationContext)
                 mList.clear()
                 for (record in an) {
                     val nomeAn = record.nome
@@ -74,35 +63,5 @@ class MainActivity : AppCompatActivity() {
             }
         }
         return mList
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.main_menu, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        var firebaseAuth = FirebaseAuth.getInstance()
-        when (item.itemId) {
-            R.id.logout -> {
-                firebaseAuth.signOut()
-                val intent = Intent(applicationContext, LoginActivity::class.java)
-                startActivity(intent)
-            }
-            R.id.plus -> {
-                val intent = Intent(applicationContext, AddActivity::class.java)
-                startActivity(intent)
-            }
-            R.id.chat -> {
-                val intent = Intent(applicationContext, ElencoChatActivity::class.java)
-                startActivity(intent)
-            }
-            R.id.profilo -> {
-                val intent = Intent(applicationContext, AreaPersonaleActivity::class.java)
-                startActivity(intent)
-            }
-        }
-
-        return true
     }
 }

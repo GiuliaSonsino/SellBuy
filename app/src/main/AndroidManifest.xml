@@ -14,9 +14,9 @@
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
-        android:icon="@drawable/logoapp_ecommerce_47"
+        android:icon="@drawable/s_b_logo"
         android:label="@string/app_name"
-        android:roundIcon="@drawable/logoapp_ecommerce_47"
+        android:roundIcon="@drawable/s_b_logo"
         android:supportsRtl="true"
         android:theme="@style/Theme.SellBuy"
         tools:targetApi="31">
@@ -71,6 +71,11 @@
 
         <activity
             android:name=".ElencoChatActivity"
+            android:exported="false"
+            ></activity>
+
+        <activity
+            android:name=".AreaPersonaleActivity"
             android:exported="false"
             ></activity>
 

@@ -47,15 +47,11 @@ class ElencoChatActivity : AppCompatActivity() {
                             applicationContext,
                             emailUtente!!
                         )
-
-
                 var elencoMessages =
                     FirebaseDbWrapper(applicationContext).getChats(
                         applicationContext,
                         idUserLoggato!!
                     )
-
-                Log.i(TAG, "elenco messsagggini $elencoMessages")
                 chatList.clear()
                 for (record in elencoMessages) {
                     var idUtente:String?=null
@@ -70,18 +66,6 @@ class ElencoChatActivity : AppCompatActivity() {
                     val nomeAn = record.articolo
                     val codiceAn=record.codiceArticolo
                     val nuovaChat = Message(mess, idUserLoggato, idUtente,nomeAn,codiceAn)
-                    /*if(nuovaChat!= null) {
-                        if (chatList.size == 0) {
-                            chatList.add(nuovaChat)
-                        } else {
-                            for (i in chatList) {
-                                if (i.codiceArticolo != codiceAn) {
-                                    chatList.add(nuovaChat)
-                                }
-                            }
-
-                        }
-                    }*/
                     var id= idUtente + codiceAn
                     //check if nuovaChat exists and if it is already present in the list
                     if (nuovaChat != null && id !in listaKeyChat)  {

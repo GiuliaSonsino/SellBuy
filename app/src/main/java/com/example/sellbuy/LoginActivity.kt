@@ -29,7 +29,7 @@ class LoginActivity: AppCompatActivity() {
             else {
                 auth.signInWithEmailAndPassword(mail,password).addOnCompleteListener {
                     if(it.isSuccessful) {
-                        Toast.makeText(this,"Benvenuto",Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Ciao $mail",Toast.LENGTH_SHORT).show()
                         val intent= Intent(this,MainActivity::class.java)
                         startActivity(intent)
                     }

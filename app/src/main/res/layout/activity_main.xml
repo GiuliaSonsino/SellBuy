@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    >
 
     <TextView
         android:layout_width="match_parent"
@@ -12,7 +13,7 @@
         android:layout_marginTop="5dp"
         android:layout_marginStart="5dp"
         android:textStyle="bold"
-        android:text="I TUOI ANNUNCI:"/>
+        android:text="TUTTI GLI ANNUNCI:"/>
 
 
     <androidx.recyclerview.widget.RecyclerView
@@ -21,6 +22,5 @@
         android:layout_height="match_parent"
         tools:itemCount="5"
         tools:listitem="@layout/item_annuncio" />
-
 
 </LinearLayout>
