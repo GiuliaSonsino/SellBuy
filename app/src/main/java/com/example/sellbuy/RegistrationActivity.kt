@@ -6,7 +6,6 @@ import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.textfield.TextInputLayout
-import models.Amministratore
 import models.FirebaseAuthWrapper
 import models.FirebaseDbWrapper
 import models.Utente
@@ -73,8 +72,8 @@ class RegistrationActivity: AppCompatActivity() {
                         emailReg.editText?.text.toString(),
                         pwdReg.editText?.text.toString()
                     )
-                    val amministratore=Amministratore(nomeReg.editText?.text.toString(), cognomeReg.editText?.text.toString(),emailReg.editText?.text.toString(),numTelReg.editText?.text.toString().toLong())
-                    FirebaseDbWrapper(applicationContext).creaAmministratore(amministratore)
+                    val amministratore = Utente(nomeReg.editText?.text.toString(), cognomeReg.editText?.text.toString(),emailReg.editText?.text.toString(),numTelReg.editText?.text.toString().toLong(),true)
+                    FirebaseDbWrapper(applicationContext).creaUtente(amministratore)
                     Toast.makeText(
                         applicationContext,
                         "Registrazione avvenuta con successo",
@@ -83,6 +82,7 @@ class RegistrationActivity: AppCompatActivity() {
                     val intent = Intent(this@RegistrationActivity, MainActivity::class.java)
                     startActivity(intent)
                 }
+                finish()
             }
         }
 
@@ -141,7 +141,7 @@ class RegistrationActivity: AppCompatActivity() {
                         emailReg.editText?.text.toString(),
                         pwdReg.editText?.text.toString()
                     )
-                    val utente= Utente(nomeReg.editText?.text.toString(), cognomeReg.editText?.text.toString(),emailReg.editText?.text.toString(),numTelReg.editText?.text.toString().toLong())
+                    val utente= Utente(nomeReg.editText?.text.toString(), cognomeReg.editText?.text.toString(),emailReg.editText?.text.toString(),numTelReg.editText?.text.toString().toLong(), false)
                     FirebaseDbWrapper(applicationContext).creaUtente(utente)
                     Toast.makeText(
                         applicationContext,
@@ -151,6 +151,7 @@ class RegistrationActivity: AppCompatActivity() {
                     val intent = Intent(this@RegistrationActivity, LoginActivity::class.java)
                     startActivity(intent)
                 }
+                finish()
             }
         }
     }

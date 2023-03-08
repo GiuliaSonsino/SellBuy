@@ -433,11 +433,6 @@ class FirebaseDbWrapper(context: Context) {
     }
 
 
-
-    fun creaAmministratore(amministratore: Amministratore) {
-        dbref.child("Amministratori").push().setValue(amministratore)
-    }
-
     fun creaUtente(utente: Utente) {
         dbref.child("Utenti").push().setValue(utente)
     }
