@@ -1,13 +1,16 @@
 package com.example.sellbuy
 
 import android.app.Dialog
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.WindowManager
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
@@ -18,6 +21,7 @@ import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import models.Annuncio
 import models.FirebaseDbWrapper
+import models.FirebaseStorageWrapper
 
 class AnnuncioActivity : AppCompatActivity() {
 
@@ -66,6 +70,8 @@ class AnnuncioActivity : AppCompatActivity() {
             titolo.text = ann.nome
             val autore = findViewById<TextView>(R.id.tv_autore)
             autore.text = ann.email
+            val numTel = findViewById<TextView>(R.id.tv_num_tel)
+            numTel.text = ann.numTel.toString()
             val descrizione = findViewById<TextView>(R.id.tv_description)
             descrizione.text = ann.descrizione
             val prezzo = findViewById<TextView>(R.id.tv_price)
@@ -251,6 +257,22 @@ class AnnuncioActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
+
+        btnElimina.setOnClickListener {
+            var ris: Boolean
+            GlobalScope.launch {
+                ris = FirebaseDbWrapper(applicationContext).deleteAnnuncio(
+                    applicationContext,
+                    codiceAnn!!
+                )
+                FirebaseStorageWrapper(applicationContext).deleteImgsFromStorage(applicationContext,immagini!!)
+                if (ris) {
+                    val intent = Intent(applicationContext, AreaPersonaleActivity::class.java)
+                    startActivity(intent)
+                }
+                finish()
+            }
+        }
     }
 
 }

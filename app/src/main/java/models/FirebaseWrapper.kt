@@ -261,7 +261,6 @@ class FirebaseDbWrapper(context: Context) {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val children = snapshot.child("Annunci").children
                         for (child in children) {
-                            Log.i(TAG,"il codice univoco ${child.key}")
                             if(child.key==codice) {
                                 annuncio = child.getValue(Annuncio::class.java)!!
                             }
@@ -403,6 +402,38 @@ class FirebaseDbWrapper(context: Context) {
     }
 
 
+    fun deleteAnnuncio(context: Context, codice: String): Boolean {
+        val lock = ReentrantLock()
+        val condition = lock.newCondition()
+        var ris=false
+        if (codice != null) {
+            GlobalScope.launch {
+                FirebaseDbWrapper(context).dbref.addValueEventListener(object :
+                    ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val children = snapshot.child("Annunci").children
+                        for (child in children) {
+                            var key = child.key.toString()
+                            if (key == codice) {
+                                child.ref.removeValue()
+                                ris = true
+                            }
+                        }
+                        lock.withLock { condition.signal() }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.w(ContentValues.TAG, "Failed to delete value", error.toException())
+                    }
+                })
+            }
+            lock.withLock { condition.await() }
+        }
+        return ris
+    }
+
+
+
     fun creaAmministratore(amministratore: Amministratore) {
         dbref.child("Amministratori").push().setValue(amministratore)
     }
@@ -410,6 +441,7 @@ class FirebaseDbWrapper(context: Context) {
     fun creaUtente(utente: Utente) {
         dbref.child("Utenti").push().setValue(utente)
     }
+
 
     fun creaAnnuncio(annuncio: Annuncio) {
         dbref.child("Annunci").push().setValue(annuncio)
@@ -426,10 +458,15 @@ class FirebaseDbWrapper(context: Context) {
 
 
 class FirebaseStorageWrapper(private val context: Context) {
-
     private var storage = FirebaseStorage.getInstance().getReferenceFromUrl("gs://sellbuy-abe26.appspot.com")
 
-
+    fun deleteImgsFromStorage(context: Context, images: MutableList<String>) {
+        GlobalScope.launch {
+            for (image in images) {
+                storage.child("images").child(image).delete()
+            }
+        }
+    }
 }
 
 
