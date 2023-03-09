@@ -132,69 +132,58 @@ class ModificaAnnActivity: AppCompatActivity() {
 
 
 
-        /*
-
-            var fileName: MutableList<String> = mutableListOf()
-            //Choose an image from image gallery and load it into ImageView widget
-
-            sostImg1.setOnClickListener {
-                val intent =
-                    Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-                intent.putExtra("imageViewId",R.id.edit_image1)
-                startActivityForResult(intent, 1000)
-
-            }
-
-            eliminaImg1!!.setOnClickListener {
-                //getImage.launch("image/*")
-
-                val formatter = SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.getDefault())
-                val now = Date()
-                val nameImg = formatter.format(now)
-                fileName.add(nameImg)
-                val storageReference =
-                    FirebaseStorage.getInstance().getReference("images/$nameImg")
-
-                //Get the byte of the image shown in the ImageView widget
-                im1!!.isDrawingCacheEnabled = true
-                im1!!.buildDrawingCache()
-                val bitmap = (im1!!.drawable as BitmapDrawable).bitmap
-                val baos = ByteArrayOutputStream()
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
-                val data = baos.toByteArray()
-
-                //Upload the image
-                val uploadTask = storageReference.putBytes(data)
-                uploadTask.addOnFailureListener {
-                    Toast.makeText(applicationContext, "Upload failed", Toast.LENGTH_LONG)
-                        .show()
-                }.addOnSuccessListener {
-                    Toast.makeText(
-                        applicationContext,
-                        "Uploaded successfully",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    sostImg1!!.isEnabled = true
-                    //upload!!.isEnabled=false
+            /*
+                var fileName: MutableList<String> = mutableListOf()
+                //Choose an image from image gallery and load it into ImageView widget
+                sostImg1.setOnClickListener {
+                    val intent =
+                        Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                    intent.putExtra("imageViewId",R.id.edit_image1)
+                    startActivityForResult(intent, 1000)
+                }
+                eliminaImg1!!.setOnClickListener {
+                    //getImage.launch("image/*")
+                    val formatter = SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.getDefault())
+                    val now = Date()
+                    val nameImg = formatter.format(now)
+                    fileName.add(nameImg)
+                    val storageReference =
+                        FirebaseStorage.getInstance().getReference("images/$nameImg")
+                    //Get the byte of the image shown in the ImageView widget
+                    im1!!.isDrawingCacheEnabled = true
+                    im1!!.buildDrawingCache()
+                    val bitmap = (im1!!.drawable as BitmapDrawable).bitmap
+                    val baos = ByteArrayOutputStream()
+                    bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+                    val data = baos.toByteArray()
+                    //Upload the image
+                    val uploadTask = storageReference.putBytes(data)
+                    uploadTask.addOnFailureListener {
+                        Toast.makeText(applicationContext, "Upload failed", Toast.LENGTH_LONG)
+                            .show()
+                    }.addOnSuccessListener {
+                        Toast.makeText(
+                            applicationContext,
+                            "Uploaded successfully",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        sostImg1!!.isEnabled = true
+                        //upload!!.isEnabled=false
+                    }
                 }
             }
         }
-    }
-
-     fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?,  im: ImageView) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == 1000 && resultCode == RESULT_OK && data != null) {
-            val imageUri: Uri = data.data!!
-            val imageViewId = data.getIntExtra("imageViewId", -1)
-            if(imageViewId != -1) {
-                val imageView = findViewById<ImageView>(imageViewId)
-                imageView.setImageURI(imageUri)
-            }
-
-
-
-         */
-         */
+         fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?,  im: ImageView) {
+            super.onActivityResult(requestCode, resultCode, data)
+            if (requestCode == 1000 && resultCode == RESULT_OK && data != null) {
+                val imageUri: Uri = data.data!!
+                val imageViewId = data.getIntExtra("imageViewId", -1)
+                if(imageViewId != -1) {
+                    val imageView = findViewById<ImageView>(imageViewId)
+                    imageView.setImageURI(imageUri)
+                }
+             */
+             */
 
         }
         btnSalva.setOnClickListener {
