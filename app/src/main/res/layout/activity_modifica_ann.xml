@@ -80,6 +80,17 @@
                 android:layout_marginRight="5dp"/>
         </LinearLayout>
 
+        <Button
+            android:id="@+id/btnElimina1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Elimina" />
+
+        <Button
+            android:id="@+id/btnSostituisci1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sostituisci" />
 
         <!-- Descrizione dell'annuncio -->
         <LinearLayout
@@ -94,14 +105,19 @@
                 android:text="MODIFICA DESCRIZIONE: "
                 android:textSize="15sp"
                 android:paddingStart="5dp"/>
+
             <EditText
                 android:id="@+id/edit_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Descrizione dell'annunciooooddhdh jdjdjdj dididididiid DKDDF"
                 android:textSize="15sp"
+                android:gravity="top"
                 android:textColor="@color/black"
-                android:paddingStart="5dp"/>
+                android:paddingStart="5dp"
+                android:scrollbars="vertical"
+                android:inputType="textMultiLine"/>
+
         </LinearLayout>
 
 
@@ -120,8 +136,8 @@
 
             <EditText
                 android:id="@+id/edit_price"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
                 android:text="159"
                 android:textSize="16sp"
                 android:textColor="@color/black"
@@ -202,6 +218,8 @@
             android:id="@+id/edit_switchSpediz"
             android:layout_width="match_parent"
             android:layout_height="50dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
             android:text="@string/switch_spediz" />
 
         <Button

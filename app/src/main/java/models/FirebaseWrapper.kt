@@ -432,6 +432,40 @@ class FirebaseDbWrapper(context: Context) {
         return ris
     }
 
+    fun modificaNome(context: Context, codice:String, nome: String, descrizione : String, prezzo: String, categoria : String, condizioni: String, spedizione: Boolean) {
+        val lock = ReentrantLock()
+        val condition = lock.newCondition()
+        if (codice != null) {
+            GlobalScope.launch {
+                FirebaseDbWrapper(context).dbref.addValueEventListener(object :
+                    ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val children = snapshot.child("Annunci").children
+                        for (child in children) {
+                            if(child.key==codice) {
+                                val cod= child.ref
+                                cod.child("nome").setValue(nome)
+                                cod.child("descrizione").setValue(descrizione)
+                                cod.child("categoria").setValue(categoria)
+                                cod.child("prezzo").setValue(prezzo)
+                                cod.child("stato").setValue(condizioni)
+                                cod.child("spedizione").setValue(spedizione)
+                            }
+                        }
+                        lock.withLock { condition.signal() }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.w(ContentValues.TAG, "Failed to read value", error.toException())
+                    }
+                })
+            }
+            lock.withLock { condition.await() }
+        }
+
+    }
+
+
 
     fun creaUtente(utente: Utente) {
         dbref.child("Utenti").push().setValue(utente)
