@@ -273,6 +273,12 @@ class AnnuncioActivity : AppCompatActivity() {
                 finish()
             }
         }
+
+        btnModifica.setOnClickListener {
+            val intent = Intent(applicationContext, ModificaAnnActivity::class.java)
+            intent.putExtra("codiceAnn", codiceAnn)
+            startActivity(intent)
+        }
     }
 
 }

@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+
+        <!-- Titolo dell'oggetto in vendita -->
+        <EditText
+            android:id="@+id/edit_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Titolo dell'annuncio"
+            android:textColor="@color/black"
+            android:textSize="25dp"
+            android:textStyle="bold"
+            android:layout_marginTop="5dp"
+            android:paddingStart="5dp"
+            android:paddingBottom="5dp"/>
+
+        <ImageView
+            android:id="@+id/editmain_image"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:scaleType="centerCrop"
+            />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="5dp">
+
+            <ImageView
+                android:id="@+id/edit_image1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@drawable/icona_immagine"
+                android:scaleType="centerCrop"
+                android:adjustViewBounds="true"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"/>
+
+            <ImageView
+                android:id="@+id/edit_image2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@drawable/icona_immagine"
+                android:scaleType="centerCrop"
+                android:adjustViewBounds="true"
+                android:layout_marginRight="5dp"/>
+
+            <ImageView
+                android:id="@+id/edit_image3"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@drawable/icona_immagine"
+                android:scaleType="centerCrop"
+                android:adjustViewBounds="true"
+                android:layout_marginRight="5dp"/>
+
+            <ImageView
+                android:id="@+id/edit_image4"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:src="@drawable/icona_immagine"
+                android:scaleType="centerCrop"
+                android:adjustViewBounds="true"
+                android:layout_marginRight="5dp"/>
+        </LinearLayout>
+
+
+        <!-- Descrizione dell'annuncio -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="8dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="MODIFICA DESCRIZIONE: "
+                android:textSize="15sp"
+                android:paddingStart="5dp"/>
+            <EditText
+                android:id="@+id/edit_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Descrizione dell'annunciooooddhdh jdjdjdj dididididiid DKDDF"
+                android:textSize="15sp"
+                android:textColor="@color/black"
+                android:paddingStart="5dp"/>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="MODIFICA PREZZO: "
+                android:textSize="15sp"
+                android:paddingStart="5dp"/>
+
+            <EditText
+                android:id="@+id/edit_price"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="159"
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                android:paddingStart="5dp"
+                android:inputType="numberDecimal"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="€"
+                android:textSize="15sp"
+                android:paddingStart="5dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="MODIFICA CONDIZIONI: "
+                android:textSize="15sp"
+                android:paddingStart="5dp"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/condizioni"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="230dp"
+                android:layout_height="wrap_content"
+                android:hint="Condizioni oggetto">
+
+                <AutoCompleteTextView
+                    android:id="@+id/edit_condizioni"
+                    android:layout_width="230dp"
+                    android:layout_height="wrap_content"
+                    android:inputType="none" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="MODIFICA CATEGORIA: "
+                android:textSize="15sp"
+                android:paddingStart="5dp" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/categoria"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="230dp"
+                android:layout_height="57dp"
+                android:hint="Seleziona categoria dell'annuncio">
+
+
+
+                <AutoCompleteTextView
+                    android:id="@+id/edit_categoria"
+                    android:layout_width="230dp"
+                    android:layout_height="match_parent"
+                    android:inputType="none" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+        </LinearLayout>
+
+        <Switch
+            android:id="@+id/edit_switchSpediz"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="@string/switch_spediz" />
+
+        <Button
+            android:id="@+id/btnSalva"
+            android:backgroundTint="@color/verde_scuro"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Salva"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:visibility="visible"
+            />
+
+
+    </LinearLayout>
+</ScrollView>
