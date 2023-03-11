@@ -143,6 +143,16 @@
 
         </LinearLayout>
 
+        <Button
+            android:id="@+id/btnAggiungiImm"
+            android:backgroundTint="@color/design_default_color_error"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Aggiungi immagine"
+            android:layout_weight="50"
+            android:layout_marginStart="5dp"
+            android:visibility="visible"
+            />
 
         <!-- Descrizione dell'annuncio -->
         <LinearLayout

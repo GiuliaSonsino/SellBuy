@@ -1,5 +1,6 @@
 package com.example.sellbuy
 
+import android.app.Activity
 import android.app.Dialog
 import android.content.ContentValues.TAG
 import android.content.Intent
@@ -57,7 +58,7 @@ class AnnuncioActivity : AppCompatActivity() {
         val btnElimina= findViewById<Button>(R.id.btnElimina)
         val btnModifica= findViewById<Button>(R.id.btnModifica)
         val btnAcquista= findViewById<Button>(R.id.btnAcquista)
-
+        val btnAggiungiImm= findViewById<Button>(R.id.btnAggiungiImm)
 
         GlobalScope.launch {
             //val codiceAnn = intent.getStringExtra("codice")
@@ -279,6 +280,17 @@ class AnnuncioActivity : AppCompatActivity() {
             intent.putExtra("codiceAnn", codiceAnn)
             startActivity(intent)
         }
+
+        btnAggiungiImm.setOnClickListener {
+            val intent = Intent(this, ModificaAnnActivity::class.java)
+            intent.putExtra("codiceAnn", codiceAnn)
+            startActivity(intent)
+        }
     }
+
+
+
+
+
 
 }

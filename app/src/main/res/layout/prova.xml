@@ -49,7 +49,7 @@
                     android:backgroundTint="@color/design_default_color_error"
                     android:layout_gravity="center_vertical"
                     android:drawableLeft="@drawable/baseline_delete_24"
-                    android:text="elimina"/>
+                    android:text="Elimina"/>
 
                 <Button
                     android:id="@+id/btn_sost1"

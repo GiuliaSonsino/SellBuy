@@ -1,5 +1,6 @@
 package com.example.sellbuy
 
+import android.app.AlertDialog
 import android.content.ContentValues.TAG
 import android.content.Intent
 import android.graphics.Bitmap
@@ -9,6 +10,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
+import android.view.ViewGroup
 import android.widget.*
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
@@ -27,6 +29,22 @@ import java.util.*
 class ModificaAnnActivity: AppCompatActivity() {
     var im1: ImageView?=null
     override fun onCreate(savedInstanceState: Bundle?) {
+
+        var nomeImageView :ImageView?= findViewById(R.id.iv)
+
+
+        val getImage = registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            if (result.resultCode == RESULT_OK) {
+                val imageUri = result.data?.data
+                if (imageUri != null) {
+                    // Visualizza l'immagine selezionata nella tua ImageView
+                    Glide.with(this).load(imageUri).into(nomeImageView!!)
+
+                }
+            }
+        }
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_modifica_ann)
 
@@ -48,7 +66,7 @@ class ModificaAnnActivity: AppCompatActivity() {
         val eliminaImg1= findViewById<Button>(R.id.btnElimina1)
         val sostImg1 = findViewById<Button>(R.id.btnSostituisci1)
         var immagini: MutableList<String>? = null
-
+        var numeroImm : Int = 0
         val categorie = resources.getStringArray(R.array.categorie)
         val adapterCat = ArrayAdapter(this, R.layout.list_item, categorie)
         val categoriaEdit= findViewById<AutoCompleteTextView>(R.id.edit_categoria)
@@ -73,6 +91,8 @@ class ModificaAnnActivity: AppCompatActivity() {
                 sped = currentAnnuncio.spedizione
                 spedizione.isChecked = sped
                 immagini = currentAnnuncio.foto
+                numeroImm=immagini!!.size
+
             }
 
             val strMainImm = immagini?.get(0)
@@ -91,7 +111,7 @@ class ModificaAnnActivity: AppCompatActivity() {
                     }
                 }
             } else {
-                View.INVISIBLE.also { im1!!.visibility = it }
+               // View.INVISIBLE.also { im1!!.visibility = it }
             }
 
             if (immagini?.size!! >= 3) {
@@ -103,7 +123,7 @@ class ModificaAnnActivity: AppCompatActivity() {
                     }
                 }
             } else {
-                im2.visibility = View.INVISIBLE
+                //im2.visibility = View.INVISIBLE
             }
 
             if (immagini?.size!! >= 4) {
@@ -115,7 +135,7 @@ class ModificaAnnActivity: AppCompatActivity() {
                     }
                 }
             } else {
-                im3.visibility = View.INVISIBLE
+                //im3.visibility = View.INVISIBLE
             }
 
             if (immagini?.size!! >= 5) {
@@ -127,7 +147,7 @@ class ModificaAnnActivity: AppCompatActivity() {
                     }
                 }
             } else {
-                im4.visibility = View.INVISIBLE
+               // im4.visibility = View.INVISIBLE
             }
 
 
@@ -185,7 +205,147 @@ class ModificaAnnActivity: AppCompatActivity() {
              */
              */
 
+
+            Log.i(TAG,"numero immmmmm $numeroImm")
+            if(numeroImm==1) {
+                nomeImageView= findViewById<ImageView>(R.id.edit_image1)
+            }
+            else if(numeroImm==2) {
+                nomeImageView= findViewById<ImageView>(R.id.edit_image2)
+            }
+            else if(numeroImm==3) {
+                nomeImageView= findViewById<ImageView>(R.id.edit_image3)
+            }
+            else if(numeroImm==4) {
+                nomeImageView= findViewById<ImageView>(R.id.edit_image4)
+            }
+
+            val pickup = findViewById<Button>(R.id.pickUpImg)
+            val upload = findViewById<Button>(R.id.uploadImg)
+            val imagev = findViewById<ImageView>(R.id.iv)
+            val builder = AlertDialog.Builder(applicationContext)
+            val dialogView = layoutInflater.inflate(R.layout.progress_bar, null)
+            val message = dialogView.findViewById<TextView>(R.id.message)
+
+            //Create a registry to act a getContent action
+            /*
+            val getImage = registerForActivityResult(
+                ActivityResultContracts.GetContent(), //here we specify that we want pick up a content
+                ActivityResultCallback {
+                    nomeImageView!!.setImageURI(it) //once the user has selected the image, I get the URI of
+                    // the image and I use it to set the image into the
+                    //imageview widget
+                    if(it!=null) {
+                        upload!!.isEnabled=true
+                        pickup!!.isEnabled=false
+                    }
+                }
+            )
+
+            //Choose an image from image gallery and load it into ImageView widget
+            pickup!!.setOnClickListener{
+                getImage.launch("image/*")
+            }
+
+
+             */
+             */
+
+
+            pickup.setOnClickListener {
+                val intent = Intent(Intent.ACTION_PICK)
+                intent.type = "image/*"
+                getImage.launch(intent)
+            }
+
+
+            //var fileName: MutableList<String> = mutableListOf()
+            //Upload the image in the imageview widget
+            upload!!.setOnClickListener{
+                // execute the progress bar
+                /*
+                message.text = "Uploading..."
+                builder.setView(dialogView)
+                builder .setCancelable(false)
+                // Remove dialogView from its current parent
+                val parent = dialogView.parent as ViewGroup?
+                parent?.removeView(dialogView)
+                var dialog = builder.create()
+                dialog.show()
+
+
+                 */
+                //Handler().postDelayed({dialog.dismiss()}, 5000)
+                val formatter = SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.getDefault())
+                val now = Date()
+                val nameImg = formatter.format(now)
+                immagini!!.add(nameImg)
+                val storageReference = FirebaseStorage.getInstance().getReference("images/$nameImg")
+
+                //Get the byte of the image shown in the ImageView widget
+                //imagev.isDrawingCacheEnabled = true
+                //imagev.buildDrawingCache()
+                nomeImageView!!.isDrawingCacheEnabled = true
+                nomeImageView!!.buildDrawingCache()
+                val bitmap = (nomeImageView!!.drawable as BitmapDrawable).bitmap
+                val baos = ByteArrayOutputStream()
+                bitmap.compress(Bitmap.CompressFormat.JPEG,100, baos)
+                val data = baos.toByteArray()
+
+                //Upload the image
+                val uploadTask = storageReference.putBytes(data)
+                //When the image is uploaded the dialog will be closed
+                uploadTask.addOnCompleteListener {
+                   // dialog.dismiss()
+                }
+                uploadTask.addOnFailureListener {
+                    Toast.makeText(applicationContext, "Upload failed", Toast.LENGTH_LONG).show()
+                }.addOnSuccessListener {
+                    Toast.makeText(applicationContext, "Uploaded successfully", Toast.LENGTH_LONG).show()
+                    pickup!!.isEnabled=true
+                    upload!!.isEnabled=false
+
+
+                   GlobalScope.launch {
+                            FirebaseDbWrapper(applicationContext).modificaImmagini(applicationContext,codiceAnn!!,immagini!!)
+                    }
+/*
+                    val intent = Intent(applicationContext, AnnuncioActivity::class.java)
+                    intent.putExtra("codice", codiceAnn)
+                    applicationContext.startActivity(intent)
+*/
+                    //finish()
+                }
+            }
+
+
+        }//chiusura global scope
+
+        eliminaImg1!!.setOnClickListener{
+            finish()
+            val intent = Intent(this, AnnuncioActivity::class.java)
+            intent.putExtra("codice", codiceAnn)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+
+            /*
+            val intent = Intent(this, AnnuncioActivity::class.java)
+            startActivityForResult(intent, 1000)
+
+
+             */
+            /*
+            val intent = Intent(applicationContext, AnnuncioActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+            intent.putExtra("codice", codiceAnn)
+            applicationContext.startActivity(intent)
+
+
+             */
         }
+
+
+
         btnSalva.setOnClickListener {
             GlobalScope.launch {
                 val tit= titolo.text.toString()
