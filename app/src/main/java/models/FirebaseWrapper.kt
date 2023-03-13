@@ -54,35 +54,41 @@ class FirebaseDbWrapper(context: Context) {
     var dbref = db.reference
 
 
-    fun isOrganizzatore(context: Context): Boolean {
 
+    fun isProprietarioAnnuncio(context: Context, codice: String): Boolean  {
         var flag = false
-        val utenteLoggato = Firebase.auth.currentUser?.email
-
-        FirebaseDbWrapper(context).dbref.addValueEventListener(object : ValueEventListener {
-
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val children = snapshot.child("Organizzatori").children
-                for (child in children) {
-                    val list = child.getValue() as HashMap<String, String>
-                    for (record in list) {
-                        if (record.key!!.equals("email") && record.value!!.equals(utenteLoggato)) {
-                            flag = true
-                        } else {
-                            flag = false
-                            Log.e("Error", record.key)
+        val utenteLoggato = FirebaseAuth.getInstance().currentUser?.email
+        val lock = ReentrantLock()
+        val condition = lock.newCondition()
+        if (codice != null) {
+            GlobalScope.launch {
+                FirebaseDbWrapper(context).dbref.addValueEventListener(object :
+                    ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val children = snapshot.child("Annunci").children
+                        for (child in children) {
+                            val list = child.getValue() as HashMap<String, String>
+                            if(child.key==codice) {
+                                for (record in list) {
+                                    if (record.key!!.equals("email") && record.value!!.equals(utenteLoggato)) {
+                                        flag = true
+                                    }
+                                }
+                            }
                         }
+                        lock.withLock { condition.signal() }
                     }
-                }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.w(ContentValues.TAG, "Failed to read value", error.toException())
+                    }
+                })
             }
-
-            override fun onCancelled(error: DatabaseError) {
-
-            }
-
-        })
+            lock.withLock { condition.await() }
+        }
         return flag
     }
+
 
 
     fun getTuttiAnnunci(context: Context): MutableList<Annuncio> {
@@ -432,6 +438,34 @@ class FirebaseDbWrapper(context: Context) {
         return ris
     }
 
+    fun deleteImmagineFromAnnuncio(context: Context,codice: String, immagini: MutableList<String>) {
+        val lock = ReentrantLock()
+        val condition = lock.newCondition()
+        if (immagini != null) {
+            GlobalScope.launch {
+                FirebaseDbWrapper(context).dbref.addValueEventListener(object :
+                    ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val children = snapshot.child("Annunci").children
+                        for (child in children) {
+                            if(child.key==codice) {
+                                val cod= child.ref
+                                cod.child("foto").setValue(immagini)
+                            }
+                        }
+                        lock.withLock { condition.signal() }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.w(ContentValues.TAG, "Failed to delete value", error.toException())
+                    }
+                })
+            }
+            lock.withLock { condition.await() }
+        }
+
+    }
+
     fun modificaNome(context: Context, codice:String, nome: String, descrizione : String, prezzo: String, categoria : String, condizioni: String, spedizione: Boolean) {
         val lock = ReentrantLock()
         val condition = lock.newCondition()
@@ -521,6 +555,12 @@ class FirebaseStorageWrapper(private val context: Context) {
             for (image in images) {
                 storage.child("images").child(image).delete()
             }
+        }
+    }
+
+    fun deleteImmagineFromStorage(context: Context, immagine: String) {
+        GlobalScope.launch {
+            storage.child("images").child(immagine).delete()
         }
     }
 }

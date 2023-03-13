@@ -80,6 +80,7 @@ class AreaPersonaleActivity: AppCompatActivity() {
             R.id.logout -> {
                 firebaseAuth.signOut()
                 val intent = Intent(applicationContext, LoginActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
                 startActivity(intent)
             }
             R.id.home -> {

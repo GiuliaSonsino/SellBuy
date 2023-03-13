@@ -319,15 +319,25 @@ class ModificaAnnActivity: AppCompatActivity() {
             }
 
 
+
+
         }//chiusura global scope
 
         eliminaImg1!!.setOnClickListener{
-            finish()
+            //finish()
+            /*
             val intent = Intent(this, AnnuncioActivity::class.java)
             intent.putExtra("codice", codiceAnn)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
 
+             */
+
+
+            val intent= Intent(this,AreaPersonaleActivity::class.java)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            //intent.putExtra("codice", codiceAnn)
+            startActivity(intent)
             /*
             val intent = Intent(this, AnnuncioActivity::class.java)
             startActivityForResult(intent, 1000)

@@ -3,6 +3,8 @@ package com.example.sellbuy
 import android.app.Dialog
 import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
 import android.widget.Button
@@ -14,13 +16,15 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import models.Annuncio
 import models.FirebaseDbWrapper
 import models.FirebaseStorageWrapper
 
 class AnnuncioActivity : AppCompatActivity() {
+
+    var immagini: MutableList<String>? = mutableListOf()
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -36,7 +40,6 @@ class AnnuncioActivity : AppCompatActivity() {
 
         var ann: Annuncio
         var emailProprietarioAnn: String? = "*"
-        var immagini: MutableList<String>? = mutableListOf()
         var strMainImm : String?
         var strImmagine1: String?
         var strImmagine2: String?
@@ -51,10 +54,7 @@ class AnnuncioActivity : AppCompatActivity() {
 
         val codiceAnn = intent.getStringExtra("codice")
         val btnChat = findViewById<Button>(R.id.btnChat)
-        val btnElimina= findViewById<Button>(R.id.btnElimina)
-        val btnModifica= findViewById<Button>(R.id.btnModifica)
         val btnAcquista= findViewById<Button>(R.id.btnAcquista)
-        val btnAggiungiImm= findViewById<Button>(R.id.btnAggiungiImm)
 
         GlobalScope.launch {
             //val codiceAnn = intent.getStringExtra("codice")
@@ -130,7 +130,7 @@ class AnnuncioActivity : AppCompatActivity() {
                     }
                 }
             } else {
-                im3.visibility= View.INVISIBLE
+                View.INVISIBLE.also { im3.visibility = it }
             }
 
             if(immagini?.size!! >=5) {
@@ -142,21 +142,18 @@ class AnnuncioActivity : AppCompatActivity() {
                     }
                 }
             } else {
-                im4.visibility= View.INVISIBLE
+                View.INVISIBLE.also { im4.visibility = it }
             }
 
 
             //handle visibility button
             if(em.equals(ann.email)) {
-                btnElimina.visibility= View.VISIBLE
-                btnModifica.visibility= View.VISIBLE
+                //btnElimina.visibility= View.VISIBLE
                 View.INVISIBLE.also { btnAcquista.visibility = it }
-                btnChat.visibility= View.INVISIBLE
+                View.INVISIBLE.also { btnChat.visibility = it }
             } else {
-                btnElimina.visibility= View.INVISIBLE
-                View.INVISIBLE.also { btnModifica.visibility = it }
-                btnAcquista.visibility= View.VISIBLE
-                btnChat.visibility= View.VISIBLE
+                View.VISIBLE.also { btnAcquista.visibility = it }
+                View.VISIBLE.also { btnChat.visibility = it }
             }
         }
 
@@ -253,39 +250,76 @@ class AnnuncioActivity : AppCompatActivity() {
             intent.putExtra("nomeArticolo", nomeArticolo)
             startActivity(intent)
         }
-
-
-        btnElimina.setOnClickListener {
-            var ris: Boolean
-            GlobalScope.launch {
-                ris = FirebaseDbWrapper(applicationContext).deleteAnnuncio(
-                    applicationContext,
-                    codiceAnn!!
-                )
-                FirebaseStorageWrapper(applicationContext).deleteImgsFromStorage(applicationContext,immagini!!)
-                if (ris) {
-                    val intent = Intent(applicationContext, AreaPersonaleActivity::class.java)
-                    startActivity(intent)
-                }
-                finish()
-            }
-        }
-
-        btnModifica.setOnClickListener {
-            val intent = Intent(applicationContext, ModificaAnnActivity::class.java)
-            intent.putExtra("codiceAnn", codiceAnn)
-            startActivity(intent)
-        }
-
-        btnAggiungiImm.setOnClickListener {
-            val intent = Intent(this, ModificaAnnActivity::class.java)
-            intent.putExtra("codiceAnn", codiceAnn)
-            startActivity(intent)
-        }
     }
 
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        var firebaseAuth = FirebaseAuth.getInstance()
+        val codiceAnn = intent.getStringExtra("codice")
+        when (item.itemId) {
+            R.id.logout -> {
+                firebaseAuth.signOut()
+                val intent = Intent(applicationContext, LoginActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
+            }
+            R.id.home -> {
+                val intent = Intent(applicationContext, MainActivity::class.java)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
+            }
+            R.id.addImg -> {
+                val intent = Intent(applicationContext, ModificaAnnActivity::class.java)
+                intent.putExtra("codiceAnn", codiceAnn)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
+            }
+            R.id.eliminaImg -> {
+                val intent = Intent(applicationContext, EliminaFotoActivity::class.java)
+                intent.putExtra("codiceAnn", codiceAnn)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
+            }
+            R.id.modificaInfo -> {
+                val intent = Intent(applicationContext, ModificaAnnActivity::class.java)
+                intent.putExtra("codiceAnn", codiceAnn)
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
+            }
+            R.id.elimina -> {
+                var ris: Boolean
+                GlobalScope.launch {
+                    ris = FirebaseDbWrapper(applicationContext).deleteAnnuncio(
+                        applicationContext,
+                        codiceAnn!!
+                    )
+                    FirebaseStorageWrapper(applicationContext).deleteImgsFromStorage(applicationContext,immagini!!)
+                    if (ris) {
+                        finish()
+                        val intent = Intent(applicationContext, AreaPersonaleActivity::class.java)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+                        startActivity(intent)
+                    }
+                }
+            }
+        }
+        return true
+    }
 
-
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        val codiceAnn = intent.getStringExtra("codice")
+        CoroutineScope(Dispatchers.IO).launch {
+            val bool = FirebaseDbWrapper(applicationContext).isProprietarioAnnuncio(applicationContext,codiceAnn!!)
+            withContext(Dispatchers.Main) {
+                if(!bool) {
+                    menuInflater.inflate(R.menu.menu_to_home, menu)
+                }
+                else {
+                    menuInflater.inflate(R.menu.menu_proprietario, menu)
+                }
+            }
+        }
+        return true
+    }
 
 
 

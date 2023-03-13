@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
+
+    <item
+        android:id="@+id/home"
+        android:icon="@drawable/baseline_home_48"
+        app:showAsAction="always"
+        android:title="Home"/>
+    <item
+        android:id="@+id/addImg"
+        android:title="Aggiungi immagine"/>
+    <item
+        android:id="@+id/eliminaImg"
+        android:title="Elimina immagine"/>
+    <item
+        android:id="@+id/modificaInfo"
+        android:title="Modifica informazioni"/>
+    <item
+        android:id="@+id/elimina"
+        android:title="ELIMINA ANNUNCIO"
+        />
+</menu>
