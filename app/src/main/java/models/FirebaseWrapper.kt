@@ -13,8 +13,7 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
 
@@ -595,6 +594,66 @@ class FirebaseDbWrapper(context: Context) {
         return chiavi
     }
 
+    fun ricercaFromFilters(context: Context, parola: String, prezzo : String, spedizione: Boolean?): MutableList<Annuncio> {
+
+        var annList: MutableList<Annuncio> = mutableListOf()
+
+        CoroutineScope(Dispatchers.IO).launch {
+            var annunci = ricercaFromNome(context, parola)
+            withContext(Dispatchers.Main) {
+                for (ann in annunci) {
+                    if (spedizione == null) {
+                        if (ann.prezzo <= prezzo) {
+                            annList.add(ann)
+                            Log.i(TAG,"aggiungo lgli annunciiiii null")
+                        }
+                    } else {
+                        if (ann.spedizione == spedizione && ann.prezzo <= prezzo) {
+                            Log.i(TAG,"aggiungo lgli annunciiiii")
+                            annList.add(ann)
+                        }
+                    }
+                }
+            }
+        }
+
+        return annList
+
+    }
+
+    fun ricercaChiaviFromFilters(context: Context, parola: String, prezzo: String, spedizione : Boolean?): MutableList<String> {
+        var chiavi : MutableList<String>? = null
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val annunci= FirebaseDbWrapper(context).ricercaFromNome(context,parola)
+            val codici =
+                FirebaseDbWrapper(context).ricercaChiaviFromNome(context, parola)
+            Log.i(TAG,"annunci in courotine $annunci")
+            Log.i(TAG,"codici in courotine $codici")
+            withContext(Dispatchers.Main) {
+                Log.i(TAG,"annunci in courotine $annunci")
+                Log.i(TAG,"codici in courotine $codici")
+                var count=0
+                for(ann in annunci) {
+                    if(spedizione==null) {
+                        if(ann.prezzo<=prezzo) {
+                            Log.i(TAG,"aggiungo le chiavi null")
+                            chiavi!!.add(codici[count])
+                        }
+                    }
+                    else {
+                        if(ann.spedizione==spedizione && ann.prezzo<=prezzo) {
+                            Log.i(TAG,"aggiungo le chiavii")
+                            chiavi!!.add(codici[count])
+                        }
+                    }
+                    count += 1
+                }
+            }
+        }
+
+        return chiavi!!
+    }
 
 
     fun creaUtente(utente: Utente) {
