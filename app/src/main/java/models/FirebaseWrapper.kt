@@ -466,6 +466,7 @@ class FirebaseDbWrapper(context: Context) {
 
     }
 
+    // modifica tuuti i parametri
     fun modificaNome(context: Context, codice:String, nome: String, descrizione : String, prezzo: String, categoria : String, condizioni: String, spedizione: Boolean) {
         val lock = ReentrantLock()
         val condition = lock.newCondition()
@@ -524,6 +525,74 @@ class FirebaseDbWrapper(context: Context) {
             lock.withLock { condition.await() }
         }
 
+    }
+
+    fun ricercaFromNome(context: Context, parola: String): MutableList<Annuncio> {
+        val lock = ReentrantLock()
+        val condition = lock.newCondition()
+        var annList: MutableList<Annuncio> = mutableListOf()
+        if (context != null) {
+            GlobalScope.launch {
+                FirebaseDbWrapper(context).dbref.addValueEventListener(object :
+                    ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val children = snapshot.child("Annunci").children
+                        for (child in children) {
+                            val list = child.getValue() as HashMap<String, String>
+                            for (record in list) {
+                                if(!record.key.equals("foto")) {
+                                    if(record.key.equals("nome") && record.value.lowercase().contains(parola.lowercase())) {
+                                        annList!!.add(child.getValue(Annuncio::class.java)!!)
+                                    }
+                                }
+                            }
+                        }
+                        lock.withLock { condition.signal() }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.w(ContentValues.TAG, "Failed to read value", error.toException())
+                    }
+                })
+            }
+            lock.withLock { condition.await() }
+        }
+        return annList
+    }
+
+    fun ricercaChiaviFromNome(context: Context, parola: String): MutableList<String>{
+        val lock = ReentrantLock()
+        val condition = lock.newCondition()
+        var codicetmp = ""
+        var chiavi: MutableList<String> = mutableListOf()
+        if (context != null) {
+            GlobalScope.launch {
+                FirebaseDbWrapper(context).dbref.addValueEventListener(object :
+                    ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val children = snapshot.child("Annunci").children
+                        for (child in children) {
+                            codicetmp = child.key.toString()
+                            val list = child.getValue() as HashMap<String, String>
+                            for (record in list) {
+                                if(!record.key.equals("foto")) {
+                                    if(record.key.equals("nome") && record.value.lowercase().contains(parola.lowercase())) {
+                                        chiavi.add(codicetmp)
+                                    }
+                                }
+                            }
+                        }
+                        lock.withLock { condition.signal() }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.w(ContentValues.TAG, "Failed to read value", error.toException())
+                    }
+                })
+            }
+            lock.withLock { condition.await() }
+        }
+        return chiavi
     }
 
 

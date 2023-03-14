@@ -31,6 +31,13 @@
     </string-array>
     <string name="api_key">AIzaSyApg-_rad6qNXIy_7_cRsiRHeATejk-u9Q</string>
     <string name="fraseImmagini">Inserisci da 1 a 5 immagini (per ogni immagine sceglila e caricala subito dopo)</string>
+    <string name="btn_filtro">Mostra i risultati</string>
+    <string-array name="spedizioni">
+        <item>Tutti</item>
+        <item>Si</item>
+        <item>No</item>
+    </string-array>
+
 
 
 </resources>

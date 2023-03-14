@@ -89,6 +89,15 @@
             android:exported="false"
             ></activity>
 
+        <activity
+            android:name=".RicercaActivity"
+            android:exported="false"
+            ></activity>
+
+        <activity
+            android:name=".FiltraRicercaActivity"
+            android:exported="false"
+            ></activity>
     </application>
 
 </manifest>

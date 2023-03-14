@@ -31,6 +31,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val recyclerview = findViewById<RecyclerView>(R.id.recyclerview)
+        title=""
         //mList= createList()
         recyclerview.layoutManager = LinearLayoutManager(this)
         adapter = AnnuncioAdapter(applicationContext, mList)
@@ -102,8 +103,11 @@ class MainActivity : AppCompatActivity() {
                 val intent = Intent(applicationContext, AreaPersonaleActivity::class.java)
                 startActivity(intent)
             }
+            R.id.search -> {
+                val intent = Intent(applicationContext, RicercaActivity::class.java)
+                startActivity(intent)
+            }
         }
-
         return true
     }
 }
