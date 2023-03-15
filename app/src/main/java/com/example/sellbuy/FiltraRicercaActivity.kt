@@ -27,18 +27,5 @@ class FiltraRicercaActivity: AppCompatActivity() {
 
     }
 
-    fun ricercaFromFiltri(context: Context, parola: String, prezzo: String, spedizione : Boolean): MutableList<Annuncio> {
-        var annList: MutableList<Annuncio> = mutableListOf()
-        if (context != null) {
-            GlobalScope.launch {
-                var annunci= FirebaseDbWrapper(applicationContext).ricercaFromNome(applicationContext,parola)
-                for(ann in annunci) {
-                    if(ann.spedizione==spedizione && ann.prezzo<=prezzo) {
-                        annList.add(ann)
-                    }
-                }
-            }
-        }
-        return annList
-    }
+
 }

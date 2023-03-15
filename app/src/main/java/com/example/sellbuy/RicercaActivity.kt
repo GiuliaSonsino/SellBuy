@@ -21,7 +21,6 @@ class RicercaActivity: AppCompatActivity() {
 
     private val auth = FirebaseAuth.getInstance()
     private lateinit var searchView: SearchView
-    private lateinit var listView: RecyclerView
     private var adapter = AnnuncioAdapter(this, mutableListOf())
     var filteredList: MutableList<AnnuncioViewModel> = mutableListOf()
     var parola:String? = null
@@ -30,6 +29,8 @@ class RicercaActivity: AppCompatActivity() {
     var sped : String = "Tutti"
     var annList: MutableList<Annuncio> = mutableListOf()
     var chiavi : MutableList<String> = mutableListOf()
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ricerca)
@@ -41,10 +42,10 @@ class RicercaActivity: AppCompatActivity() {
 
 
         //gestione filtri
-
         val opzSpedizione = resources.getStringArray(R.array.spedizioni)
         val adapterSped = ArrayAdapter(this, R.layout.list_item, opzSpedizione)
         val spedizioni = findViewById<AutoCompleteTextView>(R.id.spedizioneAcTv)
+        spedizioni.setText("Tutti")
         spedizioni.setAdapter(adapterSped)
         var prezzo = findViewById<TextInputLayout>(R.id.prezzo_max)
         var prova = prezzo.editText?.text.toString()
@@ -74,11 +75,20 @@ class RicercaActivity: AppCompatActivity() {
 
             // when user is writing
             override fun onQueryTextChange(p0: String?): Boolean {
+                parola=p0
+                var b=checkFilters(prezzo.editText?.text.toString())
+                //Log.i(TAG,"prezzzzomaaaax $prezzoMax")
+                Log.i(TAG,"speddddi $sped")
+                if(b) {
+                    filteredList = createList(parola!!,prezzo.editText?.text.toString(), spedizioni.text.toString())
+                }
+                else {
+                    filteredList = createList(parola!!,"10000", spedizioni.text.toString())
 
+                }
                 return false
             }
         })
-        listView=findViewById(R.id.listView_search)
 
 
 
@@ -127,15 +137,17 @@ class RicercaActivity: AppCompatActivity() {
         }*/
     }
 
-
+/*
     fun ricercaFromFiltri(context: Context, parola: String, prezzo: String, spedizione :String): MutableList<Annuncio> {
 
 
-            GlobalScope.launch {
-                var annunci = FirebaseDbWrapper(context).ricercaFromNome(
-                    context,
-                    parola
-                )
+        CoroutineScope(Dispatchers.IO).launch {
+            val annunci = FirebaseDbWrapper(context).ricercaFromNome(
+                context,
+                parola
+            )
+
+            withContext(Dispatchers.Main) {
                 annList.clear()
                 /* for (ann in annunci) {
                     if (spedizione.equals("Tutti")) {
@@ -167,57 +179,59 @@ class RicercaActivity: AppCompatActivity() {
                             annList.add(ann)
                         }
                     }
-
-
                 }
             }
+        }
 
         return annList
     }
 
-    fun ricercaChiaviFromFiltri(context: Context, parola: String, prezzo: String, spedizione : String): MutableList<String> {
+    fun ricercaChiaviFromFiltr(context: Context, parola: String, prezzo: String, spedizione : String): MutableList<String> {
 
 
-            GlobalScope.launch {
-                val annunci= FirebaseDbWrapper(context).ricercaFromNome(context,parola)
-                val codici =
-                    FirebaseDbWrapper(context).ricercaChiaviFromNome(context, parola)
-                Log.i(TAG,"annunci in courotine $annunci")
-                Log.i(TAG,"codici in courotine $codici")
+        CoroutineScope(Dispatchers.IO).launch {
+            val annunci= FirebaseDbWrapper(context).ricercaFromNome(context,parola)
+            val codici =
+                FirebaseDbWrapper(context).ricercaChiaviFromNome(context, parola)
+            Log.i(TAG,"annunci in courotine $annunci")
+            Log.i(TAG,"codici in courotine $codici")
 
+            withContext(Dispatchers.Main) {
                 Log.i(TAG,"annunci in courotine $annunci")
                 Log.i(TAG,"codici in courotine $codici")
                 var count=0
                 chiavi.clear()
-               /* for(ann in annunci) {
-                    if(spedizione) {
-                        if(ann.prezzo<=prezzo) {
-                            Log.i(TAG,"aggiungo le chiavi null")
-                            chiavi.add(codici[count])
-                        }
-                    }
-                    else {
-                        if(ann.spedizione==spedizione && ann.prezzo<=prezzo) {
-                            Log.i(TAG,"aggiungo le chiavii")
-                            chiavi.add(codici[count])
-                        }
-                    }
-                    count += 1
-                }*/
+                /* for(ann in annunci) {
+                     if(spedizione) {
+                         if(ann.prezzo<=prezzo) {
+                             Log.i(TAG,"aggiungo le chiavi null")
+                             chiavi.add(codici[count])
+                         }
+                     }
+                     else {
+                         if(ann.spedizione==spedizione && ann.prezzo<=prezzo) {
+                             Log.i(TAG,"aggiungo le chiavii")
+                             chiavi.add(codici[count])
+                         }
+                     }
+                     count += 1
+                 }*/
                 for (ann in annunci) {
                     if (spedizione.equals("Tutti") || spedizione.equals("")) {
                         if (ann.prezzo <= prezzo) {
                             chiavi.add(codici[count])
-                            Log.i(TAG, "aggiungo lgli annunciiiii null")
+                            Log.i(TAG, "aggiungo codice null")
                         }
-                    } else if (spedizione.equals("Si")) {
+                    }
+                    else if (spedizione.equals("Si")) {
                         if (ann.spedizione && ann.prezzo <= prezzo) {
-                            Log.i(TAG, "aggiungo lgli annunciiiii")
+                            Log.i(TAG, "aggiungo codice")
                             chiavi.add(codici[count])
                         }
-                    } else if (spedizione.equals("No")) {
+                    }
+                    else if (spedizione.equals("No")) {
                         if (!(ann.spedizione) && ann.prezzo <= prezzo) {
-                            Log.i(TAG, "aggiungo lgli annunciiiii")
+                            Log.i(TAG, "aggiungo codicee")
                             chiavi.add(codici[count])
                         }
                     }
@@ -226,18 +240,66 @@ class RicercaActivity: AppCompatActivity() {
                 }
             }
 
+
+
+            }
+        Log.i(TAG,"return chiavi $chiavi")
         return chiavi
     }
 
+    suspend fun ricercaChiaviFromFiltri(context: Context, parola: String, prezzo: String, spedizione : String): MutableList<String> {
+        val deferredChiavi = CoroutineScope(Dispatchers.IO).async {
+            val annunci= FirebaseDbWrapper(context).ricercaFromNome(context,parola)
+            val codici =
+                FirebaseDbWrapper(context).ricercaChiaviFromNome(context, parola)
+            Log.i(TAG,"annunci in courotine $annunci")
+            Log.i(TAG,"codici in courotine $codici")
+
+            val chiavi = mutableListOf<String>()
+            var count = 0
+
+            for (ann in annunci) {
+                if (spedizione.equals("Tutti") || spedizione.equals("")) {
+                    if (ann.prezzo <= prezzo) {
+                        chiavi.add(codici[count])
+                        Log.i(TAG, "aggiungo codice null")
+                    }
+                }
+                else if (spedizione.equals("Si")) {
+                    if (ann.spedizione && ann.prezzo <= prezzo) {
+                        Log.i(TAG, "aggiungo codice")
+                        chiavi.add(codici[count])
+                    }
+                }
+                else if (spedizione.equals("No")) {
+                    if (!(ann.spedizione) && ann.prezzo <= prezzo) {
+                        Log.i(TAG, "aggiungo codicee")
+                        chiavi.add(codici[count])
+                    }
+                }
+                count += 1
+            }
+
+            chiavi
+        }
+
+        val chiavi = deferredChiavi.await()
+        Log.i(TAG,"return chiavi $chiavi")
+        return chiavi
+    }
+
+*/
 
     fun createList(parola: String, prezzo: String, spedizione : String): MutableList<AnnuncioViewModel> {
         //var mList:MutableList<AnnuncioViewModel> = mutableListOf()
         var count = 0
         if (auth.currentUser != null) {
             GlobalScope.launch {
-                val an = ricercaFromFiltri(applicationContext, parola, prezzo, spedizione)
-                val codici = ricercaChiaviFromFiltri(applicationContext, parola, prezzo, spedizione)
-                    Log.i(TAG, "numero annunci filt $an")
+                val an = FirebaseDbWrapper(applicationContext).ricercaFromNome(applicationContext, parola, prezzo, spedizione)
+                val codici = FirebaseDbWrapper(applicationContext).ricercaKeysFromNome(applicationContext, parola, prezzo, spedizione)
+
+
+                Log.i(TAG, "numero annunci filt $an")
                     filteredList.clear()
                     for (record in an) {
                         val nomeAn = record.nome

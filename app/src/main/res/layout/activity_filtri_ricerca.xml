@@ -51,7 +51,7 @@
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
         android:layout_width="match_parent"
         android:layout_height="57dp"
-        android:hint="Tutti">
+        android:hint="Selezionare modalità di spedizione">
 
         <AutoCompleteTextView
             android:id="@+id/spedizioneAcTv"
