@@ -465,7 +465,8 @@ class FirebaseDbWrapper(context: Context) {
 
     }
 
-    // modifica tuuti i parametri
+
+    // modifica tutti i parametri
     fun modificaNome(context: Context, codice:String, nome: String, descrizione : String, prezzo: String, categoria : String, condizioni: String, spedizione: Boolean) {
         val lock = ReentrantLock()
         val condition = lock.newCondition()
@@ -496,8 +497,9 @@ class FirebaseDbWrapper(context: Context) {
             }
             lock.withLock { condition.await() }
         }
-
     }
+
+
     fun modificaImmagini(context: Context, codice:String, immagini: MutableList<String>) {
         val lock = ReentrantLock()
         val condition = lock.newCondition()
@@ -526,42 +528,11 @@ class FirebaseDbWrapper(context: Context) {
 
     }
 
-    fun ricercaFromNom(context: Context, parola: String): MutableList<Annuncio> {
+
+    fun ricercaConFiltri(context: Context, parola: String, prezzo: String, spedizione: String?): MutableList<Annuncio> {
         val lock = ReentrantLock()
         val condition = lock.newCondition()
-        var annList: MutableList<Annuncio> = mutableListOf()
-        if (context != null) {
-            GlobalScope.launch {
-                FirebaseDbWrapper(context).dbref.addValueEventListener(object :
-                    ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        val children = snapshot.child("Annunci").children
-                        for (child in children) {
-                            val list = child.getValue() as HashMap<String, String>
-                            for (record in list) {
-                                if(!record.key.equals("foto")) {
-                                    if(record.key.equals("nome") && record.value.lowercase().contains(parola.lowercase())) {
-                                        annList.add(child.getValue(Annuncio::class.java)!!)
-                                    }
-                                }
-                            }
-                        }
-                        lock.withLock { condition.signal() }
-                    }
-
-                    override fun onCancelled(error: DatabaseError) {
-                        Log.w(ContentValues.TAG, "Failed to read value", error.toException())
-                    }
-                })
-            }
-            lock.withLock { condition.await() }
-        }
-        return annList
-    }
-
-    fun ricercaFromNome(context: Context, parola: String, prezzo: String, spedizione: String?): MutableList<Annuncio> {
-        val lock = ReentrantLock()
-        val condition = lock.newCondition()
+        var tr: Boolean
         var annList: MutableList<Annuncio> = mutableListOf()
         if (context != null) {
             GlobalScope.launch {
@@ -583,7 +554,7 @@ class FirebaseDbWrapper(context: Context) {
                                         prez = record.value
                                     }
                                     if(record.key.equals("spedizione") && record.value=="true") {
-                                        spediz =true
+                                        spediz = true
                                     }
 
                                 }
@@ -618,7 +589,8 @@ class FirebaseDbWrapper(context: Context) {
         return annList
     }
 
-    fun ricercaKeysFromNome(context: Context, parola: String, prezzo: String, spedizione: String?): MutableList<String> {
+
+    fun ricercaKeysFromFiltri(context: Context, parola: String, prezzo: String, spedizione: String?): MutableList<String> {
         val lock = ReentrantLock()
         val condition = lock.newCondition()
         var chiavi: MutableList<String> = mutableListOf()
@@ -646,7 +618,6 @@ class FirebaseDbWrapper(context: Context) {
                                     if(record.key.equals("spedizione") && record.value=="true") {
                                         spediz = true
                                     }
-
                                 }
                             }
                             if(spedizione.equals("Tutti")) {
@@ -678,112 +649,7 @@ class FirebaseDbWrapper(context: Context) {
         }
         return chiavi
     }
-    fun ricercaChiaviFromNome(context: Context, parola: String): MutableList<String>{
-        val lock = ReentrantLock()
-        val condition = lock.newCondition()
-        var codicetmp = ""
-        var chiavi: MutableList<String> = mutableListOf()
-        if (context != null) {
-            GlobalScope.launch {
-                FirebaseDbWrapper(context).dbref.addValueEventListener(object :
-                    ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        val children = snapshot.child("Annunci").children
-                        for (child in children) {
-                            codicetmp = child.key.toString()
-                            val list = child.getValue() as HashMap<String, String>
-                            for (record in list) {
-                                if(!record.key.equals("foto")) {
-                                    if(record.key.equals("nome") && record.value.lowercase().contains(parola.lowercase())) {
-                                        chiavi.add(codicetmp)
-                                    }
-                                }
-                            }
-                        }
-                        lock.withLock { condition.signal() }
-                    }
 
-                    override fun onCancelled(error: DatabaseError) {
-                        Log.w(ContentValues.TAG, "Failed to read value", error.toException())
-                    }
-                })
-            }
-            lock.withLock { condition.await() }
-        }
-        return chiavi
-    }
-
-    fun ricercaFromFilters(context: Context, parola: String, prezzo : String, spedizione: String?): MutableList<Annuncio> {
-
-        var annList: MutableList<Annuncio> = mutableListOf()
-
-        CoroutineScope(Dispatchers.IO).launch {
-            var annunci = ricercaFromNom(context, parola)
-            withContext(Dispatchers.Main) {
-                for (ann in annunci) {
-                    if (spedizione.equals("Tutti") || spedizione.equals("")) {
-                        if (ann.prezzo <= prezzo) {
-                            annList.add(ann)
-                            Log.i(TAG, "aggiungo lgli annunciiiii null")
-                        }
-                    } else if (spedizione.equals("Si")) {
-                        if (ann.spedizione && ann.prezzo <= prezzo) {
-                            Log.i(TAG, "aggiungo lgli annunciiiii")
-                            annList.add(ann)
-                        }
-                    } else if (spedizione.equals("No")) {
-                        if (!(ann.spedizione) && ann.prezzo <= prezzo) {
-                            Log.i(TAG, "aggiungo lgli annunciiiii")
-                            annList.add(ann)
-                        }
-                    }
-                }
-            }
-        }
-
-        return annList
-
-    }
-
-    fun ricercaChiaviFromFilters(context: Context, parola: String, prezzo: String, spedizione : String?): MutableList<String> {
-        val chiavi : MutableList<String> = mutableListOf()
-
-        CoroutineScope(Dispatchers.IO).launch {
-            val annunci= FirebaseDbWrapper(context).ricercaFromNom(context,parola)
-            val codici =
-                FirebaseDbWrapper(context).ricercaChiaviFromNome(context, parola)
-            Log.i(TAG,"annunci in courotine $annunci")
-            Log.i(TAG,"codici in courotine $codici")
-            withContext(Dispatchers.Main) {
-                Log.i(TAG,"annunci in courotine $annunci")
-                Log.i(TAG,"codici in courotine $codici")
-                var count=0
-                for (ann in annunci) {
-                    if (spedizione.equals("Tutti") || spedizione.equals("")) {
-                        if (ann.prezzo <= prezzo) {
-                            chiavi.add(codici[count])
-                            Log.i(TAG, "aggiungo codice null")
-                        }
-                    }
-                    else if (spedizione.equals("Si")) {
-                        if (ann.spedizione && ann.prezzo <= prezzo) {
-                            Log.i(TAG, "aggiungo codice")
-                            chiavi.add(codici[count])
-                        }
-                    }
-                    else if (spedizione.equals("No")) {
-                        if (!(ann.spedizione) && ann.prezzo <= prezzo) {
-                            Log.i(TAG, "aggiungo codicee")
-                            chiavi.add(codici[count])
-                        }
-                    }
-                    count += 1
-                }
-            }
-        }
-
-        return chiavi
-    }
 
 
     fun creaUtente(utente: Utente) {
