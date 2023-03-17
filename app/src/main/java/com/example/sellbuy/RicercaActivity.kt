@@ -25,7 +25,7 @@ class RicercaActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ricerca)
-
+        title="Ricerca"
         val recyclerview = findViewById<RecyclerView>(R.id.listView_search)
         recyclerview.layoutManager = LinearLayoutManager(this)
         adapter = AnnuncioAdapter(applicationContext, filteredList)

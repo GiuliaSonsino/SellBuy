@@ -436,35 +436,9 @@ class FirebaseDbWrapper(context: Context) {
         return ris
     }
 
-    fun deleteImmagineFromAnnunciok(context: Context,codice: String, immagini: MutableList<String>) {
-        val lock = ReentrantLock()
-        val condition = lock.newCondition()
-        if (immagini != null) {
-            GlobalScope.launch {
-                FirebaseDbWrapper(context).dbref.addValueEventListener(object :
-                    ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        val children = snapshot.child("Annunci").children
-                        for (child in children) {
-                            if(child.key==codice) {
-                                val cod= child.ref
-                                cod.child("foto").setValue(immagini)
-                            }
-                        }
-                        lock.withLock { condition.signal() }
-                    }
 
-                    override fun onCancelled(error: DatabaseError) {
-                        Log.w(ContentValues.TAG, "Failed to delete value", error.toException())
-                    }
-                })
-            }
-            lock.withLock { condition.await() }
-        }
-
-    }
-
-    suspend fun deleteImmagineFromAnnuncio(context: Context, codice: String, immagini: List<String>?) {
+    //we use this function for adding a new photo in Annuncio and also for deleting one
+    suspend fun modificaImmagineFromAnnuncio(context: Context, codice: String, immagini: List<String>?) {
         val dbRef = FirebaseDbWrapper(context).dbref.child("Annunci").child(codice).child("foto")
         if (immagini != null) {
             dbRef.setValue(immagini).await()
@@ -472,10 +446,22 @@ class FirebaseDbWrapper(context: Context) {
             dbRef.removeValue().await()
         }
     }
-
+    suspend fun modificaInfoAnnuncio(context: Context, codice:String, nome: String, descrizione : String, prezzo: String, categoria : String, condizioni: String, spedizione: Boolean) {
+        val dbRef = FirebaseDbWrapper(context).dbref.child("Annunci").child(codice).child("nome")
+        dbRef.setValue(nome).await()
+        val dbRef2 = FirebaseDbWrapper(context).dbref.child("Annunci").child(codice).child("descrizione")
+        dbRef2.setValue(descrizione).await()
+        val dbRef3 = FirebaseDbWrapper(context).dbref.child("Annunci").child(codice).child("prezzo")
+        dbRef3.setValue(prezzo).await()
+        val dbRef4 = FirebaseDbWrapper(context).dbref.child("Annunci").child(codice).child("stato")
+        dbRef4.setValue(condizioni).await()
+        val dbRef5 = FirebaseDbWrapper(context).dbref.child("Annunci").child(codice).child("categoria")
+        dbRef5.setValue(categoria).await()
+    }
 
     // modifica tutti i parametri
-    fun modificaNome(context: Context, codice:String, nome: String, descrizione : String, prezzo: String, categoria : String, condizioni: String, spedizione: Boolean) {
+    /*
+    fun modificaInfoAnnunciok(context: Context, codice:String, nome: String, descrizione : String, prezzo: String, categoria : String, condizioni: String, spedizione: Boolean) {
         val lock = ReentrantLock()
         val condition = lock.newCondition()
         if (codice != null) {
@@ -506,35 +492,8 @@ class FirebaseDbWrapper(context: Context) {
             lock.withLock { condition.await() }
         }
     }
+*/
 
-
-    fun modificaImmagini(context: Context, codice:String, immagini: MutableList<String>) {
-        val lock = ReentrantLock()
-        val condition = lock.newCondition()
-        if (codice != null) {
-            GlobalScope.launch {
-                FirebaseDbWrapper(context).dbref.addValueEventListener(object :
-                    ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        val children = snapshot.child("Annunci").children
-                        for (child in children) {
-                            if(child.key==codice) {
-                                val cod= child.ref
-                                cod.child("foto").setValue(immagini)
-                            }
-                        }
-                        lock.withLock { condition.signal() }
-                    }
-
-                    override fun onCancelled(error: DatabaseError) {
-                        Log.w(ContentValues.TAG, "Failed to read value", error.toException())
-                    }
-                })
-            }
-            lock.withLock { condition.await() }
-        }
-
-    }
 
 
     fun ricercaConFiltri(context: Context, parola: String, prezzo: String, spedizione: String?): MutableList<Annuncio> {
@@ -690,11 +649,6 @@ class FirebaseStorageWrapper(private val context: Context) {
         }
     }
 
-    fun deleteImmagineFromStoragek(context: Context, immagine: String) {
-        GlobalScope.launch {
-            storage.child("images").child(immagine).delete()
-        }
-    }
 
     suspend fun deleteImmagineFromStorage(context: Context, immagine: String) {
         val storageRef = FirebaseStorage.getInstance().reference.child("images").child(immagine)

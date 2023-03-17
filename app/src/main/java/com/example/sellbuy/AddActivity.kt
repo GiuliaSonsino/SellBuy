@@ -41,6 +41,7 @@ class AddActivity: AppCompatActivity() {
         title = "Crea Annuncio"
         setContentView(R.layout.activity_add)
 
+        var countImg =0
         val nomeObj = findViewById<AutoCompleteTextView>(R.id.nomeAcTv)
         val descrizioneObj = findViewById<AutoCompleteTextView>(R.id.descrizioneAcTv)
         val prezzoObj = findViewById<TextInputLayout>(R.id.prezzo)
@@ -80,9 +81,22 @@ class AddActivity: AppCompatActivity() {
         )
 
         //Choose an image from image gallery and load it into ImageView widget
-        pickup!!.setOnClickListener{
-            getImage.launch("image/*")
-        }
+
+            pickup!!.setOnClickListener {
+                if(countImg<5) {
+                    getImage.launch("image/*")
+                }
+                else {
+                    Toast.makeText(
+                        applicationContext,
+                        "Numero massimo di immagini raggiunto",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    upload!!.isEnabled=false
+                    pickup!!.isEnabled=false
+                }
+            }
+
 
         var fileName: MutableList<String> = mutableListOf()
         //Upload the image in the imageview widget
@@ -120,6 +134,7 @@ class AddActivity: AppCompatActivity() {
             uploadTask.addOnFailureListener {
                 Toast.makeText(applicationContext, "Upload failed", Toast.LENGTH_LONG).show()
             }.addOnSuccessListener {
+                countImg +=1
                 Toast.makeText(applicationContext, "Uploaded successfully", Toast.LENGTH_LONG).show()
                 pickup!!.isEnabled=true
                 upload!!.isEnabled=false
@@ -250,12 +265,6 @@ class AddActivity: AppCompatActivity() {
                     Toast.makeText(
                         applicationContext,
                         "Annuncio creato correttamente",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                } else {
-                    Toast.makeText(
-                        applicationContext,
-                        "Annuncio creato non correttamente",
                         Toast.LENGTH_SHORT
                     ).show()
                 }

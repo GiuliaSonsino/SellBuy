@@ -24,7 +24,8 @@ import models.FirebaseStorageWrapper
 class AnnuncioActivity : AppCompatActivity() {
 
     var immagini: MutableList<String>? = mutableListOf()
-
+    var cat:String?=null
+    var cond: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,8 +76,10 @@ class AnnuncioActivity : AppCompatActivity() {
             prezzo.text = ann.prezzo
             val condizione = findViewById<TextView>(R.id.tv_condition)
             condizione.text = ann.stato
+            cond = ann.stato
             val categoria = findViewById<TextView>(R.id.tv_category)
             categoria.text = ann.categoria
+            cat=ann.categoria
             val spedizione = findViewById<TextView>(R.id.tv_spedizione)
             if(ann.spedizione) {
                 spedizione.text= "è disposto"
@@ -162,7 +165,7 @@ class AnnuncioActivity : AppCompatActivity() {
             }
         }
 
-/*
+
         val dialog = Dialog(this)
         // Imposta le proprietà del dialog e le dimensioni
         val lp = WindowManager.LayoutParams()
@@ -254,7 +257,7 @@ class AnnuncioActivity : AppCompatActivity() {
             intent.putExtra("emailProprietarioAnn", emailProprietarioAnn)
             intent.putExtra("nomeArticolo", nomeArticolo)
             startActivity(intent)
-        }*/
+        }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -287,6 +290,8 @@ class AnnuncioActivity : AppCompatActivity() {
             R.id.modificaInfo -> {
                 val intent = Intent(applicationContext, ModificaAnnActivity::class.java)
                 intent.putExtra("codiceAnn", codiceAnn)
+                intent.putExtra("catAnn", cat)
+                intent.putExtra("condAnn", cond)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
                 startActivity(intent)
             }

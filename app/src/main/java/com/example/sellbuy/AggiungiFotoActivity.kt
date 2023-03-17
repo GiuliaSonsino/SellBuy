@@ -170,7 +170,7 @@ class AggiungiFotoActivity: AppCompatActivity() {
 
 
                     GlobalScope.launch {
-                        FirebaseDbWrapper(applicationContext).modificaImmagini(
+                        FirebaseDbWrapper(applicationContext).modificaImmagineFromAnnuncio(
                             applicationContext,
                             codiceAnn!!,
                             immagini!!

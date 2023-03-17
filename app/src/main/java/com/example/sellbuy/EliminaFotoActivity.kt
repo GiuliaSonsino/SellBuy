@@ -20,15 +20,11 @@ class EliminaFotoActivity: AppCompatActivity()  {
 
     private var immagini: MutableList<String> = mutableListOf()
     private var immaginiMod: MutableList<String> = mutableListOf()
-    private var img1Url: String? = null
-    private var img2Url: String? = null
-    private var img3Url: String? = null
-    private var img4Url: String? = null
-    private var img5Url: String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_elimina_foto)
-
+        title="Elimina immagine"
         val codiceAnn = intent.getStringExtra("codiceAnn")
 
         val img1 = findViewById<ImageView>(R.id.img1)
@@ -66,7 +62,7 @@ class EliminaFotoActivity: AppCompatActivity()  {
                             .override(500, 500).into(img1)
                     }
                 }
-                if (immagini.size!! >= 2) {
+                if (immagini.size >= 2) {
                     val strImmagine1 = immagini[1]
                     val storage = Firebase.storage.reference.child("images/$strImmagine1")
                     storage.downloadUrl.addOnSuccessListener { url ->
@@ -82,7 +78,7 @@ class EliminaFotoActivity: AppCompatActivity()  {
                     // View.INVISIBLE.also { im1!!.visibility = it }
                 }
 
-                if (immagini.size!! >= 3) {
+                if (immagini.size >= 3) {
                     val strImmagine2 = immagini[2]
                     val storage = Firebase.storage.reference.child("images/$strImmagine2")
                     storage.downloadUrl.addOnSuccessListener { url ->
@@ -97,7 +93,7 @@ class EliminaFotoActivity: AppCompatActivity()  {
                     btn3.visibility = View.INVISIBLE
                 }
 
-                if (immagini.size!! >= 4) {
+                if (immagini.size >= 4) {
                     val strImmagine3 = immagini[3]
                     val storage = Firebase.storage.reference.child("images/$strImmagine3")
                     storage.downloadUrl.addOnSuccessListener { url ->
@@ -112,7 +108,7 @@ class EliminaFotoActivity: AppCompatActivity()  {
                     btn4.visibility = View.INVISIBLE
                 }
 
-                if (immagini.size!! >= 5) {
+                if (immagini.size >= 5) {
                     val strImmagine4 = immagini[4]
                     val storage = Firebase.storage.reference.child("images/$strImmagine4")
                     storage.downloadUrl.addOnSuccessListener { url ->
@@ -131,35 +127,43 @@ class EliminaFotoActivity: AppCompatActivity()  {
         }
 
                 btn1.setOnClickListener {
-                    val nomeFoto = immagini[0]
-                    immaginiMod = immagini
-                    immaginiMod.remove(nomeFoto)
-                    CoroutineScope(Dispatchers.IO).launch {
-                        FirebaseDbWrapper(applicationContext).deleteImmagineFromAnnuncio(
+                    if(immagini.size==1) {
+                        Toast.makeText(
                             applicationContext,
-                            codiceAnn!!,
-                            immaginiMod
-                        )
-                        FirebaseStorageWrapper(applicationContext).deleteImmagineFromStorage(
-                            applicationContext,
-                            nomeFoto
-                        )
-                        withContext(Dispatchers.Main) {
-                            Toast.makeText(
-                                applicationContext,
-                                "Immagine eliminata con successo",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                            val intent =
-                                Intent(applicationContext,AreaPersonaleActivity::class.java)
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-                            //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-                            startActivity(intent)
-                            //finish()
-                        }
-
+                            "Impossibile eliminare tutte le immagini",
+                            Toast.LENGTH_SHORT
+                        ).show()
                     }
+                    else {
+                        val nomeFoto = immagini[0]
+                        immaginiMod = immagini
+                        immaginiMod.remove(nomeFoto)
+                        CoroutineScope(Dispatchers.IO).launch {
+                            FirebaseDbWrapper(applicationContext).modificaImmagineFromAnnuncio(
+                                applicationContext,
+                                codiceAnn!!,
+                                immaginiMod
+                            )
+                            FirebaseStorageWrapper(applicationContext).deleteImmagineFromStorage(
+                                applicationContext,
+                                nomeFoto
+                            )
+                            withContext(Dispatchers.Main) {
+                                Toast.makeText(
+                                    applicationContext,
+                                    "Immagine eliminata con successo",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                val intent =
+                                    Intent(applicationContext, AreaPersonaleActivity::class.java)
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+                                //intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+                                startActivity(intent)
+                                //finish()
+                            }
 
+                        }
+                    }
                 }
 
                 btn2.setOnClickListener {
@@ -167,7 +171,7 @@ class EliminaFotoActivity: AppCompatActivity()  {
                     immaginiMod = immagini
                     immaginiMod.remove(nomeFoto)
                     CoroutineScope(Dispatchers.IO).launch {
-                        FirebaseDbWrapper(applicationContext).deleteImmagineFromAnnuncio(
+                        FirebaseDbWrapper(applicationContext).modificaImmagineFromAnnuncio(
                             applicationContext,
                             codiceAnn!!,
                             immaginiMod
@@ -200,7 +204,7 @@ class EliminaFotoActivity: AppCompatActivity()  {
                     immaginiMod = immagini
                     immaginiMod.remove(nomeFoto)
                     CoroutineScope(Dispatchers.IO).launch {
-                        FirebaseDbWrapper(applicationContext).deleteImmagineFromAnnuncio(
+                        FirebaseDbWrapper(applicationContext).modificaImmagineFromAnnuncio(
                             applicationContext,
                             codiceAnn!!,
                             immaginiMod
@@ -232,7 +236,7 @@ class EliminaFotoActivity: AppCompatActivity()  {
                     immaginiMod = immagini
                     immaginiMod.remove(nomeFoto)
                     CoroutineScope(Dispatchers.IO).launch {
-                        FirebaseDbWrapper(applicationContext).deleteImmagineFromAnnuncio(
+                        FirebaseDbWrapper(applicationContext).modificaImmagineFromAnnuncio(
                             applicationContext,
                             codiceAnn!!,
                             immaginiMod
@@ -263,7 +267,7 @@ class EliminaFotoActivity: AppCompatActivity()  {
                     immaginiMod = immagini
                     immaginiMod.remove(nomeFoto)
                     CoroutineScope(Dispatchers.IO).launch {
-                        FirebaseDbWrapper(applicationContext).deleteImmagineFromAnnuncio(
+                        FirebaseDbWrapper(applicationContext).modificaImmagineFromAnnuncio(
                             applicationContext,
                             codiceAnn!!,
                             immaginiMod
