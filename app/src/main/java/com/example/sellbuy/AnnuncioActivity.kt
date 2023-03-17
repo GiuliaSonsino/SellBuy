@@ -94,7 +94,8 @@ class AnnuncioActivity : AppCompatActivity() {
             storag = Firebase.storage.reference.child("images/$strMainImm")
             storag.downloadUrl.addOnSuccessListener { url ->
                 if (applicationContext != null) {
-                    Glide.with(applicationContext).load(url).into(mainImmagine)
+                    Glide.with(applicationContext).load(url).skipMemoryCache(true) // Opzione 2
+                        .override(500, 500).into(mainImmagine)
                 }
             }
             if(immagini?.size!! >=2) {
@@ -102,7 +103,8 @@ class AnnuncioActivity : AppCompatActivity() {
                 storag = Firebase.storage.reference.child("images/$strImmagine1")
                 storag.downloadUrl.addOnSuccessListener { url ->
                     if (applicationContext != null) {
-                        Glide.with(applicationContext).load(url).into(im1)
+                        Glide.with(applicationContext).load(url).skipMemoryCache(true) // Opzione 2
+                            .override(500, 500).into(im1)
                     }
                 }
             } else {
@@ -114,7 +116,8 @@ class AnnuncioActivity : AppCompatActivity() {
                 storag = Firebase.storage.reference.child("images/$strImmagine2")
                 storag.downloadUrl.addOnSuccessListener { url ->
                     if (applicationContext != null) {
-                        Glide.with(applicationContext).load(url).into(im2)
+                        Glide.with(applicationContext).load(url).skipMemoryCache(true) // Opzione 2
+                            .override(500, 500).into(im2)
                     }
                 }
             } else {
@@ -126,7 +129,8 @@ class AnnuncioActivity : AppCompatActivity() {
                 storag = Firebase.storage.reference.child("images/$strImmagine3")
                 storag.downloadUrl.addOnSuccessListener { url ->
                     if (applicationContext != null) {
-                        Glide.with(applicationContext).load(url).into(im3)
+                        Glide.with(applicationContext).load(url).skipMemoryCache(true) // Opzione 2
+                            .override(500, 500).into(im3)
                     }
                 }
             } else {
@@ -138,7 +142,8 @@ class AnnuncioActivity : AppCompatActivity() {
                 storag = Firebase.storage.reference.child("images/$strImmagine4")
                 storag.downloadUrl.addOnSuccessListener { url ->
                     if (applicationContext != null) {
-                        Glide.with(applicationContext).load(url).into(im4)
+                        Glide.with(applicationContext).load(url).skipMemoryCache(true) // Opzione 2
+                            .override(500, 500).into(im4)
                     }
                 }
             } else {
@@ -157,7 +162,7 @@ class AnnuncioActivity : AppCompatActivity() {
             }
         }
 
-
+/*
         val dialog = Dialog(this)
         // Imposta le proprietà del dialog e le dimensioni
         val lp = WindowManager.LayoutParams()
@@ -249,7 +254,7 @@ class AnnuncioActivity : AppCompatActivity() {
             intent.putExtra("emailProprietarioAnn", emailProprietarioAnn)
             intent.putExtra("nomeArticolo", nomeArticolo)
             startActivity(intent)
-        }
+        }*/
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -268,7 +273,7 @@ class AnnuncioActivity : AppCompatActivity() {
                 startActivity(intent)
             }
             R.id.addImg -> {
-                val intent = Intent(applicationContext, ModificaAnnActivity::class.java)
+                val intent = Intent(applicationContext, AggiungiFotoActivity::class.java)
                 intent.putExtra("codiceAnn", codiceAnn)
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
                 startActivity(intent)

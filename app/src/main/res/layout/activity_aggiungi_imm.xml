@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <ImageView
+        android:id="@+id/editmain_image"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:scaleType="centerCrop"
+        />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="5dp">
+
+        <ImageView
+            android:id="@+id/edit_image1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/icona_immagine"
+            android:scaleType="centerCrop"
+            android:adjustViewBounds="true"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"/>
+
+        <ImageView
+            android:id="@+id/edit_image2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/icona_immagine"
+            android:scaleType="centerCrop"
+            android:adjustViewBounds="true"
+            android:layout_marginRight="5dp"/>
+
+        <ImageView
+            android:id="@+id/edit_image3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/icona_immagine"
+            android:scaleType="centerCrop"
+            android:adjustViewBounds="true"
+            android:layout_marginRight="5dp"/>
+
+        <ImageView
+            android:id="@+id/edit_image4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:src="@drawable/icona_immagine"
+            android:scaleType="centerCrop"
+            android:adjustViewBounds="true"
+            android:layout_marginRight="5dp"/>
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/iv"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center_horizontal"
+        android:src="@drawable/undraw_camera"
+        android:layout_margin="10dp"
+        />
+
+
+    <Button
+        android:id="@+id/pickUpImg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Scegli"
+        android:backgroundTint="@color/verde_past"
+        android:textColor="@color/black"
+        android:layout_gravity="center_horizontal"
+        android:visibility="visible"
+        android:clickable="true"/>
+
+    <Button
+        android:id="@+id/uploadImg"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Carica"
+        android:textColor="@color/black"
+        android:backgroundTint="@color/verde_past"
+        android:layout_gravity="center_horizontal"
+        />
+
+
+    <Button
+        android:id="@+id/btnElimina1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Elimina" />
+
+    <Button
+        android:id="@+id/btnSostituisci1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Sostituisci" />
+
+</LinearLayout>

@@ -14,6 +14,7 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.*
+import kotlinx.coroutines.tasks.await
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
 
@@ -158,17 +159,17 @@ class FirebaseDbWrapper(context: Context) {
         var annList: MutableList<Annuncio> = mutableListOf()
         if (maill != null) {
             GlobalScope.launch {
+                annList.clear()
                 FirebaseDbWrapper(context).dbref.addValueEventListener(object :
                     ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val children = snapshot.child("Annunci").children
                         for (child in children) {
-                            Log.i(TAG,"il codice univoco ${child.key}")
                             val list = child.getValue() as HashMap<String, String>
                             for (record in list) {
                                 if(!record.key.equals("foto")) {
                                     if(record.key.equals("email") && record.value.equals(maill)) {
-                                        annList!!.add(child.getValue(Annuncio::class.java)!!)
+                                        annList.add(child.getValue(Annuncio::class.java)!!)
 
                                     }
                                 }
@@ -238,7 +239,6 @@ class FirebaseDbWrapper(context: Context) {
                         val children = snapshot.child("Annunci").children
                         for (child in children) {
                             codicetmp = child.key.toString()
-                            Log.i(TAG, "prova codiciiii $codicetmp")
                             keyList.add(codicetmp)
                         }
                         lock.withLock { condition.signal() }
@@ -342,7 +342,6 @@ class FirebaseDbWrapper(context: Context) {
                                     if(!record.key.equals("foto")) {
                                         if(record.key.equals("email")) {
                                             mail=record.value
-                                            Log.i(TAG,"emaillllllllll $mail")
                                             email.add(mail)
                                         }
                                     }
@@ -437,7 +436,7 @@ class FirebaseDbWrapper(context: Context) {
         return ris
     }
 
-    fun deleteImmagineFromAnnuncio(context: Context,codice: String, immagini: MutableList<String>) {
+    fun deleteImmagineFromAnnunciok(context: Context,codice: String, immagini: MutableList<String>) {
         val lock = ReentrantLock()
         val condition = lock.newCondition()
         if (immagini != null) {
@@ -463,6 +462,15 @@ class FirebaseDbWrapper(context: Context) {
             lock.withLock { condition.await() }
         }
 
+    }
+
+    suspend fun deleteImmagineFromAnnuncio(context: Context, codice: String, immagini: List<String>?) {
+        val dbRef = FirebaseDbWrapper(context).dbref.child("Annunci").child(codice).child("foto")
+        if (immagini != null) {
+            dbRef.setValue(immagini).await()
+        } else {
+            dbRef.removeValue().await()
+        }
     }
 
 
@@ -682,10 +690,15 @@ class FirebaseStorageWrapper(private val context: Context) {
         }
     }
 
-    fun deleteImmagineFromStorage(context: Context, immagine: String) {
+    fun deleteImmagineFromStoragek(context: Context, immagine: String) {
         GlobalScope.launch {
             storage.child("images").child(immagine).delete()
         }
+    }
+
+    suspend fun deleteImmagineFromStorage(context: Context, immagine: String) {
+        val storageRef = FirebaseStorage.getInstance().reference.child("images").child(immagine)
+        storageRef.delete().await()
     }
 }
 
