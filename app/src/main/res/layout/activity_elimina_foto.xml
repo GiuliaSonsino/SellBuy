@@ -35,7 +35,8 @@
                 android:id="@+id/img1"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:src="@drawable/person"/>
+                android:src="@drawable/icona_immagine"
+                android:layout_margin="5dp"/>
 
             <Button
                 android:id="@+id/btn_elimina1"
@@ -59,7 +60,8 @@
                 android:id="@+id/img2"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:src="@drawable/person"/>
+                android:src="@drawable/icona_immagine"
+                android:layout_margin="5dp"/>
 
             <Button
                 android:id="@+id/btn_elimina2"
@@ -83,7 +85,8 @@
                 android:id="@+id/img3"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:src="@drawable/person"/>
+                android:src="@drawable/icona_immagine"
+                android:layout_margin="5dp"/>
 
             <Button
                 android:id="@+id/btn_elimina3"
@@ -107,7 +110,8 @@
                 android:id="@+id/img4"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:src="@drawable/person"/>
+                android:src="@drawable/icona_immagine"
+                android:layout_margin="5dp"/>
 
             <Button
                 android:id="@+id/btn_elimina4"
@@ -131,7 +135,8 @@
                 android:id="@+id/img5"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:src="@drawable/person"/>
+                android:src="@drawable/icona_immagine"
+                android:layout_margin="5dp"/>
 
             <Button
                 android:id="@+id/btn_elimina5"

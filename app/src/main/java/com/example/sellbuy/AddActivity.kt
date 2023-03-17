@@ -82,20 +82,20 @@ class AddActivity: AppCompatActivity() {
 
         //Choose an image from image gallery and load it into ImageView widget
 
-            pickup!!.setOnClickListener {
-                if(countImg<5) {
-                    getImage.launch("image/*")
-                }
-                else {
-                    Toast.makeText(
-                        applicationContext,
-                        "Numero massimo di immagini raggiunto",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    upload!!.isEnabled=false
-                    pickup!!.isEnabled=false
-                }
+        pickup!!.setOnClickListener {
+            if(countImg<5) {
+                getImage.launch("image/*")
             }
+            else {
+                Toast.makeText(
+                    applicationContext,
+                    "Numero massimo di immagini raggiunto",
+                    Toast.LENGTH_SHORT
+                ).show()
+                upload!!.isEnabled=false
+                pickup!!.isEnabled=false
+            }
+        }
 
 
         var fileName: MutableList<String> = mutableListOf()

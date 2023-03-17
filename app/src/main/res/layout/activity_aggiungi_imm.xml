@@ -1,107 +1,129 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_height="wrap_content">
 
-    <ImageView
-        android:id="@+id/editmain_image"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:scaleType="centerCrop"
-        />
+    <LinearLayout android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Titolo dell'annuncio"
+            android:textColor="@color/black"
+            android:textSize="25dp"
+            android:textStyle="bold"
+            android:layout_marginTop="5dp"
+            android:paddingStart="5dp"
+            android:paddingBottom="5dp"/>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginTop="5dp">
 
         <ImageView
-            android:id="@+id/edit_image1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:src="@drawable/icona_immagine"
+            android:id="@+id/editmain_image"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
             android:scaleType="centerCrop"
-            android:adjustViewBounds="true"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"/>
+            android:layout_margin="5dp"
+            />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="5dp"
+            android:weightSum="100">
+
+            <ImageView
+                android:id="@+id/edit_image1"
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:layout_weight="25"
+                android:scaleType="centerCrop"
+                android:adjustViewBounds="true"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                />
+
+            <ImageView
+                android:id="@+id/edit_image2"
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:layout_weight="25"
+                android:scaleType="centerCrop"
+                android:adjustViewBounds="true"
+                android:layout_marginRight="5dp"/>
+
+            <ImageView
+                android:id="@+id/edit_image3"
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:layout_weight="25"
+                android:scaleType="centerCrop"
+                android:adjustViewBounds="true"
+                android:layout_marginRight="5dp"/>
+
+            <ImageView
+                android:id="@+id/edit_image4"
+                android:layout_width="0dp"
+                android:layout_height="70dp"
+                android:layout_weight="25"
+                android:scaleType="centerCrop"
+                android:adjustViewBounds="true"
+                android:layout_marginRight="5dp"/>
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Aggiungi un immagine e caricala subito dopo"
+            android:textColor="@color/black"
+            android:layout_margin="5dp"/>
 
         <ImageView
-            android:id="@+id/edit_image2"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:id="@+id/iv"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_gravity="center_horizontal"
             android:src="@drawable/icona_immagine"
-            android:scaleType="centerCrop"
-            android:adjustViewBounds="true"
-            android:layout_marginRight="5dp"/>
 
-        <ImageView
-            android:id="@+id/edit_image3"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:src="@drawable/icona_immagine"
-            android:scaleType="centerCrop"
-            android:adjustViewBounds="true"
-            android:layout_marginRight="5dp"/>
+            android:layout_margin="10dp"
+            />
 
-        <ImageView
-            android:id="@+id/edit_image4"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:src="@drawable/icona_immagine"
-            android:scaleType="centerCrop"
-            android:adjustViewBounds="true"
-            android:layout_marginRight="5dp"/>
+            android:orientation="horizontal"
+            android:gravity="center">
+
+            <Button
+                android:id="@+id/pickUpImg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Scegli"
+                android:backgroundTint="@color/panna"
+                android:textColor="@color/black"
+                android:layout_marginEnd="5dp"
+                android:visibility="visible"
+                android:clickable="true"/>
+
+            <ImageView
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/baseline_arrow_forward_24"/>
+
+            <Button
+                android:id="@+id/uploadImg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Carica"
+                android:textColor="@color/white"
+                android:layout_marginStart="5dp"
+                android:backgroundTint="@color/verde_scuro"
+                android:enabled="false"/>
+        </LinearLayout>
+
+
     </LinearLayout>
-
-    <ImageView
-        android:id="@+id/iv"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_gravity="center_horizontal"
-        android:src="@drawable/undraw_camera"
-        android:layout_margin="10dp"
-        />
-
-
-    <Button
-        android:id="@+id/pickUpImg"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Scegli"
-        android:backgroundTint="@color/verde_past"
-        android:textColor="@color/black"
-        android:layout_gravity="center_horizontal"
-        android:visibility="visible"
-        android:clickable="true"/>
-
-    <Button
-        android:id="@+id/uploadImg"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Carica"
-        android:textColor="@color/black"
-        android:backgroundTint="@color/verde_past"
-        android:layout_gravity="center_horizontal"
-        />
-
-
-    <Button
-        android:id="@+id/btnElimina1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Elimina" />
-
-    <Button
-        android:id="@+id/btnSostituisci1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Sostituisci" />
-
-</LinearLayout>
+</ScrollView>

@@ -21,9 +21,10 @@ import java.util.*
 class AggiungiFotoActivity: AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        var nomeImageView: ImageView? = findViewById(R.id.iv)
-
-
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_aggiungi_imm)
+        title="Aggiungi immagine"
+        val nomeImageView: ImageView? = findViewById(R.id.iv)
         val getImage = registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) { result ->
@@ -35,18 +36,15 @@ class AggiungiFotoActivity: AppCompatActivity() {
                 }
             }
         }
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_aggiungi_imm)
+
 
         val codiceAnn = intent.getStringExtra("codiceAnn")
-
+        val nomeAnn = findViewById<TextView>(R.id.title)
         val im1 = findViewById<ImageView>(R.id.edit_image1)
         val im2 = findViewById<ImageView>(R.id.edit_image2)
         val im3 = findViewById<ImageView>(R.id.edit_image3)
         val im4 = findViewById<ImageView>(R.id.edit_image4)
         val mainImmagine = findViewById<ImageView>(R.id.editmain_image)
-        val eliminaImg1 = findViewById<Button>(R.id.btnElimina1)
-        val sostImg1 = findViewById<Button>(R.id.btnSostituisci1)
         var immagini: MutableList<String>? = null
         var numeroImm: Int = 0
 
@@ -57,6 +55,7 @@ class AggiungiFotoActivity: AppCompatActivity() {
                 codiceAnn!!
             )
             withContext(Dispatchers.Main) { // quando la funz getAnn.. ha recuperato l'annuncio allora fa questo codice seguente
+                nomeAnn.setText(currentAnnuncio.nome)
                 immagini = currentAnnuncio.foto
                 numeroImm = immagini!!.size
             }
@@ -116,27 +115,19 @@ class AggiungiFotoActivity: AppCompatActivity() {
                 // im4.visibility = View.INVISIBLE
             }
 
-            if (numeroImm == 1) {
-                nomeImageView = findViewById<ImageView>(R.id.edit_image1)
-            } else if (numeroImm == 2) {
-                nomeImageView = findViewById<ImageView>(R.id.edit_image2)
-            } else if (numeroImm == 3) {
-                nomeImageView = findViewById<ImageView>(R.id.edit_image3)
-            } else if (numeroImm == 4) {
-                nomeImageView = findViewById<ImageView>(R.id.edit_image4)
-            }
 
             val pickup = findViewById<Button>(R.id.pickUpImg)
             val upload = findViewById<Button>(R.id.uploadImg)
-            val imagev = findViewById<ImageView>(R.id.iv)
             val builder = AlertDialog.Builder(applicationContext)
             val dialogView = layoutInflater.inflate(R.layout.progress_bar, null)
-            val message = dialogView.findViewById<TextView>(R.id.message)
+
 
             pickup.setOnClickListener {
                 val intent = Intent(Intent.ACTION_PICK)
                 intent.type = "image/*"
                 getImage.launch(intent)
+                upload!!.isEnabled=true
+                pickup!!.isEnabled=false
             }
 
 
@@ -176,16 +167,14 @@ class AggiungiFotoActivity: AppCompatActivity() {
                             immagini!!
                         )
                     }
+                    val intent = Intent(applicationContext, AreaPersonaleActivity::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    //intent.putExtra("codice", codiceAnn)
+                    startActivity(intent)
                 }
             }
         }
 
-        eliminaImg1!!.setOnClickListener {
-            val intent = Intent(this, AreaPersonaleActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            //intent.putExtra("codice", codiceAnn)
-            startActivity(intent)
 
-        }
     }
 }
