@@ -457,6 +457,8 @@ class FirebaseDbWrapper(context: Context) {
         dbRef4.setValue(condizioni).await()
         val dbRef5 = FirebaseDbWrapper(context).dbref.child("Annunci").child(codice).child("categoria")
         dbRef5.setValue(categoria).await()
+        val dbRef6 = FirebaseDbWrapper(context).dbref.child("Annunci").child(codice).child("spedizione")
+        dbRef6.setValue(spedizione).await()
     }
 
     // modifica tutti i parametri

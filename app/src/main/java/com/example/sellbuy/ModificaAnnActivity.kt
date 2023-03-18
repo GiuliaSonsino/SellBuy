@@ -39,7 +39,7 @@ class ModificaAnnActivity: AppCompatActivity() {
         val descrizione = findViewById<EditText>(R.id.edit_description)
         val prezzo = findViewById<EditText>(R.id.edit_price)
         val spedizione = findViewById<Switch>(R.id.edit_switchSpediz)
-        var sped: Boolean
+        var sped: Boolean? = null
         val btnSalva = findViewById<Button>(R.id.btnSalva)
 
         val categorie = resources.getStringArray(R.array.categorie)
@@ -64,9 +64,14 @@ class ModificaAnnActivity: AppCompatActivity() {
                 descrizione.setText(currentAnnuncio.descrizione)
                 prezzo.setText(currentAnnuncio.prezzo)
                 sped = currentAnnuncio.spedizione
-                spedizione.isChecked = sped
+                spedizione.isChecked = sped!!
 
             }
+        }
+
+
+        fun sped() : Boolean {
+            return spedizione.isChecked
         }
 
         btnSalva.setOnClickListener {
@@ -76,12 +81,7 @@ class ModificaAnnActivity: AppCompatActivity() {
                 val prez = prezzo.text.toString()
                 val cat = categoriaEdit.text.toString()
                 val stato = condizioniEdit.text.toString()
-                var switchSped = false
-                spedizione.setOnCheckedChangeListener { _, isChecked ->
-                    if (isChecked) {
-                        switchSped = true
-                    }
-                }
+                val s = sped()
                 FirebaseDbWrapper(applicationContext).modificaInfoAnnuncio(
                     applicationContext,
                     codiceAnn!!,
@@ -90,7 +90,7 @@ class ModificaAnnActivity: AppCompatActivity() {
                     prez,
                     cat,
                     stato,
-                    switchSped
+                    s
                 )
             }
             finish()
