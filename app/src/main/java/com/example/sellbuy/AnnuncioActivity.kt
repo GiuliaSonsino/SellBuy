@@ -10,6 +10,7 @@ import android.view.WindowManager
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
@@ -276,16 +277,27 @@ class AnnuncioActivity : AppCompatActivity() {
                 startActivity(intent)
             }
             R.id.addImg -> {
-                val intent = Intent(applicationContext, AggiungiFotoActivity::class.java)
-                intent.putExtra("codiceAnn", codiceAnn)
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-                startActivity(intent)
+                if(immagini!!.size==5) {
+                    Toast.makeText(applicationContext, "Impossibile aggiungere più di 5 immagini", Toast.LENGTH_LONG)
+                        .show()
+                }
+                else {
+                    val intent = Intent(applicationContext, AggiungiFotoActivity::class.java)
+                    intent.putExtra("codiceAnn", codiceAnn)
+                    startActivity(intent)
+                }
             }
             R.id.eliminaImg -> {
-                val intent = Intent(applicationContext, EliminaFotoActivity::class.java)
-                intent.putExtra("codiceAnn", codiceAnn)
-                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-                startActivity(intent)
+                if(immagini!!.size==1) {
+                    Toast.makeText(applicationContext, "Impossibile eliminare tutte le immagini", Toast.LENGTH_LONG)
+                        .show()
+                }
+                else {
+                    val intent = Intent(applicationContext, EliminaFotoActivity::class.java)
+                    intent.putExtra("codiceAnn", codiceAnn)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+                    startActivity(intent)
+                }
             }
             R.id.modificaInfo -> {
                 val intent = Intent(applicationContext, ModificaAnnActivity::class.java)
