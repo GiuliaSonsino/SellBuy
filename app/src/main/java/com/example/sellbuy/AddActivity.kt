@@ -1,17 +1,35 @@
 package com.example.sellbuy
 
 import android.app.AlertDialog
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.net.Uri
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
+import android.util.Log
+import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
+import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.tasks.Task
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.AutocompletePrediction
+import com.google.android.libraries.places.api.model.AutocompleteSessionToken
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.api.net.FetchPlaceRequest
+import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
+import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
@@ -25,16 +43,29 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 
+
+
+
+
 class AddActivity: AppCompatActivity() {
 
     lateinit var ImageUri : Uri
     private val auth= FirebaseAuth.getInstance()
     private val database=FirebaseDatabase.getInstance()
-    //private val apiKey= "AIzaSyApg-_rad6qNXIy_7_cRsiRHeATejk-u9Q"
+    private val apiKey= "AIzaSyApg-_rad6qNXIy_7_cRsiRHeATejk-u9Q"
 
     private var pickup: Button? = null
     private var upload: Button? = null
     val color = Color.rgb(179,238,179)
+
+    // Creare una variabile per l'oggetto AutocompleteSessionToken
+    private lateinit var token: AutocompleteSessionToken
+    // Creare una variabile per l'API di Places
+    private lateinit var placesApi: PlacesClient
+    // Creare una variabile per l'elenco dei suggerimenti di autocompletamento
+    private var predictionsList: MutableList<AutocompletePrediction> = mutableListOf()
+    private var listLocaliz : ListView? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -98,7 +129,7 @@ class AddActivity: AppCompatActivity() {
         }
 
 
-        var fileName: MutableList<String> = mutableListOf()
+        val fileName: MutableList<String> = mutableListOf()
         //Upload the image in the imageview widget
         upload!!.setOnClickListener{
             // execute the progress bar
@@ -269,6 +300,131 @@ class AddActivity: AppCompatActivity() {
                     ).show()
                 }
             }
+        }
+        // Inizializza l'API di Places
+        Places.initialize(applicationContext, apiKey)
+
+        // Inizializzare l'API di Places
+        placesApi = Places.createClient(this)
+        // Inizializzare l'oggetto AutocompleteSessionToken
+        token = AutocompleteSessionToken.newInstance()
+        // Inizializzare l'elenco dei suggerimenti di autocompletamento
+        predictionsList = mutableListOf()
+
+
+        listLocaliz = findViewById(R.id.listViewLocaliz)
+        val cercaLoc = findViewById<AutoCompleteTextView>(R.id.locationTextView)
+
+        // Aggiungere un listener all'EditText che gestisce l'autocompletamento
+        cercaLoc.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                // Chiamare il metodo per ottenere i suggerimenti di autocompletamento
+                getAutocompletePredictions(s.toString())
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+        })
+
+    }
+
+
+    // Metodo per ottenere i suggerimenti di autocompletamento
+    /*
+    private fun getAutocompletePredictionsk(query: String) {
+        // Creare una richiesta di autocompletamento
+        val request = Places.createAutocompleteSessionRequest()
+        request.query = query
+        request.locationBias = LatLngBounds(LatLng(-33.880490, 151.184363), LatLng(-33.858754, 151.229596))
+
+        // Eseguire la richiesta di autocompletamento
+        val task: Task<AutocompleteSessionResponse> = placesApi.findAutocompletePredictions(request)
+
+        // Gestire la risposta della richiesta di autocompletamento
+        task.addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                // Rimuovere i suggerimenti precedenti dall'elenco
+                predictionsList.clear()
+
+                // Aggiungere i nuovi suggerimenti all'elenco
+                val predictions: AutocompleteSessionResponse = task.result!!
+                for (prediction in predictions.autocompletePredictions) {
+                    predictionsList.add(prediction)
+                }
+
+                // Aggiornare la vista degli autocompletamenti
+                updateAutocompleteView()
+            } else {
+                // Gestire l'errore
+            }
+        }
+    }
+*/
+    private fun getAutocompletePredictions(query: String) {
+        Places.initialize(applicationContext, apiKey)
+
+        // Inizializzare l'API di Places
+        val token = AutocompleteSessionToken.newInstance()
+        val request = FindAutocompletePredictionsRequest.builder()
+            .setSessionToken(token)
+            .setQuery(query)
+            .build()
+        val placesClient = Places.createClient(this)
+        placesClient.findAutocompletePredictions(request)
+            .addOnSuccessListener { response ->
+                val predictionsList = response.autocompletePredictions
+                updateAutocompleteView()
+            }
+            .addOnFailureListener { exception ->
+                if (exception is ApiException) {
+                    Log.e(TAG, "Errore durante la ricerca di previsioni di autocompletamento: " + exception.statusCode)
+                }
+            }
+    }
+
+
+    // Metodo per aggiornare la vista degli autocompletamenti
+    private fun updateAutocompleteView() {
+        // Creare una lista di stringhe per contenere i nomi dei luoghi
+        val placeNames: MutableList<String> = mutableListOf()
+
+        // Aggiungere i nomi dei luoghi alla lista
+        for (prediction in predictionsList) {
+            placeNames.add(prediction.getPrimaryText(null).toString())
+        }
+
+        // Creare un ArrayAdapter per la lista di nomi dei luoghi
+        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, placeNames)
+
+        // Aggiornare la ListView degli autocompletamenti con l'ArrayAdapter
+        listLocaliz!!.adapter = adapter
+
+        // Aggiungere un listener alla ListView degli autocompletamenti
+        listLocaliz!!.setOnItemClickListener { _, _, position, _ ->
+            // Ottieni l'oggetto AutocompletePrediction selezionato
+            val prediction = predictionsList[position]
+
+            // Recupera le informazioni sulla posizione dal Places API usando il Place ID
+            val placeId = prediction.placeId
+            val placeFields = listOf(Place.Field.LAT_LNG)
+
+            val request = FetchPlaceRequest.newInstance(placeId, placeFields)
+            placesApi.fetchPlace(request).addOnSuccessListener { response ->
+                // Aggiungi un Marker sulla mappa nella posizione selezionata
+                val place = response.place
+                val latLng = place.latLng
+                /*if (latLng != null) {
+                    val markerOptions = MarkerOptions().position(latLng)
+                    map.addMarker(markerOptions)
+                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
+                }*/
+            }.addOnFailureListener { exception ->
+                // Gestire l'errore
+            }
+
+            // Nascondi la ListView degli autocompletamenti
+            listLocaliz!!.visibility = View.GONE
         }
     }
 }
