@@ -15,6 +15,11 @@
         android:textStyle="bold"
         android:text="TUTTI GLI ANNUNCI:"/>
 
+    <Button
+        android:id="@+id/loc"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="localizzazione"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview"

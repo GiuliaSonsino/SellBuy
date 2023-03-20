@@ -17,7 +17,9 @@ import android.widget.*
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.FragmentActivity
 import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.common.api.Status
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.LatLngBounds
@@ -27,9 +29,12 @@ import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.AutocompletePrediction
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken
 import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.api.model.TypeFilter
 import com.google.android.libraries.places.api.net.FetchPlaceRequest
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.PlacesClient
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
@@ -49,15 +54,15 @@ import java.util.*
 
 class AddActivity: AppCompatActivity() {
 
-    lateinit var ImageUri : Uri
-    private val auth= FirebaseAuth.getInstance()
-    private val database=FirebaseDatabase.getInstance()
-    private val apiKey= "AIzaSyApg-_rad6qNXIy_7_cRsiRHeATejk-u9Q"
+    lateinit var ImageUri: Uri
+    private val auth = FirebaseAuth.getInstance()
+    private val database = FirebaseDatabase.getInstance()
+    private val apiKey = "AIzaSyApg-_rad6qNXIy_7_cRsiRHeATejk-u9Q"
 
     private var pickup: Button? = null
     private var upload: Button? = null
-    val color = Color.rgb(179,238,179)
-
+    val color = Color.rgb(179, 238, 179)
+/*
     // Creare una variabile per l'oggetto AutocompleteSessionToken
     private lateinit var token: AutocompleteSessionToken
     // Creare una variabile per l'API di Places
@@ -65,6 +70,15 @@ class AddActivity: AppCompatActivity() {
     // Creare una variabile per l'elenco dei suggerimenti di autocompletamento
     private var predictionsList: MutableList<AutocompletePrediction> = mutableListOf()
     private var listLocaliz : ListView? = null
+*/
+    private lateinit var cityEditText: EditText
+    private lateinit var placesClient: PlacesClient
+    private var searchSessionToken: Any? = null
+
+    private var selectedCityName: String? = null
+    private var selectedCityLatLng: Pair<Double, Double>? = null
+
+    private lateinit var cityAdapter: ArrayAdapter<String>
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,7 +86,7 @@ class AddActivity: AppCompatActivity() {
         title = "Crea Annuncio"
         setContentView(R.layout.activity_add)
 
-        var countImg =0
+        var countImg = 0
         val nomeObj = findViewById<AutoCompleteTextView>(R.id.nomeAcTv)
         val descrizioneObj = findViewById<AutoCompleteTextView>(R.id.descrizioneAcTv)
         val prezzoObj = findViewById<TextInputLayout>(R.id.prezzo)
@@ -104,9 +118,9 @@ class AddActivity: AppCompatActivity() {
                 imagev.setImageURI(it) //once the user has selected the image, I get the URI of
                 // the image and I use it to set the image into the
                 //imageview widget
-                if(it!=null) {
-                    upload!!.isEnabled=true
-                    pickup!!.isEnabled=false
+                if (it != null) {
+                    upload!!.isEnabled = true
+                    pickup!!.isEnabled = false
                 }
             }
         )
@@ -114,28 +128,27 @@ class AddActivity: AppCompatActivity() {
         //Choose an image from image gallery and load it into ImageView widget
 
         pickup!!.setOnClickListener {
-            if(countImg<5) {
+            if (countImg < 5) {
                 getImage.launch("image/*")
-            }
-            else {
+            } else {
                 Toast.makeText(
                     applicationContext,
                     "Numero massimo di immagini raggiunto",
                     Toast.LENGTH_SHORT
                 ).show()
-                upload!!.isEnabled=false
-                pickup!!.isEnabled=false
+                upload!!.isEnabled = false
+                pickup!!.isEnabled = false
             }
         }
 
 
         val fileName: MutableList<String> = mutableListOf()
         //Upload the image in the imageview widget
-        upload!!.setOnClickListener{
+        upload!!.setOnClickListener {
             // execute the progress bar
             message.text = "Uploading..."
             builder.setView(dialogView)
-            builder .setCancelable(false)
+            builder.setCancelable(false)
             // Remove dialogView from its current parent
             val parent = dialogView.parent as ViewGroup?
             parent?.removeView(dialogView)
@@ -153,7 +166,7 @@ class AddActivity: AppCompatActivity() {
             imagev.buildDrawingCache()
             val bitmap = (imagev.drawable as BitmapDrawable).bitmap
             val baos = ByteArrayOutputStream()
-            bitmap.compress(Bitmap.CompressFormat.JPEG,100, baos)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
             val data = baos.toByteArray()
 
             //Upload the image
@@ -165,15 +178,16 @@ class AddActivity: AppCompatActivity() {
             uploadTask.addOnFailureListener {
                 Toast.makeText(applicationContext, "Upload failed", Toast.LENGTH_LONG).show()
             }.addOnSuccessListener {
-                countImg +=1
-                Toast.makeText(applicationContext, "Uploaded successfully", Toast.LENGTH_LONG).show()
-                pickup!!.isEnabled=true
-                upload!!.isEnabled=false
+                countImg += 1
+                Toast.makeText(applicationContext, "Uploaded successfully", Toast.LENGTH_LONG)
+                    .show()
+                pickup!!.isEnabled = true
+                upload!!.isEnabled = false
             }
         }
 
         fun checkAdd(): Boolean {
-            if (nomeObj.text.toString() == "" || descrizioneObj.text.toString() == "" || fileName.size==0) {
+            if (nomeObj.text.toString() == "" || descrizioneObj.text.toString() == "" || fileName.size == 0) {
                 Toast.makeText(
                     applicationContext,
                     "Devi compilare tutti i campi",
@@ -301,6 +315,23 @@ class AddActivity: AppCompatActivity() {
                 }
             }
         }
+
+
+
+
+
+
+
+    }
+
+
+
+
+
+
+
+
+/*
         // Inizializza l'API di Places
         Places.initialize(applicationContext, apiKey)
 
@@ -425,8 +456,8 @@ class AddActivity: AppCompatActivity() {
 
             // Nascondi la ListView degli autocompletamenti
             listLocaliz!!.visibility = View.GONE
-        }
-    }
+        }*/
+
 }
 
 

@@ -37,6 +37,11 @@ class MainActivity : AppCompatActivity() {
         adapter = AnnuncioAdapter(applicationContext, mList)
         recyclerview.adapter = adapter
 
+        val loc = findViewById<Button>(R.id.loc)
+        loc.setOnClickListener {
+            val intent = Intent(applicationContext, esperimento::class.java)
+            startActivity(intent)
+        }
 
     }
 
