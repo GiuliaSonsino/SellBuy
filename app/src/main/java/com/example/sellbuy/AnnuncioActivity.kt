@@ -2,6 +2,7 @@ package com.example.sellbuy
 
 import android.app.Dialog
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -57,6 +58,12 @@ class AnnuncioActivity : AppCompatActivity() {
         val codiceAnn = intent.getStringExtra("codice")
         val btnChat = findViewById<Button>(R.id.btnChat)
         val btnAcquista= findViewById<Button>(R.id.btnAcquista)
+        val numTel = findViewById<TextView>(R.id.tv_num_tel)
+        numTel.setOnClickListener {
+            val phoneUri = Uri.parse("tel:${numTel.text}")
+            val phoneIntent = Intent(Intent.ACTION_DIAL, phoneUri)
+            startActivity(phoneIntent)
+        }
 
         GlobalScope.launch {
             //val codiceAnn = intent.getStringExtra("codice")
@@ -69,7 +76,6 @@ class AnnuncioActivity : AppCompatActivity() {
             titolo.text = ann.nome
             val autore = findViewById<TextView>(R.id.tv_autore)
             autore.text = ann.email
-            val numTel = findViewById<TextView>(R.id.tv_num_tel)
             numTel.text = ann.numTel.toString()
             val descrizione = findViewById<TextView>(R.id.tv_description)
             descrizione.text = ann.descrizione

@@ -2,6 +2,7 @@ package com.example.sellbuy
 
 import android.content.ContentValues.TAG
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.Menu
@@ -29,23 +30,31 @@ class AreaPersonaleActivity: AppCompatActivity() {
         val emailUtente: String? = auth.currentUser?.email
         val nomeUtente = findViewById<TextView>(R.id.nomeUtente)
         nomeUtente.text = emailUtente
+        val ruolo = findViewById<TextView>(R.id.ruolo)
+        val tel = findViewById<TextView>(R.id.num_tel)
+        GlobalScope.launch {
+            val utente = FirebaseDbWrapper(applicationContext).getUtenteFromEmail(applicationContext)
+            val ruoloo = utente!!.isAmministratore
+            val numTell =utente!!.numTel
+            if(ruoloo) {
+                ruolo.text= "Amministratore"
+                tel.text=numTell.toString()
+            }
+            else {
+                ruolo.text = "Utente"
+                tel.text=numTell.toString()
+            }
+        }
+        tel.setOnClickListener {
+            val phoneUri = Uri.parse("tel:${tel.text}")
+            val phoneIntent = Intent(Intent.ACTION_DIAL, phoneUri)
+            startActivity(phoneIntent)
+        }
         val recyclerview = findViewById<RecyclerView>(R.id.recyclerviewPersonale)
         recyclerview.layoutManager = LinearLayoutManager(this)
         adapter = AnnuncioAdapter(applicationContext, mList)
         recyclerview.adapter = adapter
     }
-
-/*
-    override fun onStart() {
-        super.onStart()
-        mList = createList()
-    }
-
-    override fun onStop() {
-        super.onStop()
-        mList.clear()
-    }
-*/
 
     override fun onStart() {
         super.onStart()
@@ -96,35 +105,13 @@ class AreaPersonaleActivity: AppCompatActivity() {
         return mList
     }
 
-/*
-    private suspend fun createList(): List<AnnuncioViewModel>? {
-        count=0
-        if (auth.currentUser != null) {
-            val codici = FirebaseDbWrapper(applicationContext).getKeyFromEmail(applicationContext)
-            Log.i(TAG,"codici utente trovati $codici")
-            val an = FirebaseDbWrapper(applicationContext).getAnnunciFromEmail(applicationContext)
-            Log.i(TAG,"annunci utente trovati $an")
-            return an.mapNotNull { record ->
-                val nomeAn = record.nome
-                val imageName = record.foto?.get(0)
-                val prezzoAn = record.prezzo
-                val codice = codici.getOrElse(count) { "012334" }
-                count += 1
-                imageName?.let { AnnuncioViewModel(it, nomeAn, prezzoAn, codice!!) }
-            }
-        }
-        return null
-    }
-*/
-
-
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_to_home, menu)
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        var firebaseAuth = FirebaseAuth.getInstance()
+        val firebaseAuth = FirebaseAuth.getInstance()
         when (item.itemId) {
             R.id.logout -> {
                 firebaseAuth.signOut()
@@ -139,6 +126,4 @@ class AreaPersonaleActivity: AppCompatActivity() {
         }
         return true
     }
-
-
 }

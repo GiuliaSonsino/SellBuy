@@ -150,7 +150,6 @@ class FirebaseDbWrapper(context: Context) {
     }
 
 
-
     fun getAnnunciFromEmail(context: Context): MutableList<Annuncio> {
         val lock = ReentrantLock()
         val condition = lock.newCondition()
@@ -446,6 +445,7 @@ class FirebaseDbWrapper(context: Context) {
             dbRef.removeValue().await()
         }
     }
+
     suspend fun modificaInfoAnnuncio(context: Context, codice:String, nome: String, descrizione : String, prezzo: String, categoria : String, condizioni: String, spedizione: Boolean) {
         val dbRef = FirebaseDbWrapper(context).dbref.child("Annunci").child(codice).child("nome")
         dbRef.setValue(nome).await()
@@ -510,19 +510,19 @@ class FirebaseDbWrapper(context: Context) {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val children = snapshot.child("Annunci").children
                         for (child in children) {
-                            val list = child.getValue() as HashMap<String, String>
+                            val list = child.getValue() as HashMap<*, *>
                             var nome:String?=null
                             var prez:String?=null
                             var spediz: Boolean? = false
                             for (record in list) {
                                 if(!record.key.equals("foto")) {
                                     if(record.key.equals("nome")) {
-                                        nome = record.value
+                                        nome = record.value.toString()
                                     }
                                     if(record.key.equals("prezzo")) {
-                                        prez = record.value
+                                        prez = record.value.toString()
                                     }
-                                    if(record.key.equals("spedizione") && record.value=="true") {
+                                    if(record.key.equals("spedizione") && record.value==true) {
                                         spediz = true
                                     }
 
@@ -572,19 +572,19 @@ class FirebaseDbWrapper(context: Context) {
                         val children = snapshot.child("Annunci").children
                         for (child in children) {
                             codicetmp=child.key.toString()
-                            val list = child.getValue() as HashMap<String, String>
+                            val list = child.getValue() as HashMap<*, *>
                             var nome:String?=null
                             var prez:String?=null
                             var spediz: Boolean? = false
                             for (record in list) {
                                 if(!record.key.equals("foto")) {
                                     if(record.key.equals("nome")) {
-                                        nome = record.value
+                                        nome = record.value.toString()
                                     }
                                     if(record.key.equals("prezzo")) {
-                                        prez = record.value
+                                        prez = record.value.toString()
                                     }
-                                    if(record.key.equals("spedizione") && record.value=="true") {
+                                    if(record.key.equals("spedizione") && record.value==true) {
                                         spediz = true
                                     }
                                 }

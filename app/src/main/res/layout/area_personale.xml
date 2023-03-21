@@ -12,20 +12,80 @@
         android:background="@color/panna">
 
         <ImageView
-            android:layout_width="64dp"
-            android:layout_height="64dp"
-            android:src="@drawable/baseline_person_24"/>
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:src="@drawable/baseline_person_24"
+            android:layout_gravity="center_vertical"/>
 
-        <TextView
-            android:id="@+id/nomeUtente"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:text=" Ludovico"
-            android:textSize="25dp"
-            android:textStyle="bold"
-            android:textColor="@color/black"
-            android:layout_gravity="center"/>
+            android:orientation="vertical">
+
+
+
+
+            <TextView
+                android:id="@+id/nomeUtente"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="5dp"
+                android:text=" Ludovico"
+                android:textSize="25dp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:layout_gravity="center"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="5dp"
+                    android:src="@drawable/baseline_badge_24"/>
+
+                <TextView
+                    android:id="@+id/ruolo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text=" Amministratore"
+                    android:textSize="17dp"
+                    android:textColor="@color/black"
+                    android:layout_gravity="center"/>
+
+
+            </LinearLayout>
+
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="5dp"
+                    android:src="@drawable/baseline_call_24"/>
+
+                <TextView
+                    android:id="@+id/num_tel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text=" 3459032643"
+                    android:textSize="17dp"
+                    android:textColor="@color/black"
+                    android:layout_gravity="center"
+                    android:autoLink="phone"
+                    android:textColorLink="@color/verde_scuro"/>
+
+            </LinearLayout>
+
+        </LinearLayout>
 
     </LinearLayout>
 

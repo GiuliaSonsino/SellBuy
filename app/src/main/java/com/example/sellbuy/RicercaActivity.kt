@@ -37,7 +37,7 @@ class RicercaActivity: AppCompatActivity() {
         val spedizioni = findViewById<AutoCompleteTextView>(R.id.spedizioneAcTv)
         spedizioni.setText("Tutti")
         spedizioni.setAdapter(adapterSped)
-        var prezzo = findViewById<TextInputLayout>(R.id.prezzo_max)
+        val prezzo = findViewById<TextInputLayout>(R.id.prezzo_max)
 
         val btnFiltri= findViewById<Button>(R.id.btn_filtri)
         searchView=findViewById(R.id.search_view)
