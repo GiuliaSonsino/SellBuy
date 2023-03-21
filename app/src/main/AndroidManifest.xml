@@ -95,17 +95,17 @@
             ></activity>
 
         <activity
-            android:name=".FiltraRicercaActivity"
-            android:exported="false"
-            ></activity>
-
-        <activity
             android:name=".AggiungiFotoActivity"
             android:exported="false"
             ></activity>
 
         <activity
             android:name=".esperimento"
+            android:exported="false"
+            ></activity>
+
+        <activity
+            android:name=".RicercheSalvateActivity"
             android:exported="false"
             ></activity>
     </application>

@@ -1,6 +1,9 @@
 package com.example.sellbuy
 
+import android.content.Intent
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -11,6 +14,7 @@ import kotlinx.coroutines.*
 import models.Annuncio
 import models.AnnuncioViewModel
 import models.FirebaseDbWrapper
+import models.RicercaSalvata
 
 
 class RicercaActivity: AppCompatActivity() {
@@ -31,6 +35,7 @@ class RicercaActivity: AppCompatActivity() {
         adapter = AnnuncioAdapter(applicationContext, filteredList)
         recyclerview.adapter = adapter
 
+        val emailLoggato = FirebaseAuth.getInstance().currentUser?.email
         //gestione filtri
         val opzSpedizione = resources.getStringArray(R.array.spedizioni)
         val adapterSped = ArrayAdapter(this, R.layout.list_item, opzSpedizione)
@@ -40,6 +45,7 @@ class RicercaActivity: AppCompatActivity() {
         val prezzo = findViewById<TextInputLayout>(R.id.prezzo_max)
 
         val btnFiltri= findViewById<Button>(R.id.btn_filtri)
+        val btnSalvaRicerca = findViewById<TextView>(R.id.salvaRicerca)
         searchView=findViewById(R.id.search_view)
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             //when user confirm the search
@@ -89,6 +95,24 @@ class RicercaActivity: AppCompatActivity() {
                 filteredList = createList(parola!!,"10000", spedizioni.text.toString())
             }
         }
+
+
+        btnSalvaRicerca.setOnClickListener {
+
+            val ricerca = RicercaSalvata(
+                emailLoggato!!,
+                parola,
+                prezzo.editText?.text.toString(),
+                spedizioni.text.toString(),
+                ""
+            )
+            FirebaseDbWrapper(applicationContext).creaRicercaSalvata(ricerca)
+            Toast.makeText(
+                applicationContext,
+                "Ricerca salvata",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
 
@@ -129,5 +153,22 @@ class RicercaActivity: AppCompatActivity() {
             }
         }
         return filteredList
+    }
+
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.menu_ricerca, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val firebaseAuth = FirebaseAuth.getInstance()
+        when (item.itemId) {
+            R.id.ricercheSalvate -> {
+                val intent = Intent(applicationContext, LoginActivity::class.java)
+                startActivity(intent)
+            }
+        }
+        return true
     }
 }

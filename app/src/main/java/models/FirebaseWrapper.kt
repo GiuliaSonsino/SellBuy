@@ -630,10 +630,14 @@ class FirebaseDbWrapper(context: Context) {
         dbref.child("Annunci").push().setValue(annuncio)
     }
 
-    fun creaChat( senderRoom: String?, receiverRoom: String?, messaggio: Message) {
+    fun creaChat(senderRoom: String?, receiverRoom: String?, messaggio: Message) {
         dbref.child("chats").child(senderRoom!!).child("messages").push().setValue(messaggio).addOnSuccessListener {
             dbref.child("chats").child(receiverRoom!!).child("messages").push().setValue(messaggio)
         }
+    }
+
+    fun creaRicercaSalvata(ricerca: RicercaSalvata) {
+        dbref.child("RicercheSalvate").push().setValue(ricerca)
     }
 }
 

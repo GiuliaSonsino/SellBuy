@@ -27,5 +27,4 @@ class Annuncio() {
         this.spedizione=spedizione
     }
 
-
 }
