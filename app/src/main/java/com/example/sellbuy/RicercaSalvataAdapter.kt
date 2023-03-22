@@ -26,16 +26,21 @@ class RicercaSalvataAdapter(context: Context, private val listaRicerche: List<Ri
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val currentRicerca = listaRicerche[position]
         holder.parola.text=currentRicerca.parolaDigitata
+        //holder.prezzo!!.text=""
         holder.prezzo.text=currentRicerca.prezzo
-        holder.spedizione.text= currentRicerca.spedizione.toString()
-        holder.localizzazione.text=currentRicerca.localizzazione
+        holder.spedizione.text= currentRicerca.spedizione
+        holder.localizzazione.text=currentRicerca.localizzazione!!
 
         //per rendere le card cliccabili
         holder.itemView.setOnClickListener{
-            //val codiceAnn=currentAnnuncio.codice
+            val parolaDigitata=currentRicerca.parolaDigitata
+            val prezzo=currentRicerca.prezzo
+            val spedizione=currentRicerca.spedizione
             val intent= Intent(mcontext,RicercaActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            //intent.putExtra("codice", codiceAnn)
+            intent.putExtra("parolaDigitata", parolaDigitata)
+            intent.putExtra("prezzo", prezzo)
+            intent.putExtra("spedizione", spedizione)
             mcontext?.startActivity(intent)
         }
     }
@@ -51,7 +56,7 @@ class RicercaSalvataAdapter(context: Context, private val listaRicerche: List<Ri
     class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView){
 
         val parola: TextView = itemView.findViewById(R.id.parola)
-        val prezzo: TextView = itemView.findViewById(R.id.prezzo_max)
+        val prezzo: TextView = itemView.findViewById(R.id.prezzo_massimo)
         val spedizione: TextView = itemView.findViewById(R.id.spedizione)
         val localizzazione: TextView = itemView.findViewById(R.id.localizzazione)
 

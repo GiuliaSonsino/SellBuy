@@ -1,6 +1,8 @@
 package com.example.sellbuy
 
+import android.content.ContentValues.TAG
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -23,7 +25,7 @@ class RicercheSalvateActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ricerche_salvate)
-        /*
+
         val recyclerview = findViewById<RecyclerView>(R.id.recyclerview_ricerche)
         title = "Ricerche Salvate"
         //mList= createList()
@@ -39,35 +41,30 @@ class RicercheSalvateActivity: AppCompatActivity() {
     }
 
 
-    fun createList(): MutableList<RicercaSalvata> {
-        var count = 0
+    private fun createList(): MutableList<RicercaSalvata> {
         if (auth.currentUser != null) {
             GlobalScope.launch {
-                var an =
-                    FirebaseDbWrapper(applicationContext).getTuttiAnnunci(applicationContext)
-                var codici =
-                    FirebaseDbWrapper(applicationContext).getTutteKeysAnnunci(applicationContext)
-                mList.clear()
-                for (record in an) {
-                    val nomeAn = record.nome
-                    val imageName = record.foto?.get(0) //get the filename from the edit text
-                    val prezzoAn = record.prezzo
-                    val codice = codici[count]
-                    val nuovoan =
-                        imageName?.let { AnnuncioViewModel(it, nomeAn, prezzoAn, codice!!) }
-                    if (nuovoan != null) {
-                        mList.add(nuovoan)
+                var ricerche =
+                    FirebaseDbWrapper(applicationContext).getRicercheSalvateFromEmail(applicationContext)
+                listaRic.clear()
+                for (record in ricerche) {
+                    val email= record.email
+                    val parola = record.parolaDigitata
+                    val prezzo = record.prezzo
+                    val spedizione = record.spedizione
+                    val localizzazione = record.localizzazione
+                    val nuovaRicerca = RicercaSalvata(email,parola,prezzo,spedizione,localizzazione!!)
+                    if (nuovaRicerca != null) {
+                        listaRic.add(nuovaRicerca)
                     }
-                    count += 1
                 }
                 withContext(Dispatchers.Main) {
                     adapter.notifyDataSetChanged()
                 }
+                Log.i(TAG,"ricercheeeee $ricerche")
             }
         }
-        return mList
-    }
-*/
-
+        Log.i(TAG,"ricercheeeee fuori  $listaRic")
+        return listaRic
     }
 }

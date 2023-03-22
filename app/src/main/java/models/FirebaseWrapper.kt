@@ -622,6 +622,40 @@ class FirebaseDbWrapper(context: Context) {
     }
 
 
+    fun getRicercheSalvateFromEmail(context: Context): MutableList<RicercaSalvata> {
+        val lock = ReentrantLock()
+        val condition = lock.newCondition()
+        val maill = Firebase.auth.currentUser?.email
+
+        val ricercheList: MutableList<RicercaSalvata> = mutableListOf()
+        if (maill != null) {
+            GlobalScope.launch {
+                ricercheList.clear()
+                FirebaseDbWrapper(context).dbref.addValueEventListener(object :
+                    ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val children = snapshot.child("RicercheSalvate").children
+                        for (child in children) {
+                            val list = child.getValue() as HashMap<String, String>
+                            for (record in list) {
+                                if(record.key.equals("email") && record.value.equals(maill)) {
+                                    ricercheList.add(child.getValue(RicercaSalvata::class.java)!!)
+                                }
+                            }
+                        }
+                        lock.withLock { condition.signal() }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.w(ContentValues.TAG, "Failed to read value", error.toException())
+                    }
+                })
+            }
+            lock.withLock { condition.await() }
+        }
+        return ricercheList
+    }
+
 
     fun creaUtente(utente: Utente) {
         dbref.child("Utenti").push().setValue(utente)

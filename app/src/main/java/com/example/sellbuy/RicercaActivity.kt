@@ -35,28 +35,30 @@ class RicercaActivity: AppCompatActivity() {
         adapter = AnnuncioAdapter(applicationContext, filteredList)
         recyclerview.adapter = adapter
 
+        //qui si prendono i parametri che arrivano da ricerca salvata
+        val parolaDigitata = intent.getStringExtra("parolaDigitata")
+        val prezzoDigitato = intent.getStringExtra("prezzo")
+        val spedizioneDigitata = intent.getStringExtra("spedizione")
+
+
+
         val emailLoggato = FirebaseAuth.getInstance().currentUser?.email
         //gestione filtri
         val opzSpedizione = resources.getStringArray(R.array.spedizioni)
         val adapterSped = ArrayAdapter(this, R.layout.list_item, opzSpedizione)
         val spedizioni = findViewById<AutoCompleteTextView>(R.id.spedizioneAcTv)
-        spedizioni.setText("Tutti")
+        //spedizioni.setText("Tutti")
+        spedizioni.setText(spedizioneDigitata)
         spedizioni.setAdapter(adapterSped)
         val prezzo = findViewById<TextInputLayout>(R.id.prezzo_max)
-
+        prezzo.hint=prezzoDigitato
         val btnFiltri= findViewById<Button>(R.id.btn_filtri)
         val btnSalvaRicerca = findViewById<TextView>(R.id.salvaRicerca)
         searchView=findViewById(R.id.search_view)
+        searchView.setQuery(parolaDigitata, false)
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             //when user confirm the search
             override fun onQueryTextSubmit(p0: String?): Boolean {
-                /*if(p0.isNullOrEmpty()) {
-                    parola=""
-                }
-                else {
-
-                }*/
-                //parola = p0
                 parola = p0 ?: ""
                 val b=checkFilters(prezzo.editText?.text.toString())
                 if(b) {
@@ -98,7 +100,6 @@ class RicercaActivity: AppCompatActivity() {
 
 
         btnSalvaRicerca.setOnClickListener {
-
             val ricerca = RicercaSalvata(
                 emailLoggato!!,
                 parola,
@@ -165,7 +166,7 @@ class RicercaActivity: AppCompatActivity() {
         val firebaseAuth = FirebaseAuth.getInstance()
         when (item.itemId) {
             R.id.ricercheSalvate -> {
-                val intent = Intent(applicationContext, LoginActivity::class.java)
+                val intent = Intent(applicationContext, RicercheSalvateActivity::class.java)
                 startActivity(intent)
             }
         }

@@ -109,7 +109,13 @@ class MainActivity : AppCompatActivity() {
                 startActivity(intent)
             }
             R.id.search -> {
+                val parolaDigitata=""
+                val prezzo=""
+                val spedizione="Tutti"
                 val intent = Intent(applicationContext, RicercaActivity::class.java)
+                intent.putExtra("parolaDigitata", parolaDigitata)
+                intent.putExtra("prezzo", prezzo)
+                intent.putExtra("spedizione", spedizione)
                 startActivity(intent)
             }
         }
