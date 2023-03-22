@@ -14,8 +14,6 @@ class RegistrationActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        //var auth: FirebaseAuth = FirebaseAuth.getInstance()
-
         val ruolo = intent.getStringExtra("ruolo")
         if (ruolo!!.equals("Amministratore")) {
             setContentView(R.layout.activity_registration)

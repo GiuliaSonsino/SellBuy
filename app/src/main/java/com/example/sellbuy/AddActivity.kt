@@ -152,7 +152,7 @@ class AddActivity: AppCompatActivity() {
             // Remove dialogView from its current parent
             val parent = dialogView.parent as ViewGroup?
             parent?.removeView(dialogView)
-            var dialog = builder.create()
+            val dialog = builder.create()
             dialog.show()
             //Handler().postDelayed({dialog.dismiss()}, 5000)
             val formatter = SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.getDefault())
@@ -187,6 +187,9 @@ class AddActivity: AppCompatActivity() {
         }
 
         fun checkAdd(): Boolean {
+            val prezzoText: String = prezzoObj.editText?.text.toString()
+            val prezzo: Double? = prezzoText.toDoubleOrNull()
+
             if (nomeObj.text.toString() == "" || descrizioneObj.text.toString() == "" || fileName.size == 0) {
                 Toast.makeText(
                     applicationContext,
@@ -194,28 +197,40 @@ class AddActivity: AppCompatActivity() {
                     Toast.LENGTH_SHORT
                 ).show()
                 return false
-            } else if (autoCompleteTextViewCat.text.toString() == "") {
+            }
+            else if (autoCompleteTextViewCat.text.toString() == "") {
                 Toast.makeText(
                     applicationContext,
                     "Selezionare una categoria",
                     Toast.LENGTH_SHORT
                 ).show()
                 return false
-            } else if (autoCompleteTextViewCond.text.toString() == "") {
+            }
+            else if (autoCompleteTextViewCond.text.toString() == "") {
                 Toast.makeText(
                     applicationContext,
                     "Selezionare condizioni dell'oggetto",
                     Toast.LENGTH_SHORT
                 ).show()
                 return false
-            } else if (prezzoObj.editText?.text.toString() == "") {
+            }
+            else if (prezzoObj.editText?.text.toString() == "") {
                 Toast.makeText(
                     applicationContext,
                     "Inserire prezzo",
                     Toast.LENGTH_SHORT
                 ).show()
                 return false
-            } else {
+            }
+            else if (prezzo!! > 10000.00) {
+                Toast.makeText(
+                    applicationContext,
+                    "Inserire prezzo non superiore a 10000€",
+                    Toast.LENGTH_SHORT
+                ).show()
+                return false
+            }
+            else {
                 return true
             }
         }
