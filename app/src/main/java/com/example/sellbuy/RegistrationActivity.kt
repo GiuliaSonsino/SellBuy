@@ -37,28 +37,32 @@ class RegistrationActivity: AppCompatActivity() {
                         Toast.LENGTH_SHORT
                     ).show()
                     return false
-                } else if (!correctEmail.matches(emailReg.editText?.text.toString())) {
+                }
+                else if (!correctEmail.matches(emailReg.editText?.text.toString())) {
                     Toast.makeText(
                         applicationContext,
                         "Email non valida",
                         Toast.LENGTH_SHORT
                     ).show()
                     return false
-                } else if (numTelReg.editText?.text.toString().length < 10) {
+                }
+                else if (numTelReg.editText?.text.toString().length < 10) {
                     Toast.makeText(
                         applicationContext,
                         "Numero di telefono troppo breve",
                         Toast.LENGTH_SHORT
                     ).show()
                     return false
-                } else if (pwdReg.editText?.text.toString() != confPwdReg.editText?.text.toString()) {
+                }
+                else if (pwdReg.editText?.text.toString() != confPwdReg.editText?.text.toString()) {
                     Toast.makeText(
                         applicationContext,
                         "La password e la conferma devono corrispondere",
                         Toast.LENGTH_SHORT
                     ).show()
                     return false
-                } else {
+                }
+                else {
                     return true
                 }
             }
@@ -66,24 +70,31 @@ class RegistrationActivity: AppCompatActivity() {
 
             btnReg.setOnClickListener {
                 if (checkRegistrationAmm()) {
-                    FirebaseAuthWrapper(applicationContext).signUp(
+                    var ris = FirebaseAuthWrapper(applicationContext).signUp(
                         emailReg.editText?.text.toString(),
                         pwdReg.editText?.text.toString()
                     )
-                    val amministratore = Utente(nomeReg.editText?.text.toString(), cognomeReg.editText?.text.toString(),emailReg.editText?.text.toString(),numTelReg.editText?.text.toString().toLong(),true)
-                    FirebaseDbWrapper(applicationContext).creaUtente(amministratore)
-                    Toast.makeText(
-                        applicationContext,
-                        "Registrazione avvenuta con successo",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    val intent = Intent(this@RegistrationActivity, LoginActivity::class.java)
-                    startActivity(intent)
+                    if(ris) {
+                        val amministratore = Utente(
+                            nomeReg.editText?.text.toString(),
+                            cognomeReg.editText?.text.toString(),
+                            emailReg.editText?.text.toString(),
+                            numTelReg.editText?.text.toString().toLong(),
+                            true
+                        )
+                        FirebaseDbWrapper(applicationContext).creaUtente(amministratore)
+                        Toast.makeText(
+                            applicationContext,
+                            "Registrazione avvenuta con successo",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        val intent = Intent(this@RegistrationActivity, LoginActivity::class.java)
+                        startActivity(intent)
+                    }
                 }
                 finish()
             }
         }
-
         else {
             setContentView(R.layout.activity_registration)
             title = ruolo
@@ -106,28 +117,32 @@ class RegistrationActivity: AppCompatActivity() {
                         Toast.LENGTH_SHORT
                     ).show()
                     return false
-                } else if (!correctEmail.matches(emailReg.editText?.text.toString())) {
+                }
+                else if (!correctEmail.matches(emailReg.editText?.text.toString())) {
                     Toast.makeText(
                         applicationContext,
                         "Email non valida",
                         Toast.LENGTH_SHORT
                     ).show()
                     return false
-                } else if (numTelReg.editText?.text.toString().length < 10) {
+                }
+                else if (numTelReg.editText?.text.toString().length < 10) {
                     Toast.makeText(
                         applicationContext,
                         "Numero di telefono troppo breve",
                         Toast.LENGTH_SHORT
                     ).show()
                     return false
-                } else if (pwdReg.editText?.text.toString() != confPwdReg.editText?.text.toString()) {
+                }
+                else if (pwdReg.editText?.text.toString() != confPwdReg.editText?.text.toString()) {
                     Toast.makeText(
                         applicationContext,
                         "La password e la conferma devono corrispondere",
                         Toast.LENGTH_SHORT
                     ).show()
                     return false
-                } else {
+                }
+                else {
                     return true
                 }
             }
@@ -135,19 +150,27 @@ class RegistrationActivity: AppCompatActivity() {
 
             btnReg.setOnClickListener {
                 if (checkRegistrationUt()) {
-                    FirebaseAuthWrapper(applicationContext).signUp(
+                    var ris = FirebaseAuthWrapper(applicationContext).signUp(
                         emailReg.editText?.text.toString(),
                         pwdReg.editText?.text.toString()
                     )
-                    val utente= Utente(nomeReg.editText?.text.toString(), cognomeReg.editText?.text.toString(),emailReg.editText?.text.toString(),numTelReg.editText?.text.toString().toLong(), false)
-                    FirebaseDbWrapper(applicationContext).creaUtente(utente)
-                    Toast.makeText(
-                        applicationContext,
-                        "Registrazione avvenuta con successo",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    val intent = Intent(this@RegistrationActivity, LoginActivity::class.java)
-                    startActivity(intent)
+                    if(ris) {
+                        val utente = Utente(
+                            nomeReg.editText?.text.toString(),
+                            cognomeReg.editText?.text.toString(),
+                            emailReg.editText?.text.toString(),
+                            numTelReg.editText?.text.toString().toLong(),
+                            false
+                        )
+                        FirebaseDbWrapper(applicationContext).creaUtente(utente)
+                        Toast.makeText(
+                            applicationContext,
+                            "Registrazione avvenuta con successo",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        val intent = Intent(this@RegistrationActivity, LoginActivity::class.java)
+                        startActivity(intent)
+                    }
                 }
                 finish()
             }

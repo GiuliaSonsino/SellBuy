@@ -33,19 +33,21 @@ class FirebaseAuthWrapper(private val context: Context) {
     }
 
 
-    fun signUp(email: String, password: String) {
+    fun signUp(email: String, password: String): Boolean {
+        var ris = false
         this.auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
             if (task.isSuccessful) {
-
-
-            } else {
+                ris = true
+            }
+            else {
                 Toast.makeText(
                     context,
-                    "Sign-up failed. Error message: ${task.exception!!.message}",
+                    "Registrazione fallita: ${task.exception!!.message}",
                     Toast.LENGTH_LONG
                 ).show()
             }
         }
+        return ris
     }
 }
 
