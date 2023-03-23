@@ -5,6 +5,8 @@ import android.content.ContentValues.TAG
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.Task
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
@@ -32,7 +34,7 @@ class FirebaseAuthWrapper(private val context: Context) {
         return auth.currentUser!!.uid
     }
 
-
+/*
     fun signUp(email: String, password: String): Boolean {
         var ris = false
         this.auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
@@ -49,11 +51,95 @@ class FirebaseAuthWrapper(private val context: Context) {
         }
         return ris
     }
+*/
+
+    fun signUp(email: String, password: String) {
+        this.auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+
+            }
+            else {
+                Toast.makeText(
+                    context,
+                    "Registrazione fallita: ${task.exception!!.message}",
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        }
+
+    }
 }
 
 class FirebaseDbWrapper(context: Context) {
     private val db = Firebase.database("https://sellbuy-abe26-default-rtdb.firebaseio.com/")
     var dbref = db.reference
+
+/*
+    // returns false if user's email is in DB
+    fun checkEmailUnica(context: Context, email: String): Boolean {
+        val lock = ReentrantLock()
+        val condition = lock.newCondition()
+        var ris=true
+        if (context != null) {
+            GlobalScope.launch {
+                FirebaseDbWrapper(context).dbref.addValueEventListener(object :
+                    ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val children = snapshot.child("Utenti").children
+                        for (child in children) {
+                            val list = child.value as HashMap<*, *>
+                            for(record in list) {
+                                if (record.key!! == "email" && record.value!! == email) {
+                                    ris = false
+                                }
+                            }
+                        }
+                        lock.withLock { condition.signal() }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.w(ContentValues.TAG, "Failed to read value", error.toException())
+                    }
+                })
+            }
+            lock.withLock { condition.await() }
+        }
+        return ris
+    }
+*/
+    fun getTutteEmailUtenti(context: Context): MutableList<String> {
+    val lock = ReentrantLock()
+    val condition = lock.newCondition()
+    val List: MutableList<String> = mutableListOf()
+    if (context != null) {
+        GlobalScope.launch {
+            FirebaseDbWrapper(context).dbref.addValueEventListener(object :
+                ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val children = snapshot.child("Utenti").children
+                    for (child in children) {
+                        val list = child.value as HashMap<*, *>
+                        for (record in list) {
+                            var valore = record.value.toString()
+                            if (record.key!! == "email") {
+                                List.add(valore)
+                            }
+                        }
+                    }
+                    lock.withLock { condition.signal() }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.w(ContentValues.TAG, "Failed to read value", error.toException())
+                }
+            })
+        }
+        lock.withLock { condition.await() }
+    }
+    return List
+    }
+
+
 
 
 
