@@ -24,6 +24,9 @@ class RicercaActivity: AppCompatActivity() {
     private var adapter = AnnuncioAdapter(this, mutableListOf())
     var filteredList: MutableList<AnnuncioViewModel> = mutableListOf()
     var parola:String = ""
+    var parolaDigitata: String = ""
+    var prezzoDigitato:String = ""
+    var spedizioneDigitata: String = ""
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,10 +39,9 @@ class RicercaActivity: AppCompatActivity() {
         recyclerview.adapter = adapter
 
         //qui si prendono i parametri che arrivano da ricerca salvata
-        val parolaDigitata = intent.getStringExtra("parolaDigitata")
-        val prezzoDigitato = intent.getStringExtra("prezzo")
-        val spedizioneDigitata = intent.getStringExtra("spedizione")
-
+        parolaDigitata = intent.getStringExtra("parolaDigitata").toString()
+        prezzoDigitato = intent.getStringExtra("prezzo").toString()
+        spedizioneDigitata = intent.getStringExtra("spedizione").toString()
 
 
         val emailLoggato = FirebaseAuth.getInstance().currentUser?.email
@@ -117,15 +119,8 @@ class RicercaActivity: AppCompatActivity() {
     }
 
 
-
-
     fun checkFilters(prezzo : String) : Boolean{
-        if(prezzo== "") {
-            return false
-        }
-        else {
-            return true
-        }
+        return prezzo != ""
     }
 
 
@@ -156,6 +151,39 @@ class RicercaActivity: AppCompatActivity() {
         return filteredList
     }
 
+
+/*
+    fun createList(parola: String, prezzo: String, spedizione : String): MutableList<AnnuncioViewModel> {
+        var count = 0
+        val queryParola = parolaDigitata?:parola
+        val queryPrezzo = prezzoDigitato?:prezzo
+        val querySpedizione = spedizioneDigitata?:spedizione
+        if (auth.currentUser != null) {
+            GlobalScope.launch {
+                val an = FirebaseDbWrapper(applicationContext).ricercaConFiltri(applicationContext, queryParola, queryPrezzo, querySpedizione)
+                val codici = FirebaseDbWrapper(applicationContext).ricercaKeysFromFiltri(applicationContext, queryParola, queryPrezzo, querySpedizione)
+                filteredList.clear()
+                for (record in an) {
+                    val nomeAn = record.nome
+                    val imageName = record.foto?.get(0) //get the filename from the edit text
+                    val prezzoAn = record.prezzo
+                    val codice = codici[count]
+                    val nuovoan =
+                        imageName?.let { AnnuncioViewModel(it, nomeAn, prezzoAn, codice!!) }
+                    if (nuovoan != null) {
+                        filteredList.add(nuovoan)
+                    }
+                    count += 1
+                }
+                withContext(Dispatchers.Main) {
+                    adapter.notifyDataSetChanged()
+                }
+            }
+        }
+        return filteredList
+    }
+
+ */
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         menuInflater.inflate(R.menu.menu_ricerca, menu)
