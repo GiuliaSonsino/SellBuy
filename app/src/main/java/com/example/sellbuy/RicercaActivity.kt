@@ -1,7 +1,9 @@
 package com.example.sellbuy
 
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.*
@@ -55,7 +57,8 @@ class RicercaActivity: AppCompatActivity() {
         spedizioni.setText(spedizioneDigitata)
         spedizioni.setAdapter(adapterSped)
         val prezzo = findViewById<TextInputLayout>(R.id.prezzo_max)
-        prezzo.hint=prezzoDigitato
+        prezzo.editText?.setText(prezzoDigitato)
+        //prezzo.hint=prezzoDigitato
         val btnFiltri= findViewById<Button>(R.id.btn_filtri)
         val btnSalvaRicerca = findViewById<TextView>(R.id.salvaRicerca)
         searchView=findViewById(R.id.search_view)
@@ -64,6 +67,7 @@ class RicercaActivity: AppCompatActivity() {
             //when user confirm the search
             override fun onQueryTextSubmit(p0: String?): Boolean {
                 parola = p0 ?: ""
+                /*
                 val b=checkFilters(prezzo.editText?.text.toString())
                 if(b) {
                     filteredList = createList(parola!!,prezzo.editText?.text.toString(), spedizioni.text.toString())
@@ -71,13 +75,16 @@ class RicercaActivity: AppCompatActivity() {
                 else {
                     filteredList = createList(parola!!,"10000", spedizioni.text.toString())
 
-                }
+                }*/
+                parolaDigitata=parola
+
                 return false
             }
 
             // when user is writing
             override fun onQueryTextChange(p0: String?): Boolean {
                 parola = p0 ?: ""
+                /*
                 val b=checkFilters(prezzo.editText?.text.toString())
                 if(b) {
                     filteredList = createList(parola!!,prezzo.editText?.text.toString(), spedizioni.text.toString())
@@ -86,12 +93,33 @@ class RicercaActivity: AppCompatActivity() {
                     filteredList = createList(parola!!,"10000", spedizioni.text.toString())
 
                 }
+                 */
+                parolaDigitata=parola
+
                 return false
             }
         })
 
+        btnFiltri.setOnClickListener {
+            prezzoDigitato=prezzo.editText?.text.toString()
+            spedizioneDigitata= spedizioni.text.toString()
+            Log.i(TAG,"valore parola $parolaDigitata")
+            Log.i(TAG,"valore prezzo $prezzoDigitato")
+            Log.i(TAG,"valore sped $spedizioneDigitata")
+            val b = checkFilters(prezzoDigitato)
+            if (b) {
+                filteredList = createList(
+                    parolaDigitata,
+                    prezzoDigitato,
+                    spedizioneDigitata
+                )
+            } else {
+                filteredList = createList(parolaDigitata, "10000", spedizioneDigitata)
+            }
+        }
 
 
+/*
         btnFiltri.setOnClickListener {
             val queryParola = parolaDigitata ?: parola
             val queryPrezzo = prezzoDigitato ?: prezzo
@@ -126,6 +154,8 @@ class RicercaActivity: AppCompatActivity() {
         }
 
 
+
+ */
         btnSalvaRicerca.setOnClickListener {
             val ricerca = RicercaSalvata(
                 emailLoggato!!,
