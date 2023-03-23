@@ -10,8 +10,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
-import kotlinx.coroutines.*
-import models.Annuncio
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import models.AnnuncioViewModel
 import models.FirebaseDbWrapper
 import models.RicercaSalvata
@@ -91,13 +93,36 @@ class RicercaActivity: AppCompatActivity() {
 
 
         btnFiltri.setOnClickListener {
-            val b=checkFilters(prezzo.editText?.text.toString())
+            val queryParola = parolaDigitata ?: parola
+            val queryPrezzo = prezzoDigitato ?: prezzo
+            val querySpedizione = spedizioneDigitata ?: spedizioni
+            val b: Boolean
+            if(queryPrezzo==prezzo) {
+                b=checkFilters(prezzo.editText?.text.toString())
+                if(b) {
+                    filteredList = createList(queryParola, prezzo.editText?.text.toString(), spedizioneDigitata)
+                }
+                else {
+                    filteredList = createList(queryParola,"10000", spedizioneDigitata)
+                }
+            }
+            else {
+                b=checkFilters(prezzoDigitato)
+                if(b) {
+                    filteredList = createList(queryParola, prezzoDigitato, spedizioneDigitata)
+                }
+                else {
+                    filteredList = createList(queryParola,"10000", spedizioneDigitata)
+                }
+            }
+            //val b=checkFilters(prezzo.editText?.text.toString())
+            /*
             if(b) {
                 filteredList = createList(parola!!, prezzo.editText?.text.toString(), spedizioni.text.toString())
             }
             else {
                 filteredList = createList(parola!!,"10000", spedizioni.text.toString())
-            }
+            }*/
         }
 
 
