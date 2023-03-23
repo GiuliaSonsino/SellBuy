@@ -1,88 +1,132 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_margin="5dp"
-    android:orientation="vertical">
-
-    <SearchView
-        android:id="@+id/search_view"
+    android:layout_height="wrap_content">
+    <LinearLayout xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:iconifiedByDefault="false"
-        android:queryHint="Cerca..."/>
+        android:layout_margin="5dp"
+        android:orientation="vertical">
 
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Prezzo (€)"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:layout_marginTop="15dp"/>
-
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/prezzo_max"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Fino a...">
-
-        <com.google.android.material.textfield.TextInputEditText
+        <SearchView
+            android:id="@+id/search_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="numberDecimal" />
-    </com.google.android.material.textfield.TextInputLayout>
+            android:iconifiedByDefault="false"
+            android:queryHint="Cerca..."/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="100">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="35">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Prezzo (€)"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="16dp"/>
 
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Disponibilità a spedire"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:layout_marginTop="10dp"/>
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/prezzo_max"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Fino a...">
 
-    <com.google.android.material.textfield.TextInputLayout
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-        android:layout_width="match_parent"
-        android:layout_height="57dp"
-        android:hint="Tutti">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="numberDecimal" />
+                </com.google.android.material.textfield.TextInputLayout>
 
-        <AutoCompleteTextView
-            android:id="@+id/spedizioneAcTv"
+
+
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="65">
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Disponibilità a spedire"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="16dp"/>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <AutoCompleteTextView
+                        android:id="@+id/spedizioneAcTv"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="none" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+            </LinearLayout>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:weightSum="100">
+
+
+            <Button
+                android:id="@+id/btn_filtri"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/baseline_filtri_search_24"
+                android:text="Cerca"
+                android:layout_gravity="center"
+                android:layout_weight="75"/>
+
+            <TextView
+                android:id="@+id/salvaRicerca"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/salva_ricerca"
+                android:textColor="@color/quantum_yellow700"
+                android:clickable="true"
+                android:textSize="15dp"
+                android:textStyle="bold"
+                android:focusable="true"
+                android:layout_weight="25"
+                android:layout_gravity="center|end"
+                android:layout_marginStart="10dp"
+                />
+
+        </LinearLayout>
+
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/listView_search"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:inputType="none" />
-    </com.google.android.material.textfield.TextInputLayout>
+            tools:itemCount="5"
+            tools:listitem="@layout/item_annuncio" />
 
-    <TextView
-        android:id="@+id/salvaRicerca"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/salva_ricerca"
-        android:textColor="@color/quantum_yellow700"
-        android:clickable="true"
-        android:textSize="20dp"
-        android:textStyle="bold"
-        android:focusable="true" />
-
-    <Button
-        android:id="@+id/btn_filtri"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:drawableLeft="@drawable/baseline_filtri_search_24"
-        android:text="Cerca"
-        android:layout_gravity="center"
-        android:layout_margin="5dp"/>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/listView_search"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:itemCount="5"
-        tools:listitem="@layout/item_annuncio" />
-
-</LinearLayout>
+    </LinearLayout>
+</ScrollView>
