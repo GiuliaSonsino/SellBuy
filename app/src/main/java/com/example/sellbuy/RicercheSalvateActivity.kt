@@ -3,6 +3,8 @@ package com.example.sellbuy
 import android.content.ContentValues.TAG
 import android.os.Bundle
 import android.util.Log
+import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -19,20 +21,27 @@ class RicercheSalvateActivity: AppCompatActivity() {
 
     private val auth = FirebaseAuth.getInstance()
     private var adapter = RicercaSalvataAdapter(this, mutableListOf())
-    var listaRic: MutableList<RicercaSalvata> = mutableListOf()
-
+    private var listaRic: MutableList<RicercaSalvata> = mutableListOf()
+    private var numRicerche: TextView? = null
+    private var listener: ListCompleteListener? = null
+    private var num : Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ricerche_salvate)
 
+        numRicerche = findViewById(R.id.num_ricerche)
         val recyclerview = findViewById<RecyclerView>(R.id.recyclerview_ricerche)
         title = "Ricerche Salvate"
-        //mList= createList()
         recyclerview.layoutManager = LinearLayoutManager(this)
         adapter = RicercaSalvataAdapter(applicationContext, listaRic)
         recyclerview.adapter = adapter
 
+        setListCompleteListener(object : ListCompleteListener {
+            override fun onListCompleted(size: Int) {
+                numRicerche!!.text = size.toString()
+            }
+        })
     }
 
     override fun onStart() {
@@ -44,7 +53,7 @@ class RicercheSalvateActivity: AppCompatActivity() {
     private fun createList(): MutableList<RicercaSalvata> {
         if (auth.currentUser != null) {
             GlobalScope.launch {
-                var ricerche =
+                val ricerche =
                     FirebaseDbWrapper(applicationContext).getRicercheSalvateFromEmail(applicationContext)
                 listaRic.clear()
                 for (record in ricerche) {
@@ -60,11 +69,22 @@ class RicercheSalvateActivity: AppCompatActivity() {
                 }
                 withContext(Dispatchers.Main) {
                     adapter.notifyDataSetChanged()
+                    num = listaRic.size
+                    numRicerche!!.text = num.toString()
+                    listener?.onListCompleted(num)
                 }
-                Log.i(TAG,"ricercheeeee $ricerche")
             }
         }
-        Log.i(TAG,"ricercheeeee fuori  $listaRic")
+        num = listaRic.size
         return listaRic
     }
+
+    fun setListCompleteListener(listener: ListCompleteListener) {
+        this.listener = listener
+    }
+}
+
+
+interface ListCompleteListener {
+    fun onListCompleted(size: Int)
 }

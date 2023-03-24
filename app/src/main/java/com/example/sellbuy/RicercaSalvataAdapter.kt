@@ -14,7 +14,6 @@ class RicercaSalvataAdapter(context: Context, private val listaRicerche: List<Ri
 
     private val mcontext: Context?=context
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder{
 
         val view = LayoutInflater.from(parent.context)
