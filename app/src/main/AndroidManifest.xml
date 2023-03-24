@@ -108,6 +108,11 @@
             android:name=".RicercheSalvateActivity"
             android:exported="false"
             ></activity>
+
+        <activity
+            android:name=".AcquistoAvvenuto"
+            android:exported="false"
+            ></activity>
     </application>
 
 </manifest>

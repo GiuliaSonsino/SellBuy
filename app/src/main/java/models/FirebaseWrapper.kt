@@ -523,6 +523,12 @@ class FirebaseDbWrapper(context: Context) {
         return ris
     }
 
+    //this function updates user's credit
+    suspend fun modificaCreditoUtente(context: Context, codiceUtente: String, creditoNuovo : Double) {
+        val dbRef = FirebaseDbWrapper(context).dbref.child("Utenti").child(codiceUtente).child("credito")
+        dbRef.setValue(creditoNuovo).await()
+
+    }
 
     //we use this function for adding a new photo in Annuncio and also for deleting one
     suspend fun modificaImmagineFromAnnuncio(context: Context, codice: String, immagini: List<String>?) {

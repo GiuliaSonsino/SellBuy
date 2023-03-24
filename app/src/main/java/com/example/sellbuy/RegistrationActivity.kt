@@ -306,7 +306,8 @@ class RegistrationActivity: AppCompatActivity() {
                         cognomeReg.editText?.text.toString(),
                         emailReg.editText?.text.toString(),
                         numTelReg.editText?.text.toString().toLong(),
-                        true
+                        true,
+                        0.0
                     )
                     FirebaseDbWrapper(applicationContext).creaUtente(amministratore)
                     Toast.makeText(
@@ -393,7 +394,8 @@ class RegistrationActivity: AppCompatActivity() {
                         cognomeReg.editText?.text.toString(),
                         emailReg.editText?.text.toString(),
                         numTelReg.editText?.text.toString().toLong(),
-                        false
+                        false,
+                        0.0
                     )
                     FirebaseDbWrapper(applicationContext).creaUtente(utente)
                     Toast.makeText(

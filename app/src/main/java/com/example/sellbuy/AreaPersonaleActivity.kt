@@ -15,6 +15,7 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.*
 import models.AnnuncioViewModel
 import models.FirebaseDbWrapper
+import org.w3c.dom.Text
 
 class AreaPersonaleActivity: AppCompatActivity() {
 
@@ -31,6 +32,7 @@ class AreaPersonaleActivity: AppCompatActivity() {
         val nomeUtente = findViewById<TextView>(R.id.nomeUtente)
         nomeUtente.text = emailUtente
         val ruolo = findViewById<TextView>(R.id.ruolo)
+        val credito = findViewById<TextView>(R.id.credito)
         val tel = findViewById<TextView>(R.id.num_tel)
         GlobalScope.launch {
             val utente = FirebaseDbWrapper(applicationContext).getUtenteFromEmail(applicationContext)
@@ -39,10 +41,13 @@ class AreaPersonaleActivity: AppCompatActivity() {
             if(ruoloo) {
                 ruolo.text= "Amministratore"
                 tel.text=numTell.toString()
+                credito.text=utente.credito.toString()
             }
             else {
                 ruolo.text = "Utente"
                 tel.text=numTell.toString()
+                credito.text=utente.credito.toString()
+
             }
         }
         tel.setOnClickListener {

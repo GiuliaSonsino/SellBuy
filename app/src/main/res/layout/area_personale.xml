@@ -8,8 +8,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:background="@color/panna">
+        android:orientation="horizontal">
 
         <ImageView
             android:layout_width="70dp"
@@ -54,7 +53,8 @@
                     android:text=" Amministratore"
                     android:textSize="17dp"
                     android:textColor="@color/black"
-                    android:layout_gravity="center"/>
+                    android:layout_gravity="center"
+                    android:layout_marginStart="4dp"/>
 
 
             </LinearLayout>
@@ -81,7 +81,45 @@
                     android:textColor="@color/black"
                     android:layout_gravity="center"
                     android:autoLink="phone"
-                    android:textColorLink="@color/verde_scuro"/>
+                    android:textColorLink="@color/verde_scuro"
+                    android:layout_marginStart="4dp"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    android:layout_marginStart="5dp"
+                    android:src="@drawable/baseline_euro_24"/>
+
+                <TextView
+                    android:id="@+id/credito"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text=" 345"
+                    android:textSize="17dp"
+                    android:textColor="@color/black"
+                    android:layout_gravity="center"
+                    android:autoLink="phone"
+                    android:textColorLink="@color/verde_scuro"
+                    android:layout_marginStart="4dp"/>
+
+                <TextView
+                    android:id="@+id/ricarica_credito"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:text="Ricarica credito"
+                    android:layout_marginStart="10dp"
+                    android:textSize="17dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:textColor="@color/design_default_color_error"
+                    android:textStyle="bold"/>
 
             </LinearLayout>
 
@@ -93,7 +131,8 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="2dp"
-        android:background="@color/verde_scuro"/>
+        android:background="@color/verde_scuro"
+        android:layout_marginTop="5dp"/>
 
 
     <TextView

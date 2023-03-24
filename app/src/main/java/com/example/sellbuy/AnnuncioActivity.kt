@@ -65,6 +65,7 @@ class AnnuncioActivity : AppCompatActivity() {
             startActivity(phoneIntent)
         }
 
+
         GlobalScope.launch {
             //val codiceAnn = intent.getStringExtra("codice")
             ann =
@@ -264,6 +265,32 @@ class AnnuncioActivity : AppCompatActivity() {
             intent.putExtra("emailProprietarioAnn", emailProprietarioAnn)
             intent.putExtra("nomeArticolo", nomeArticolo)
             startActivity(intent)
+        }
+
+
+        btnAcquista.setOnClickListener {
+            GlobalScope.launch {
+                val u = FirebaseDbWrapper(applicationContext).getUtenteFromEmail(applicationContext)
+                val an = FirebaseDbWrapper(applicationContext).getAnnuncioFromCodice(applicationContext, codiceAnn!!)
+                if(u!!.credito >= an.prezzo.toDouble()) {
+                    val soldiRimasti = u!!.credito - an.prezzo.toDouble()
+                    FirebaseDbWrapper(applicationContext).modificaCreditoUtente(applicationContext,idCurrentUser!!,soldiRimasti)
+                    val intent = Intent(applicationContext, AcquistoAvvenuto::class.java)
+                    intent.putExtra("soldiRimasti", soldiRimasti.toString())
+                    startActivity(intent)
+                    finish()
+                }
+                else {
+                    runOnUiThread {
+                        Toast.makeText(
+                            applicationContext,
+                            "Credito non sufficiente",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+            }
+
         }
     }
 
