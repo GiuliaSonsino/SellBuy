@@ -28,6 +28,7 @@ class AreaPersonaleActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.area_personale)
+        val ricaricaCartaTv= findViewById<TextView>(R.id.ricarica_credito)
         val emailUtente: String? = auth.currentUser?.email
         val nomeUtente = findViewById<TextView>(R.id.nomeUtente)
         nomeUtente.text = emailUtente
@@ -59,6 +60,20 @@ class AreaPersonaleActivity: AppCompatActivity() {
         recyclerview.layoutManager = LinearLayoutManager(this)
         adapter = AnnuncioAdapter(applicationContext, mList)
         recyclerview.adapter = adapter
+
+        ricaricaCartaTv.setOnClickListener {
+            GlobalScope.launch {
+                val utente = FirebaseDbWrapper(applicationContext).getUtenteFromEmail(applicationContext)
+                val codiceUtente = FirebaseDbWrapper(applicationContext).getIdUtenteFromEmail(applicationContext,emailUtente!!)
+                val creditoAttuale = utente!!.credito
+                val intent = Intent(applicationContext, PagamentoActivity::class.java)
+                intent.putExtra("creditoAttuale",creditoAttuale )
+                intent.putExtra("codiceUtente",codiceUtente )
+
+                startActivity(intent)
+            }
+
+        }
     }
 
     override fun onStart() {

@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:layout_margin="5dp">
+
+    <TextView
+        android:id="@+id/titolareCartaTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Titolare carta"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <AutoCompleteTextView
+        android:id="@+id/titolareAcTv"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:hint="Nome e Cognome"
+        android:maxLength="16"
+        android:inputType="number"/>
+
+
+    <TextView
+        android:id="@+id/numeroCartaTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Inserire numero carta"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <AutoCompleteTextView
+        android:id="@+id/numeroAcTv"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:hint="XXXX XXXX XXXX XXXX"
+        android:maxLength="16"
+        android:inputType="number"/>
+
+
+    <TextView
+        android:id="@+id/CVVTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Inserire CVV"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <AutoCompleteTextView
+        android:id="@+id/CVVAcTv"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:hint="XXX"
+        android:maxLength="3"
+        android:inputType="number"/>
+
+    <TextView
+        android:id="@+id/importoTv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Inserire importo (€)"
+        android:textSize="16sp"
+        android:textStyle="bold" />
+
+    <AutoCompleteTextView
+        android:id="@+id/importoAcTv"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:hint="0.0 "
+        android:inputType="numberDecimal"/>
+
+
+    <Button
+        android:id="@+id/btnImporto"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Carica"
+        android:layout_marginTop="30dp"/>
+
+</LinearLayout>

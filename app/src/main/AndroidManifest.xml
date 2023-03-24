@@ -113,6 +113,11 @@
             android:name=".AcquistoAvvenuto"
             android:exported="false"
             ></activity>
+
+        <activity
+            android:name=".PagamentoActivity"
+            android:exported="false"
+            ></activity>
     </application>
 
 </manifest>
