@@ -317,7 +317,8 @@ class AddActivity: AppCompatActivity() {
                         fileName,
                         auth.currentUser?.email.toString(),
                         n!!.toLong(),
-                        switchSped
+                        switchSped,
+                        false
                     )
                     FirebaseDbWrapper(applicationContext).creaAnnuncio(annuncio)
                     val intent = Intent(this@AddActivity, MainActivity::class.java)

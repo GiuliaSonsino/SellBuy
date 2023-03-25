@@ -237,6 +237,36 @@ class FirebaseDbWrapper(context: Context) {
         return prova
     }
 
+    fun getUtenteFromCodice(context: Context, codice : String): Utente {
+        val lock = ReentrantLock()
+        val condition = lock.newCondition()
+        val maill = Firebase.auth.currentUser?.email
+        var prova=Utente()
+        if (maill != null) {
+            GlobalScope.launch {
+                FirebaseDbWrapper(context).dbref.addValueEventListener(object :
+                    ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val children = snapshot.child("Utenti").children
+                        for (child in children) {
+                            val key = child.key.toString()
+                            if(key == codice ) {
+                                prova = child.getValue(Utente::class.java)!!
+                            }
+                        }
+                        lock.withLock { condition.signal() }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.w(ContentValues.TAG, "Failed to read value", error.toException())
+                    }
+                })
+            }
+            lock.withLock { condition.await() }
+        }
+        return prova
+    }
+
 
     fun getAnnunciFromEmail(context: Context): MutableList<Annuncio> {
         val lock = ReentrantLock()
@@ -538,6 +568,11 @@ class FirebaseDbWrapper(context: Context) {
         } else {
             dbRef.removeValue().await()
         }
+    }
+
+    suspend fun segnaComeVenduto(context: Context, codice: String) {
+        val dbRef = FirebaseDbWrapper(context).dbref.child("Annunci").child(codice).child("venduto")
+        dbRef.setValue(true).await()
     }
 
     suspend fun modificaInfoAnnuncio(context: Context, codice:String, nome: String, descrizione : String, prezzo: String, categoria : String, condizioni: String, spedizione: Boolean) {

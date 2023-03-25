@@ -18,6 +18,9 @@
         android:id="@+id/modificaInfo"
         android:title="Modifica informazioni"/>
     <item
+        android:id="@+id/segnaVenduto"
+        android:title="Segna come venduto"/>
+    <item
         android:id="@+id/elimina"
         android:title="ELIMINA ANNUNCIO"
         />

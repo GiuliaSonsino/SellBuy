@@ -270,11 +270,14 @@ class AnnuncioActivity : AppCompatActivity() {
 
         btnAcquista.setOnClickListener {
             GlobalScope.launch {
-                val u = FirebaseDbWrapper(applicationContext).getUtenteFromEmail(applicationContext)
+                val acquirente = FirebaseDbWrapper(applicationContext).getUtenteFromEmail(applicationContext)
+                val venditore = FirebaseDbWrapper(applicationContext).getUtenteFromCodice(applicationContext,idProprietario!!)
                 val an = FirebaseDbWrapper(applicationContext).getAnnuncioFromCodice(applicationContext, codiceAnn!!)
-                if(u!!.credito >= an.prezzo.toDouble()) {
-                    val soldiRimasti = u!!.credito - an.prezzo.toDouble()
+                if(acquirente!!.credito >= an.prezzo.toDouble()) {
+                    val soldiRimasti = acquirente.credito - an.prezzo.toDouble()
+                    val soldiAggiunti = venditore.credito + an.prezzo.toDouble()
                     FirebaseDbWrapper(applicationContext).modificaCreditoUtente(applicationContext,idCurrentUser!!,soldiRimasti)
+                    FirebaseDbWrapper(applicationContext).modificaCreditoUtente(applicationContext,idProprietario!!,soldiAggiunti)
                     val intent = Intent(applicationContext, AcquistoAvvenuto::class.java)
                     intent.putExtra("soldiRimasti", soldiRimasti.toString())
                     startActivity(intent)
@@ -340,6 +343,16 @@ class AnnuncioActivity : AppCompatActivity() {
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
                 startActivity(intent)
             }
+            R.id.segnaVenduto -> {
+                GlobalScope.launch {
+                    FirebaseDbWrapper(applicationContext).segnaComeVenduto(applicationContext,codiceAnn!!)
+                    val intent = Intent(applicationContext, MainActivity::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+                    startActivity(intent)
+                }
+                Toast.makeText(applicationContext, "Annuncio segnato come venduto", Toast.LENGTH_LONG).show()
+            }
+
             R.id.elimina -> {
                 var ris: Boolean
                 GlobalScope.launch {

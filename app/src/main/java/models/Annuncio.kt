@@ -12,9 +12,10 @@ class Annuncio() {
     var email : String = "*"
     var numTel : Long = 0
     var spedizione : Boolean = false
+    var venduto : Boolean = false
 
 
-    constructor(nome: String, categoria: String, localizzazione:String, descrizione: String, prezzo: String, stato: String, foto: MutableList<String>, email: String, numTel: Long, spedizione: Boolean) : this(){
+    constructor(nome: String, categoria: String, localizzazione:String, descrizione: String, prezzo: String, stato: String, foto: MutableList<String>, email: String, numTel: Long, spedizione: Boolean, venduto: Boolean) : this(){
         this.nome=nome
         this.categoria=categoria
         this.localizzazione=localizzazione
@@ -25,6 +26,7 @@ class Annuncio() {
         this.email=email
         this.numTel=numTel
         this.spedizione=spedizione
+        this.venduto = venduto
     }
 
 }

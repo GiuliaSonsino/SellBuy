@@ -20,7 +20,7 @@
         android:title="chat"/>
     <item
         android:id="@+id/profilo"
-        android:title="I miei annunci"/>
+        android:title="Area personale"/>
     <item
         android:id="@+id/logout"
         android:title="Logout"/>
