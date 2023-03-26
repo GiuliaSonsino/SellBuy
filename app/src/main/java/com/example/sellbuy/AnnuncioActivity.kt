@@ -18,6 +18,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
+import com.pranavpandey.android.dynamic.toasts.DynamicToast
 import kotlinx.coroutines.*
 import models.Annuncio
 import models.FirebaseDbWrapper
@@ -82,6 +83,10 @@ class AnnuncioActivity : AppCompatActivity() {
             descrizione.text = ann.descrizione
             val prezzo = findViewById<TextView>(R.id.tv_price)
             prezzo.text = ann.prezzo
+            val venduto = findViewById<TextView>(R.id.tv_venduto)
+            if(ann.venduto) {
+                venduto.text= "VENDUTO"
+            }
             val condizione = findViewById<TextView>(R.id.tv_condition)
             condizione.text = ann.stato
             cond = ann.stato
@@ -170,6 +175,17 @@ class AnnuncioActivity : AppCompatActivity() {
             } else {
                 View.VISIBLE.also { btnAcquista.visibility = it }
                 View.VISIBLE.also { btnChat.visibility = it }
+                if(ann.venduto) {
+                    btnAcquista.isClickable=false
+                    runOnUiThread {
+                        DynamicToast.makeError(
+                            applicationContext,
+                            "Annuncio già venduto",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+
+                }
             }
         }
 
@@ -285,10 +301,10 @@ class AnnuncioActivity : AppCompatActivity() {
                 }
                 else {
                     runOnUiThread {
-                        Toast.makeText(
+                        DynamicToast.makeError(
                             applicationContext,
                             "Credito non sufficiente",
-                            Toast.LENGTH_SHORT
+                            Toast.LENGTH_LONG
                         ).show()
                     }
                 }
@@ -314,7 +330,7 @@ class AnnuncioActivity : AppCompatActivity() {
             }
             R.id.addImg -> {
                 if(immagini!!.size==5) {
-                    Toast.makeText(applicationContext, "Impossibile aggiungere più di 5 immagini", Toast.LENGTH_LONG)
+                    DynamicToast.makeError(applicationContext, "Impossibile aggiungere più di 5 immagini", Toast.LENGTH_LONG)
                         .show()
                 }
                 else {
@@ -325,7 +341,7 @@ class AnnuncioActivity : AppCompatActivity() {
             }
             R.id.eliminaImg -> {
                 if(immagini!!.size==1) {
-                    Toast.makeText(applicationContext, "Impossibile eliminare tutte le immagini", Toast.LENGTH_LONG)
+                    DynamicToast.makeError(applicationContext, "Impossibile eliminare tutte le immagini", Toast.LENGTH_LONG)
                         .show()
                 }
                 else {

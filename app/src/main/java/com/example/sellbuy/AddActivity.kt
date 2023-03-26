@@ -39,6 +39,7 @@ import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.storage.FirebaseStorage
+import com.pranavpandey.android.dynamic.toasts.DynamicToast
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import models.Annuncio
@@ -131,7 +132,7 @@ class AddActivity: AppCompatActivity() {
             if (countImg < 5) {
                 getImage.launch("image/*")
             } else {
-                Toast.makeText(
+                DynamicToast.makeWarning(
                     applicationContext,
                     "Numero massimo di immagini raggiunto",
                     Toast.LENGTH_SHORT
@@ -191,7 +192,7 @@ class AddActivity: AppCompatActivity() {
             val prezzo: Double? = prezzoText.toDoubleOrNull()
 
             if (nomeObj.text.toString() == "" || descrizioneObj.text.toString() == "" || fileName.size == 0) {
-                Toast.makeText(
+                DynamicToast.makeWarning(
                     applicationContext,
                     "Devi compilare tutti i campi",
                     Toast.LENGTH_SHORT
@@ -199,7 +200,7 @@ class AddActivity: AppCompatActivity() {
                 return false
             }
             else if (autoCompleteTextViewCat.text.toString() == "") {
-                Toast.makeText(
+                DynamicToast.makeWarning(
                     applicationContext,
                     "Selezionare una categoria",
                     Toast.LENGTH_SHORT
@@ -207,7 +208,7 @@ class AddActivity: AppCompatActivity() {
                 return false
             }
             else if (autoCompleteTextViewCond.text.toString() == "") {
-                Toast.makeText(
+                DynamicToast.makeWarning(
                     applicationContext,
                     "Selezionare condizioni dell'oggetto",
                     Toast.LENGTH_SHORT
@@ -215,7 +216,7 @@ class AddActivity: AppCompatActivity() {
                 return false
             }
             else if (prezzoObj.editText?.text.toString() == "") {
-                Toast.makeText(
+                DynamicToast.makeWarning(
                     applicationContext,
                     "Inserire prezzo",
                     Toast.LENGTH_SHORT
@@ -223,7 +224,7 @@ class AddActivity: AppCompatActivity() {
                 return false
             }
             else if (prezzo!! > 10000.00) {
-                Toast.makeText(
+                DynamicToast.makeWarning(
                     applicationContext,
                     "Inserire prezzo non superiore a 10000€",
                     Toast.LENGTH_SHORT
@@ -301,7 +302,7 @@ class AddActivity: AppCompatActivity() {
 
         // Check data and go to AddActivity
         GlobalScope.launch {
-            var tel = FirebaseDbWrapper(applicationContext).getUtenteFromEmail(applicationContext)
+            val tel = FirebaseDbWrapper(applicationContext).getUtenteFromEmail(applicationContext)
             val n = tel?.numTel
 
             btnAggiungi.setOnClickListener {
@@ -320,14 +321,15 @@ class AddActivity: AppCompatActivity() {
                         switchSped,
                         false
                     )
-                    FirebaseDbWrapper(applicationContext).creaAnnuncio(annuncio)
-                    val intent = Intent(this@AddActivity, MainActivity::class.java)
-                    startActivity(intent)
-                    Toast.makeText(
+                    DynamicToast.makeSuccess(
                         applicationContext,
                         "Annuncio creato correttamente",
                         Toast.LENGTH_SHORT
                     ).show()
+                    FirebaseDbWrapper(applicationContext).creaAnnuncio(annuncio)
+                    val intent = Intent(this@AddActivity, MainActivity::class.java)
+                    startActivity(intent)
+
                 }
             }
         }

@@ -36,60 +36,68 @@ class PagamentoActivity: AppCompatActivity() {
 
 
 
-        btnImporto.setOnClickListener {
-            GlobalScope.launch {
-                val creditoAggiornato = 50.0
-                    //creditoAttuale!!.toDouble() + importo!!.text.toString().toDouble()
-                if (checkPagamento()) {
-                    FirebaseDbWrapper(applicationContext).modificaCreditoUtente(
-                        applicationContext,
-                        codiceUtente!!,
-                        creditoAggiornato
-                    )
-                    Toast.makeText(
-                        applicationContext,
-                        "Ricarica avvenuta",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    val intent = Intent(applicationContext, MainActivity::class.java)
-                    startActivity(intent)
-                    finish()
-                }
+
+        fun checkPagamento(): Boolean {
+            if (titolare!!.text.toString() == "" || numero!!.text.toString() == "" || cvv!!.text.toString() == "" || importo!!.text.toString() == "") {
+                Toast.makeText(
+                    applicationContext,
+                    "Compilare tutti i campi",
+                    Toast.LENGTH_SHORT
+                ).show()
+                return false
+            } else if (numero!!.text.toString().length < 16) {
+                Toast.makeText(
+                    applicationContext,
+                    "Numero carta deve essere di 16 cifre",
+                    Toast.LENGTH_SHORT
+                ).show()
+                return false
+            } else if (cvv!!.text.toString().length < 3) {
+                Toast.makeText(
+                    applicationContext,
+                    "CVV carta deve essere di 3 cifre",
+                    Toast.LENGTH_SHORT
+                ).show()
+                return false
+            } else {
+                return true
             }
         }
 
+        btnImporto.setOnClickListener {
+            GlobalScope.launch {
+                if(importo!!.text.toString()=="") {
+                    runOnUiThread {
+                        Toast.makeText(
+                            applicationContext,
+                            "Inserire tutti i campi",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+                else {
+                    val creditoAggiornato = creditoAttuale!!.toDouble() + importo!!.text.toString().toDouble()
+                    if (checkPagamento()) {
+                        FirebaseDbWrapper(applicationContext).modificaCreditoUtente(
+                            applicationContext,
+                            codiceUtente!!,
+                            creditoAggiornato
+                        )
+                        Toast.makeText(
+                            applicationContext,
+                            "Ricarica avvenuta",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        val intent = Intent(applicationContext, MainActivity::class.java)
+                        startActivity(intent)
+                        finish()
+                    }
+                }
 
+            }
+        }
     }
-
-    fun checkPagamento(): Boolean {
-        if(titolare!!.text.toString()== "" || numero!!.text.toString()== "" || cvv!!.text.toString()== "" ||importo!!.text.toString()== "") {
-            Toast.makeText(
-                applicationContext,
-                "Compilare tutti i campi",
-                Toast.LENGTH_SHORT
-            ).show()
-            return false
-        }
-        else if (numero!!.text.toString().length < 16) {
-            Toast.makeText(
-                applicationContext,
-                "Numero carta deve essere di 16 cifre",
-                Toast.LENGTH_SHORT
-            ).show()
-            return false
-        }
-        else if (cvv!!.text.toString().length < 3) {
-            Toast.makeText(
-                applicationContext,
-                "CVV carta deve essere di 3 cifre",
-                Toast.LENGTH_SHORT
-            ).show()
-            return false
-        }
-        else {
-            return true
-        }
-    }
-
-
 }
+
+
+

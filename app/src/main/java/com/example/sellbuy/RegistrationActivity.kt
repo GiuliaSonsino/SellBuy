@@ -5,12 +5,15 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
+import com.pranavpandey.android.dynamic.toasts.DynamicToast
 import kotlinx.coroutines.*
 import models.FirebaseAuthWrapper
 import models.FirebaseDbWrapper
@@ -248,9 +251,17 @@ class RegistrationActivity: AppCompatActivity() {
             val correctEmail = "[a-zA-Z0-9_!#\$%&'*+/=?`{|}~^-]+@[a-z]+\\.+[a-z]+".toRegex()
 
 
+            val infoButton = findViewById<ImageButton>(R.id.info_button)
+            infoButton.setOnClickListener {
+                showPasswordConditions()
+            }
+
+
+
+
             fun checkRegistrationAmm(): Boolean {
                 if (nomeReg.editText?.text.isNullOrBlank() || cognomeReg.editText?.text.isNullOrBlank() || emailReg.editText?.text.isNullOrBlank() || numTelReg.editText?.text.isNullOrBlank() || pwdReg.editText?.text.isNullOrBlank() || confPwdReg.editText?.text.isNullOrBlank()) {
-                    Toast.makeText(
+                    DynamicToast.makeWarning(
                         applicationContext,
                         "Devi compilare tutti i campi",
                         Toast.LENGTH_SHORT
@@ -258,7 +269,7 @@ class RegistrationActivity: AppCompatActivity() {
                     return false
                 }
                 else if (!correctEmail.matches(emailReg.editText?.text.toString())) {
-                    Toast.makeText(
+                    DynamicToast.makeWarning(
                         applicationContext,
                         "Email non valida",
                         Toast.LENGTH_SHORT
@@ -266,7 +277,7 @@ class RegistrationActivity: AppCompatActivity() {
                     return false
                 }
                 else if (numTelReg.editText?.text.toString().length < 10) {
-                    Toast.makeText(
+                    DynamicToast.makeWarning(
                         applicationContext,
                         "Numero di telefono troppo breve",
                         Toast.LENGTH_SHORT
@@ -274,7 +285,7 @@ class RegistrationActivity: AppCompatActivity() {
                     return false
                 }
                 else if (pwdReg.editText?.text.toString() != confPwdReg.editText?.text.toString()) {
-                    Toast.makeText(
+                    DynamicToast.makeWarning(
                         applicationContext,
                         "La password e la conferma devono corrispondere",
                         Toast.LENGTH_SHORT
@@ -282,7 +293,7 @@ class RegistrationActivity: AppCompatActivity() {
                     return false
                 }
                 else if(list.contains(emailReg.editText?.text.toString())) {
-                    Toast.makeText(
+                    DynamicToast.makeWarning(
                         applicationContext,
                         "Email già presente",
                         Toast.LENGTH_SHORT
@@ -310,10 +321,10 @@ class RegistrationActivity: AppCompatActivity() {
                         0.0
                     )
                     FirebaseDbWrapper(applicationContext).creaUtente(amministratore)
-                    Toast.makeText(
+                    DynamicToast.makeSuccess(
                         applicationContext,
                         "Registrazione avvenuta con successo",
-                        Toast.LENGTH_SHORT
+                        Toast.LENGTH_LONG
                     ).show()
                     val intent = Intent(this@RegistrationActivity, LoginActivity::class.java)
                     startActivity(intent)
@@ -325,6 +336,10 @@ class RegistrationActivity: AppCompatActivity() {
         else {
             setContentView(R.layout.activity_registration)
             title = ruolo
+            val infoButton = findViewById<ImageButton>(R.id.info_button)
+            infoButton.setOnClickListener {
+                showPasswordConditions()
+            }
             val nomeReg = findViewById<TextInputLayout>(R.id.reg_name)
             val cognomeReg = findViewById<TextInputLayout>(R.id.reg_cognome)
             val emailReg = findViewById<TextInputLayout>(R.id.reg_email)
@@ -338,7 +353,7 @@ class RegistrationActivity: AppCompatActivity() {
 
             fun checkRegistrationUt(): Boolean {
                 if (nomeReg.editText?.text.isNullOrBlank() || cognomeReg.editText?.text.isNullOrBlank() || emailReg.editText?.text.isNullOrBlank() || numTelReg.editText?.text.isNullOrBlank() || pwdReg.editText?.text.isNullOrBlank() || confPwdReg.editText?.text.isNullOrBlank()) {
-                    Toast.makeText(
+                    DynamicToast.makeWarning(
                         applicationContext,
                         "Devi compilare tutti i campi",
                         Toast.LENGTH_SHORT
@@ -346,7 +361,7 @@ class RegistrationActivity: AppCompatActivity() {
                     return false
                 }
                 else if (!correctEmail.matches(emailReg.editText?.text.toString())) {
-                    Toast.makeText(
+                    DynamicToast.makeWarning(
                         applicationContext,
                         "Email non valida",
                         Toast.LENGTH_SHORT
@@ -354,7 +369,7 @@ class RegistrationActivity: AppCompatActivity() {
                     return false
                 }
                 else if (numTelReg.editText?.text.toString().length < 10) {
-                    Toast.makeText(
+                    DynamicToast.makeWarning(
                         applicationContext,
                         "Numero di telefono troppo breve",
                         Toast.LENGTH_SHORT
@@ -362,7 +377,7 @@ class RegistrationActivity: AppCompatActivity() {
                     return false
                 }
                 else if (pwdReg.editText?.text.toString() != confPwdReg.editText?.text.toString()) {
-                    Toast.makeText(
+                    DynamicToast.makeWarning(
                         applicationContext,
                         "La password e la conferma devono corrispondere",
                         Toast.LENGTH_SHORT
@@ -370,7 +385,7 @@ class RegistrationActivity: AppCompatActivity() {
                     return false
                 }
                 else if(list.contains(emailReg.editText?.text.toString())) {
-                    Toast.makeText(
+                    DynamicToast.makeWarning(
                         applicationContext,
                         "Email già presente",
                         Toast.LENGTH_SHORT
@@ -398,10 +413,10 @@ class RegistrationActivity: AppCompatActivity() {
                         0.0
                     )
                     FirebaseDbWrapper(applicationContext).creaUtente(utente)
-                    Toast.makeText(
+                    DynamicToast.makeSuccess(
                         applicationContext,
                         "Registrazione avvenuta con successo",
-                        Toast.LENGTH_SHORT
+                        Toast.LENGTH_LONG
                     ).show()
                     val intent = Intent(this@RegistrationActivity, LoginActivity::class.java)
                     startActivity(intent)
@@ -411,6 +426,18 @@ class RegistrationActivity: AppCompatActivity() {
             }
         }
     }
+
+    private fun showPasswordConditions() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Condizioni password")
+        builder.setMessage("La password deve contenere almeno 6 caratteri.")
+        builder.setPositiveButton("Chiudi") { dialog, _ ->
+            dialog.dismiss()
+        }
+        val dialog = builder.create()
+        dialog.show()
+    }
+
 
     override fun onStart() {
         super.onStart()

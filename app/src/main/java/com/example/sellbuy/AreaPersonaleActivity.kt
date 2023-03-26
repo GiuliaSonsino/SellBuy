@@ -28,6 +28,7 @@ class AreaPersonaleActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.area_personale)
+        title = "Area personale"
         val ricaricaCartaTv= findViewById<TextView>(R.id.ricarica_credito)
         val emailUtente: String? = auth.currentUser?.email
         val nomeUtente = findViewById<TextView>(R.id.nomeUtente)
