@@ -327,10 +327,12 @@ class RegistrationActivity: AppCompatActivity() {
                         Toast.LENGTH_LONG
                     ).show()
                     val intent = Intent(this@RegistrationActivity, LoginActivity::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
                     startActivity(intent)
+                    finish()
 
                 }
-                finish()
+
             }
         }
         else {
@@ -384,6 +386,14 @@ class RegistrationActivity: AppCompatActivity() {
                     ).show()
                     return false
                 }
+                else if (pwdReg.editText?.text.toString().length<6) {
+                    DynamicToast.makeWarning(
+                        applicationContext,
+                        "La password deve contenere almeno 6 caratteri",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    return false
+                }
                 else if(list.contains(emailReg.editText?.text.toString())) {
                     DynamicToast.makeWarning(
                         applicationContext,
@@ -419,10 +429,10 @@ class RegistrationActivity: AppCompatActivity() {
                         Toast.LENGTH_LONG
                     ).show()
                     val intent = Intent(this@RegistrationActivity, LoginActivity::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
                     startActivity(intent)
-
+                    finish()
                 }
-                finish()
             }
         }
     }
