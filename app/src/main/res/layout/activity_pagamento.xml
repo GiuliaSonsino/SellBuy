@@ -19,7 +19,7 @@
         android:layout_height="50dp"
         android:hint="Nome e Cognome"
         android:maxLength="16"
-        android:inputType="number"/>
+        android:inputType="text"/>
 
 
     <TextView
@@ -75,7 +75,7 @@
         android:id="@+id/btnImporto"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Carica"
+        android:text="@string/ricarica"
         android:layout_marginTop="30dp"/>
 
 </LinearLayout>

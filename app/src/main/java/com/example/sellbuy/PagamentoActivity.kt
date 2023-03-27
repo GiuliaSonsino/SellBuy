@@ -1,6 +1,7 @@
 package com.example.sellbuy
 
 import android.content.ContentValues
+import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -10,8 +11,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.textfield.TextInputLayout
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import com.pranavpandey.android.dynamic.toasts.DynamicToast
+import kotlinx.coroutines.*
 import models.FirebaseDbWrapper
 
 class PagamentoActivity: AppCompatActivity() {
@@ -26,7 +27,6 @@ class PagamentoActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pagamento)
         title="Ricarica"
-        val creditoAttuale = intent.getStringExtra("creditoAttuale")
         val codiceUtente = intent.getStringExtra("codiceUtente")
         titolare = findViewById(R.id.titolareAcTv)
         numero = findViewById(R.id.numeroAcTv)
@@ -35,65 +35,68 @@ class PagamentoActivity: AppCompatActivity() {
         val btnImporto = findViewById<Button>(R.id.btnImporto)
 
 
-
-
         fun checkPagamento(): Boolean {
             if (titolare!!.text.toString() == "" || numero!!.text.toString() == "" || cvv!!.text.toString() == "" || importo!!.text.toString() == "") {
-                Toast.makeText(
-                    applicationContext,
-                    "Compilare tutti i campi",
-                    Toast.LENGTH_SHORT
-                ).show()
+                runOnUiThread {
+                    DynamicToast.makeWarning(
+                        applicationContext,
+                        "Compilare tutti i campi",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                    return false
+                }
+
+            else if (numero!!.text.toString().length < 16) {
+                runOnUiThread {
+                    DynamicToast.makeWarning(
+                        applicationContext,
+                        "Numero carta deve essere di 16 cifre",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+                    return false
+                }
+
+            else if (cvv!!.text.toString().length < 3) {
+                runOnUiThread {
+                    DynamicToast.makeWarning(
+                        applicationContext,
+                        "CVV carta deve essere di 3 cifre",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
                 return false
-            } else if (numero!!.text.toString().length < 16) {
-                Toast.makeText(
-                    applicationContext,
-                    "Numero carta deve essere di 16 cifre",
-                    Toast.LENGTH_SHORT
-                ).show()
-                return false
-            } else if (cvv!!.text.toString().length < 3) {
-                Toast.makeText(
-                    applicationContext,
-                    "CVV carta deve essere di 3 cifre",
-                    Toast.LENGTH_SHORT
-                ).show()
-                return false
-            } else {
+            }
+            else {
                 return true
             }
         }
 
         btnImporto.setOnClickListener {
-            GlobalScope.launch {
-                if(importo!!.text.toString()=="") {
-                    runOnUiThread {
-                        Toast.makeText(
-                            applicationContext,
-                            "Inserire tutti i campi",
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    }
-                }
-                else {
-                    val creditoAggiornato = creditoAttuale!!.toDouble() + importo!!.text.toString().toDouble()
+            CoroutineScope(Dispatchers.IO).launch {
+                val utente =
+                    FirebaseDbWrapper(applicationContext).getUtenteFromEmail(applicationContext)
+                withContext(Dispatchers.Main) {
                     if (checkPagamento()) {
+                        val creditoAggiornato = utente!!.credito + importo!!.text.toString().toDouble()
                         FirebaseDbWrapper(applicationContext).modificaCreditoUtente(
                             applicationContext,
                             codiceUtente!!,
                             creditoAggiornato
                         )
-                        Toast.makeText(
-                            applicationContext,
-                            "Ricarica avvenuta",
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        runOnUiThread {
+                            DynamicToast.makeSuccess(
+                                applicationContext,
+                                "Ricarica avvenuta",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                         val intent = Intent(applicationContext, MainActivity::class.java)
                         startActivity(intent)
                         finish()
                     }
                 }
-
             }
         }
     }

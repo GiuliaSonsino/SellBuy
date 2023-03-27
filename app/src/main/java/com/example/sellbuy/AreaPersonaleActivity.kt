@@ -15,6 +15,7 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.*
 import models.AnnuncioViewModel
 import models.FirebaseDbWrapper
+import models.FirebaseStorageWrapper
 import org.w3c.dom.Text
 
 class AreaPersonaleActivity: AppCompatActivity() {
@@ -36,20 +37,22 @@ class AreaPersonaleActivity: AppCompatActivity() {
         val ruolo = findViewById<TextView>(R.id.ruolo)
         val credito = findViewById<TextView>(R.id.credito)
         val tel = findViewById<TextView>(R.id.num_tel)
-        GlobalScope.launch {
-            val utente = FirebaseDbWrapper(applicationContext).getUtenteFromEmail(applicationContext)
-            val ruoloo = utente!!.isAmministratore
-            val numTell =utente!!.numTel
-            if(ruoloo) {
-                ruolo.text= "Amministratore"
-                tel.text=numTell.toString()
-                credito.text=utente.credito.toString()
-            }
-            else {
-                ruolo.text = "Utente"
-                tel.text=numTell.toString()
-                credito.text=utente.credito.toString()
 
+        CoroutineScope(Dispatchers.IO).launch {
+            val utente = FirebaseDbWrapper(applicationContext).getUtenteFromEmail(applicationContext)
+            withContext(Dispatchers.Main) {
+                val ruoloo = utente!!.isAmministratore
+                val numTell = utente!!.numTel
+                if (ruoloo) {
+                    ruolo.text = "Amministratore"
+                    tel.text = numTell.toString()
+                    credito.text = utente.credito.toString()
+                } else {
+                    ruolo.text = "Utente"
+                    tel.text = numTell.toString()
+                    credito.text = utente.credito.toString()
+
+                }
             }
         }
         tel.setOnClickListener {
@@ -63,15 +66,16 @@ class AreaPersonaleActivity: AppCompatActivity() {
         recyclerview.adapter = adapter
 
         ricaricaCartaTv.setOnClickListener {
-            GlobalScope.launch {
-                val utente = FirebaseDbWrapper(applicationContext).getUtenteFromEmail(applicationContext)
-                val codiceUtente = FirebaseDbWrapper(applicationContext).getIdUtenteFromEmail(applicationContext,emailUtente!!)
-                val creditoAttuale = utente!!.credito
-                val intent = Intent(applicationContext, PagamentoActivity::class.java)
-                intent.putExtra("creditoAttuale",creditoAttuale )
-                intent.putExtra("codiceUtente",codiceUtente )
-
-                startActivity(intent)
+            CoroutineScope(Dispatchers.IO).launch {
+                val codiceUtente = FirebaseDbWrapper(applicationContext).getIdUtenteFromEmail(
+                    applicationContext,
+                    emailUtente!!
+                )
+                withContext(Dispatchers.Main) {
+                    val intent = Intent(applicationContext, PagamentoActivity::class.java)
+                    intent.putExtra("codiceUtente", codiceUtente)
+                    startActivity(intent)
+                }
             }
 
         }
