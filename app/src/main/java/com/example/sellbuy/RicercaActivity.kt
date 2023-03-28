@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
+import com.pranavpandey.android.dynamic.toasts.DynamicToast
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -36,7 +37,7 @@ class RicercaActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ricerca)
-        title="Ricerca"
+        title = "Ricerca"
         val recyclerview = findViewById<RecyclerView>(R.id.listView_search)
         recyclerview.layoutManager = LinearLayoutManager(this)
         adapter = AnnuncioAdapter(applicationContext, filteredList)
@@ -57,9 +58,9 @@ class RicercaActivity: AppCompatActivity() {
         spedizioni.setAdapter(adapterSped)
         val prezzo = findViewById<TextInputLayout>(R.id.prezzo_max)
         prezzo.editText?.setText(prezzoDigitato) //imposto il valore che arriva dall'esterno
-        val btnCerca= findViewById<Button>(R.id.btn_filtri)
+        val btnCerca = findViewById<Button>(R.id.btn_filtri)
         val btnSalvaRicerca = findViewById<TextView>(R.id.salvaRicerca)
-        searchView=findViewById(R.id.search_view)
+        searchView = findViewById(R.id.search_view)
         searchView.setQuery(parolaDigitata, false) //imposto il valore che arriva dall'esterno
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
@@ -69,17 +70,18 @@ class RicercaActivity: AppCompatActivity() {
                 parolaDigitata = parola
                 return false
             }
+
             // when user is writing
             override fun onQueryTextChange(p0: String?): Boolean {
                 parola = p0 ?: ""
-                parolaDigitata=parola
+                parolaDigitata = parola
                 return false
             }
         })
 
         btnCerca.setOnClickListener {
-            prezzoDigitato=prezzo.editText?.text.toString()
-            spedizioneDigitata= spedizioni.text.toString()
+            prezzoDigitato = prezzo.editText?.text.toString()
+            spedizioneDigitata = spedizioni.text.toString()
             val b = checkFilters(prezzoDigitato)
             if (b) {
                 filteredList = createList(
@@ -94,19 +96,30 @@ class RicercaActivity: AppCompatActivity() {
 
 
         btnSalvaRicerca.setOnClickListener {
-            val ricerca = RicercaSalvata(
-                emailLoggato!!,
-                parola,
-                prezzo.editText?.text.toString(),
-                spedizioni.text.toString(),
-                ""
-            )
-            FirebaseDbWrapper(applicationContext).creaRicercaSalvata(ricerca)
-            Toast.makeText(
-                applicationContext,
-                "Ricerca salvata",
-                Toast.LENGTH_SHORT
-            ).show()
+            GlobalScope.launch {
+                val annunciFromRicerca = FirebaseDbWrapper(applicationContext).ricercaConFiltri(
+                    applicationContext,
+                    parola,
+                    prezzo.editText?.text.toString(),
+                    spedizioni.text.toString()
+                )
+                val ricerca = RicercaSalvata(
+                    emailLoggato!!,
+                    parola,
+                    prezzo.editText?.text.toString(),
+                    spedizioni.text.toString(),
+                    "",
+                    annunciFromRicerca
+                )
+                FirebaseDbWrapper(applicationContext).creaRicercaSalvata(ricerca)
+                runOnUiThread() {
+                    DynamicToast.makeSuccess(
+                        applicationContext,
+                        "Ricerca salvata",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
         }
     }
 

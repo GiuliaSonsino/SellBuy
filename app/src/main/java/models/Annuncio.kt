@@ -4,6 +4,7 @@ import com.google.firebase.Timestamp
 
 class Annuncio() {
 
+    var id: String = "*"
     var nome: String = "*"
     var categoria: String = "*"
     var localizzazione : String? = null
@@ -17,7 +18,8 @@ class Annuncio() {
     var venduto : Boolean = false
 
 
-    constructor(nome: String, categoria: String, localizzazione:String, descrizione: String, prezzo: String, stato: String, foto: MutableList<String>, email: String, numTel: Long, spedizione: Boolean, venduto: Boolean) : this(){
+    constructor(id: String,nome: String, categoria: String, localizzazione:String, descrizione: String, prezzo: String, stato: String, foto: MutableList<String>, email: String, numTel: Long, spedizione: Boolean, venduto: Boolean) : this(){
+        this.id=id
         this.nome=nome
         this.categoria=categoria
         this.localizzazione=localizzazione

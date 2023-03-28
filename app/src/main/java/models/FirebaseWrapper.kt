@@ -577,6 +577,11 @@ class FirebaseDbWrapper(context: Context) {
         dbRef.setValue(true).await()
     }
 
+    suspend fun modificaRicercaSalvata(context: Context, codice: String, annunci : MutableList<Annuncio>) {
+        val dbRef = FirebaseDbWrapper(context).dbref.child("RicercheSalvate").child(codice).child("elencoAnnunciTrovati")
+        dbRef.setValue(annunci).await()
+    }
+
     suspend fun modificaInfoAnnuncio(context: Context, codice:String, nome: String, descrizione : String, prezzo: String, categoria : String, condizioni: String, spedizione: Boolean) {
         val dbRef = FirebaseDbWrapper(context).dbref.child("Annunci").child(codice).child("nome")
         dbRef.setValue(nome).await()
@@ -783,6 +788,41 @@ class FirebaseDbWrapper(context: Context) {
             lock.withLock { condition.await() }
         }
         return ricercheList
+    }
+
+    fun getKeysRicercheSalvateFromEmail(context: Context): MutableList<String> {
+        val lock = ReentrantLock()
+        val condition = lock.newCondition()
+        val maill = Firebase.auth.currentUser?.email
+
+        val keysRicercheList: MutableList<String> = mutableListOf()
+        if (maill != null) {
+            GlobalScope.launch {
+                keysRicercheList.clear()
+                FirebaseDbWrapper(context).dbref.addValueEventListener(object :
+                    ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val children = snapshot.child("RicercheSalvate").children
+                        for (child in children) {
+                            val list = child.getValue() as HashMap<String, String>
+                            val key = child.key.toString()
+                            for (record in list) {
+                                if(record.key.equals("email") && record.value.equals(maill)) {
+                                    keysRicercheList.add(key)
+                                }
+                            }
+                        }
+                        lock.withLock { condition.signal() }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.w(ContentValues.TAG, "Failed to read value", error.toException())
+                    }
+                })
+            }
+            lock.withLock { condition.await() }
+        }
+        return keysRicercheList
     }
 
 

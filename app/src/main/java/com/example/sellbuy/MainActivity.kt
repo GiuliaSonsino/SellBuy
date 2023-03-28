@@ -23,10 +23,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.messaging.FirebaseMessaging
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+import kotlinx.coroutines.*
 import models.AnnuncioViewModel
 import models.FirebaseDbWrapper
 
@@ -89,9 +86,15 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         mList = createList()
+        GlobalScope.launch {
+            if(controllaAnnunciFromRicerca()) {
+                sendNotification()
+            }
+        }
+        /*
         if (VerificaAggiuntaAnnuncio()) {
             sendNotification()
-        }
+        }*/
     }
 
     private fun createNotificationChannel() {
@@ -142,6 +145,60 @@ class MainActivity : AppCompatActivity() {
 
 
     }
+
+    private fun controllaAnnunciFromRicerc() : Boolean {
+        var ris = false
+        GlobalScope.launch {
+            val ricerche = FirebaseDbWrapper(applicationContext).getRicercheSalvateFromEmail(applicationContext)
+            for( ric in ricerche) {
+                val parola = ric.parolaDigitata
+                val prezzo = ric.prezzo
+                val spedizione = ric.spedizione
+                val annunciVecchi = ric.elencoAnnunciTrovati
+                val annunciTrovati = FirebaseDbWrapper(applicationContext).ricercaConFiltri(applicationContext,parola,prezzo,spedizione)
+                for(an in annunciTrovati) {
+                    if(!annunciVecchi.contains(an)) {
+                        ris = true
+                    }
+                }
+            }
+        }
+        return ris
+    }
+
+    private suspend fun controllaAnnunciFromRicerca() : Boolean {
+        val deferred = GlobalScope.async {
+            var ris = false
+            val ricerche = FirebaseDbWrapper(applicationContext).getRicercheSalvateFromEmail(applicationContext)
+            val chiaviRicerche = FirebaseDbWrapper(applicationContext).getKeysRicercheSalvateFromEmail(applicationContext)
+            var count=0
+            Log.i(TAG,"ricerche trovati nuovi $ricerche")
+            for( ric in ricerche) {
+                val parola = ric.parolaDigitata
+                val prezzo = ric.prezzo
+                val spedizione = ric.spedizione
+                val annunciVecchi = ric.elencoAnnunciTrovati
+                val annunciTrovati = FirebaseDbWrapper(applicationContext).ricercaConFiltri(applicationContext,parola,prezzo,spedizione)
+                Log.i(TAG,"annunci trovati nuovi $annunciTrovati")
+                for(an in annunciTrovati) {
+                    var prova=false
+                    for(aVecchio in annunciVecchi) {
+                        if(aVecchio.id==an.id) {
+                            prova=true
+                        }
+                    }
+                    if(!prova) {
+                        ris = true
+                    }
+                }
+                FirebaseDbWrapper(applicationContext).modificaRicercaSalvata(applicationContext,chiaviRicerche[count],annunciTrovati)
+                count +=1
+            }
+            ris
+        }
+        return deferred.await()
+    }
+
 
     private fun VerificaAggiuntaAnnuncio(): Boolean {
         // La logica della tua funzione VerificaAggiuntaAnnuncio() va qui

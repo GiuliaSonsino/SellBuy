@@ -62,7 +62,8 @@ class RicercheSalvateActivity: AppCompatActivity() {
                     val prezzo = record.prezzo
                     val spedizione = record.spedizione
                     val localizzazione = record.localizzazione
-                    val nuovaRicerca = RicercaSalvata(email,parola,prezzo,spedizione,localizzazione!!)
+                    val annunci = FirebaseDbWrapper(applicationContext).ricercaConFiltri(applicationContext,parola,prezzo,spedizione)
+                    val nuovaRicerca = RicercaSalvata(email,parola,prezzo,spedizione,localizzazione!!, annunci)
                     if (nuovaRicerca != null) {
                         listaRic.add(nuovaRicerca)
                     }

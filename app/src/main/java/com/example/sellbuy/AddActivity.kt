@@ -310,6 +310,7 @@ class AddActivity: AppCompatActivity() {
             btnAggiungi.setOnClickListener {
                 if (checkAdd()) {
                     val annuncio = Annuncio(
+                        UUID.randomUUID().toString(),
                         nomeObj.text.toString(),
                         autoCompleteTextViewCat.text.toString(),
                         "Prova localizzazione",
