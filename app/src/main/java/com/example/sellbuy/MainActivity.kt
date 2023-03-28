@@ -40,7 +40,6 @@ class MainActivity : AppCompatActivity() {
     private val CHANNEL_ID = "it.uniupo.news"
     private val NOTIFICATION_ID = 1
 
-    //@SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -91,10 +90,6 @@ class MainActivity : AppCompatActivity() {
                 sendNotification()
             }
         }
-        /*
-        if (VerificaAggiuntaAnnuncio()) {
-            sendNotification()
-        }*/
     }
 
     private fun createNotificationChannel() {
@@ -146,43 +141,25 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun controllaAnnunciFromRicerc() : Boolean {
-        var ris = false
-        GlobalScope.launch {
-            val ricerche = FirebaseDbWrapper(applicationContext).getRicercheSalvateFromEmail(applicationContext)
-            for( ric in ricerche) {
-                val parola = ric.parolaDigitata
-                val prezzo = ric.prezzo
-                val spedizione = ric.spedizione
-                val annunciVecchi = ric.elencoAnnunciTrovati
-                val annunciTrovati = FirebaseDbWrapper(applicationContext).ricercaConFiltri(applicationContext,parola,prezzo,spedizione)
-                for(an in annunciTrovati) {
-                    if(!annunciVecchi.contains(an)) {
-                        ris = true
-                    }
-                }
-            }
-        }
-        return ris
-    }
 
+    // Return true if there are new Annunci in a RicercaSalvata
     private suspend fun controllaAnnunciFromRicerca() : Boolean {
         val deferred = GlobalScope.async {
             var ris = false
             val ricerche = FirebaseDbWrapper(applicationContext).getRicercheSalvateFromEmail(applicationContext)
             val chiaviRicerche = FirebaseDbWrapper(applicationContext).getKeysRicercheSalvateFromEmail(applicationContext)
             var count=0
-            Log.i(TAG,"ricerche trovati nuovi $ricerche")
-            for( ric in ricerche) {
+            for(ric in ricerche) {
                 val parola = ric.parolaDigitata
                 val prezzo = ric.prezzo
                 val spedizione = ric.spedizione
                 val annunciVecchi = ric.elencoAnnunciTrovati
+                //Facciamo un'altra ricerca da confrontare con quella nel DB
                 val annunciTrovati = FirebaseDbWrapper(applicationContext).ricercaConFiltri(applicationContext,parola,prezzo,spedizione)
-                Log.i(TAG,"annunci trovati nuovi $annunciTrovati")
                 for(an in annunciTrovati) {
                     var prova=false
                     for(aVecchio in annunciVecchi) {
+                        //true if there are no changes
                         if(aVecchio.id==an.id) {
                             prova=true
                         }
@@ -191,6 +168,7 @@ class MainActivity : AppCompatActivity() {
                         ris = true
                     }
                 }
+                // lista aggiornata in ogni caso
                 FirebaseDbWrapper(applicationContext).modificaRicercaSalvata(applicationContext,chiaviRicerche[count],annunciTrovati)
                 count +=1
             }
@@ -199,11 +177,6 @@ class MainActivity : AppCompatActivity() {
         return deferred.await()
     }
 
-
-    private fun VerificaAggiuntaAnnuncio(): Boolean {
-        // La logica della tua funzione VerificaAggiuntaAnnuncio() va qui
-        return true // Esempio: restituisci sempre true per far apparire sempre la notifica
-    }
 
 
     fun createList(): MutableList<AnnuncioViewModel> {

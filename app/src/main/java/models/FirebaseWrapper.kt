@@ -577,6 +577,7 @@ class FirebaseDbWrapper(context: Context) {
         dbRef.setValue(true).await()
     }
 
+    // Viene aggiornata la lista di annunci in una specifica RicercaSalvata
     suspend fun modificaRicercaSalvata(context: Context, codice: String, annunci : MutableList<Annuncio>) {
         val dbRef = FirebaseDbWrapper(context).dbref.child("RicercheSalvate").child(codice).child("elencoAnnunciTrovati")
         dbRef.setValue(annunci).await()
@@ -597,40 +598,6 @@ class FirebaseDbWrapper(context: Context) {
         dbRef6.setValue(spedizione).await()
     }
 
-    // modifica tutti i parametri
-    /*
-    fun modificaInfoAnnunciok(context: Context, codice:String, nome: String, descrizione : String, prezzo: String, categoria : String, condizioni: String, spedizione: Boolean) {
-        val lock = ReentrantLock()
-        val condition = lock.newCondition()
-        if (codice != null) {
-            GlobalScope.launch {
-                FirebaseDbWrapper(context).dbref.addValueEventListener(object :
-                    ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        val children = snapshot.child("Annunci").children
-                        for (child in children) {
-                            if(child.key==codice) {
-                                val cod= child.ref
-                                cod.child("nome").setValue(nome)
-                                cod.child("descrizione").setValue(descrizione)
-                                cod.child("categoria").setValue(categoria)
-                                cod.child("prezzo").setValue(prezzo)
-                                cod.child("stato").setValue(condizioni)
-                                cod.child("spedizione").setValue(spedizione)
-                            }
-                        }
-                        lock.withLock { condition.signal() }
-                    }
-
-                    override fun onCancelled(error: DatabaseError) {
-                        Log.w(ContentValues.TAG, "Failed to read value", error.toException())
-                    }
-                })
-            }
-            lock.withLock { condition.await() }
-        }
-    }
-*/
 
 
 
@@ -756,6 +723,7 @@ class FirebaseDbWrapper(context: Context) {
     }
 
 
+    // Ritorna proprio le RicercheSalvate di un utente
     fun getRicercheSalvateFromEmail(context: Context): MutableList<RicercaSalvata> {
         val lock = ReentrantLock()
         val condition = lock.newCondition()
@@ -790,6 +758,7 @@ class FirebaseDbWrapper(context: Context) {
         return ricercheList
     }
 
+    // Ritorna le chiavi di RicercheSalvate
     fun getKeysRicercheSalvateFromEmail(context: Context): MutableList<String> {
         val lock = ReentrantLock()
         val condition = lock.newCondition()
