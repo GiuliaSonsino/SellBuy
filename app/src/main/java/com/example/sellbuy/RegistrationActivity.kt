@@ -1,18 +1,14 @@
 package com.example.sellbuy
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.textfield.TextInputLayout
-import com.google.firebase.database.DataSnapshot
-import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.ServerValue
 import com.pranavpandey.android.dynamic.toasts.DynamicToast
 import kotlinx.coroutines.*
 import models.FirebaseAuthWrapper

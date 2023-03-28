@@ -1,15 +1,28 @@
 package com.example.sellbuy
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.ContentValues.TAG
+import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.media.RingtoneManager
+import android.media.audiofx.BassBoost
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.messaging.FirebaseMessaging
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -25,11 +38,38 @@ class MainActivity : AppCompatActivity() {
     private var adapter = AnnuncioAdapter(this, mutableListOf())
     var mList: MutableList<AnnuncioViewModel> = mutableListOf()
 
+    //gestione notifiche
+    private lateinit var notificationManager: NotificationManager
+    private val CHANNEL_ID = "it.uniupo.news"
+    private val NOTIFICATION_ID = 1
 
     //@SuppressLint("MissingInflatedId")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        notificationManager =
+            getSystemService(
+                Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        createNotificationChannel()
+        /*
+        //gestione notifiche push
+        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
+            if (!task.isSuccessful) {
+                Log.w(TAG, "Fetching FCM registration token failed", task.exception)
+                return@OnCompleteListener
+            }
+
+            // Ricevi il token del dispositivo
+            val token = task.result
+            Log.d(TAG, "FCM token: $token")
+
+            // Qui puoi inviare il token del dispositivo al tuo server per inviare notifiche push
+            // al dispositivo
+        })
+*/
+
         val recyclerview = findViewById<RecyclerView>(R.id.recyclerview)
         title=""
         //mList= createList()
@@ -49,6 +89,63 @@ class MainActivity : AppCompatActivity() {
     override fun onStart() {
         super.onStart()
         mList = createList()
+        if (VerificaAggiuntaAnnuncio()) {
+            sendNotification()
+        }
+    }
+
+    private fun createNotificationChannel() {
+        val importance = NotificationManager.IMPORTANCE_LOW
+        val channel = NotificationChannel(CHANNEL_ID, "UPO News", importance)
+        channel.description = "All the news from your university"
+        notificationManager.createNotificationChannel(channel)
+
+        channel.lightColor = Color.RED
+        //prova
+        /*
+        channel.setVibrationPattern(longArrayOf(0, 1000, 500, 1000))
+        channel.enableVibration(true)
+        channel.enableLights(true)
+        channel.lightColor = Color.RED
+        channel.lockscreenVisibility = NotificationCompat.VISIBILITY_PUBLIC
+        channel.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION), null)
+        channel.setShowBadge(true)
+        channel.setBypassDnd(true)*/
+
+
+
+    }
+
+    private fun sendNotification() {
+        val resultIntent = Intent(this, MainActivity::class.java)
+        val pendingIntent = PendingIntent.getActivity(
+            this,
+            0,
+            resultIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
+        )
+
+
+        val notification = NotificationCompat.Builder(this, CHANNEL_ID)
+            .setContentTitle("Annuncio inserito")
+            .setContentText("È stato inserito un annuncio relativo alla tua ricerca.")
+
+
+            .setSmallIcon(android.R.drawable.ic_dialog_info)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .setContentIntent(pendingIntent)
+            .setAutoCancel(true)
+            .build()
+
+        notificationManager.notify(NOTIFICATION_ID, notification)
+
+
+
+    }
+
+    private fun VerificaAggiuntaAnnuncio(): Boolean {
+        // La logica della tua funzione VerificaAggiuntaAnnuncio() va qui
+        return true // Esempio: restituisci sempre true per far apparire sempre la notifica
     }
 
 

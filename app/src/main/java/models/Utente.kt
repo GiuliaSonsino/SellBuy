@@ -1,5 +1,7 @@
 package models
 
+import com.google.firebase.Timestamp
+
 class Utente() {
     var nome: String = "*"
     var cognome: String = "*"

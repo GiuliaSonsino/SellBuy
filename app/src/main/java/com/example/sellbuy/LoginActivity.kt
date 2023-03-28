@@ -7,7 +7,12 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ServerValue
+import com.google.firebase.platforminfo.GlobalLibraryVersionRegistrar
 import com.pranavpandey.android.dynamic.toasts.DynamicToast
+import kotlinx.coroutines.*
+import models.FirebaseDbWrapper
 
 class LoginActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

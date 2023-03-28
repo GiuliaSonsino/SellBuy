@@ -118,6 +118,9 @@
             android:name=".PagamentoActivity"
             android:exported="false"
             ></activity>
+
+
+
     </application>
 
 </manifest>
