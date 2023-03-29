@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,8 +16,6 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.*
 import models.AnnuncioViewModel
 import models.FirebaseDbWrapper
-import models.FirebaseStorageWrapper
-import org.w3c.dom.Text
 
 class AreaPersonaleActivity: AppCompatActivity() {
 
@@ -31,6 +30,7 @@ class AreaPersonaleActivity: AppCompatActivity() {
         setContentView(R.layout.area_personale)
         title = "Area personale"
         val ricaricaCartaTv= findViewById<TextView>(R.id.ricarica_credito)
+        val btn_rece = findViewById<Button>(R.id.btn_rece)
         val emailUtente: String? = auth.currentUser?.email
         val nomeUtente = findViewById<TextView>(R.id.nomeUtente)
         nomeUtente.text = emailUtente
@@ -59,6 +59,10 @@ class AreaPersonaleActivity: AppCompatActivity() {
             val phoneUri = Uri.parse("tel:${tel.text}")
             val phoneIntent = Intent(Intent.ACTION_DIAL, phoneUri)
             startActivity(phoneIntent)
+        }
+        btn_rece.setOnClickListener{
+            val intent = Intent(applicationContext, RecensioniActivity::class.java)
+            startActivity(intent)
         }
         val recyclerview = findViewById<RecyclerView>(R.id.recyclerviewPersonale)
         recyclerview.layoutManager = LinearLayoutManager(this)

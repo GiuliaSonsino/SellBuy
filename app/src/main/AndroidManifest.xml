@@ -119,7 +119,10 @@
             android:exported="false"
             ></activity>
 
-
+        <activity
+            android:name=".RecensioniActivity"
+            android:exported="false"
+            ></activity>
 
     </application>
 

@@ -1,23 +1,19 @@
 package models
 
 import android.content.ContentValues
-import android.content.ContentValues.TAG
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.android.gms.tasks.Task
-import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
-import com.google.firebase.database.ServerValue
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
-import kotlinx.coroutines.*
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
@@ -402,6 +398,49 @@ class FirebaseDbWrapper(context: Context) {
         return annuncio
     }
 
+    fun getRecensioniFromUtente(context: Context, emailutente:String): MutableList<Recensione> {
+        val lock = ReentrantLock()
+        val condition = lock.newCondition()
+        var rec : MutableList<Recensione> = mutableListOf()
+        if (emailutente != null) {
+            GlobalScope.launch {
+                FirebaseDbWrapper(context).dbref.addValueEventListener(object :
+                    ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val children = snapshot.child("Recensioni").children
+                        for (child in children) {
+                            val list = child.getValue() as HashMap<*, *>
+                            var boolVend =false
+                            var boolAcq = false
+                            for (record in list) {
+                                if(record.key.equals("acquirenteHaRecensito") && record.value==true) {
+                                    boolAcq = true
+                                }
+                                if(record.key.equals("venditoreHaRecensito") && record.value==true) {
+                                    boolVend = true
+                                }
+                            }
+                            for (record in list) {
+                                if((record.key.equals("acquirente") && record.value.equals(emailutente)) && (boolVend == true) ) {
+                                    rec.add(child.getValue(Recensione::class.java)!!)
+                                }
+                                if((record.key.equals("venditore") && record.value.equals(emailutente)) && (boolAcq== true) ) {
+                                    rec.add(child.getValue(Recensione::class.java)!!)
+                                }
+                            }
+                        }
+                        lock.withLock { condition.signal() }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.w(ContentValues.TAG, "Failed to read value", error.toException())
+                    }
+                })
+            }
+            lock.withLock { condition.await() }
+        }
+        return rec
+    }
 
     fun getIdUtenteFromEmail(context: Context, email:String): String? {
         val lock = ReentrantLock()
@@ -598,6 +637,57 @@ class FirebaseDbWrapper(context: Context) {
         dbRef6.setValue(spedizione).await()
     }
 
+
+    //funzione per aggiornare i parametri della recensione quando un acquirente vota
+    suspend fun modificaRecensioneAcquirente(context: Context, idOggetto: String,voto :Int, frase : String, haRecensito : Boolean) {
+        val dbRef = FirebaseDbWrapper(context).dbref.child("Recensioni").child(idOggetto).child("votoAlVenditore")
+        dbRef.setValue(voto).await()
+        val dbRef2 = FirebaseDbWrapper(context).dbref.child("Recensioni").child(idOggetto).child("recensioneAlVenditore")
+        dbRef2.setValue(frase).await()
+        val dbRef3 = FirebaseDbWrapper(context).dbref.child("Recensioni").child(idOggetto).child("acquirenteHaRecensito")
+        dbRef3.setValue(haRecensito).await()
+    }
+
+    //funzione per aggiornare i parametri della recensione quando un venditore vota
+    suspend fun modificaRecensioneVenditore(context: Context, idOggetto: String,voto :Int, frase : String, haRecensito : Boolean) {
+        val dbRef = FirebaseDbWrapper(context).dbref.child("Recensioni").child(idOggetto).child("votoAllAcquirente")
+        dbRef.setValue(voto).await()
+        val dbRef2 = FirebaseDbWrapper(context).dbref.child("Recensioni").child(idOggetto).child("recensioneAllAcquirente")
+        dbRef2.setValue(frase).await()
+        val dbRef3 = FirebaseDbWrapper(context).dbref.child("Recensioni").child(idOggetto).child("venditoreHaRecensito")
+        dbRef3.setValue(haRecensito).await()
+    }
+
+    fun bisognaRecensire(context: Context, idOggetto:String): Boolean {
+        val lock = ReentrantLock()
+        val condition = lock.newCondition()
+        var ris= false
+        if (idOggetto != null) {
+            GlobalScope.launch {
+                FirebaseDbWrapper(context).dbref.addValueEventListener(object :
+                    ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val children = snapshot.child("Recensioni").children
+                        for (child in children) {
+                            val list = child.getValue() as HashMap<String, String>
+                            for (record in list) {
+                                if(record.key.equals("idOggettoRecensito") && record.value.equals(idOggetto) ) {
+                                    ris =true
+                                }
+                            }
+                        }
+                        lock.withLock { condition.signal() }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.w(ContentValues.TAG, "Failed to read value", error.toException())
+                    }
+                })
+            }
+            lock.withLock { condition.await() }
+        }
+        return ris
+    }
 
 
 
@@ -814,6 +904,10 @@ class FirebaseDbWrapper(context: Context) {
 
     fun creaRicercaSalvata(ricerca: RicercaSalvata) {
         dbref.child("RicercheSalvate").push().setValue(ricerca)
+    }
+
+    fun creaRecensione(recensione : Recensione) {
+        dbref.child("Recensioni").child(recensione.idOggettoRecensito!!).setValue(recensione)
     }
 }
 

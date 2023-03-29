@@ -21,6 +21,7 @@ import kotlinx.coroutines.*
 import models.Annuncio
 import models.FirebaseDbWrapper
 import models.FirebaseStorageWrapper
+import models.Recensione
 
 class AnnuncioActivity : AppCompatActivity() {
 
@@ -291,6 +292,9 @@ class AnnuncioActivity : AppCompatActivity() {
                 val venditore = FirebaseDbWrapper(applicationContext).getUtenteFromCodice(applicationContext,idProprietario!!)
                 val an = FirebaseDbWrapper(applicationContext).getAnnuncioFromCodice(applicationContext, codiceAnn!!)
                 if(acquirente!!.credito >= an.prezzo.toDouble()) {
+                    //creo un oggetto Recensione
+                    var recensione = Recensione(FirebaseAuth.getInstance().currentUser?.email,0,"",false,venditore.email,0,"",false,codiceAnn)
+                    FirebaseDbWrapper(applicationContext).creaRecensione(recensione)
                     val soldiRimasti = acquirente.credito - an.prezzo.toDouble()
                     val soldiAggiunti = venditore.credito + an.prezzo.toDouble()
                     FirebaseDbWrapper(applicationContext).modificaCreditoUtente(applicationContext,idCurrentUser!!,soldiRimasti)
@@ -298,6 +302,7 @@ class AnnuncioActivity : AppCompatActivity() {
                     val intent = Intent(applicationContext, AcquistoAvvenuto::class.java)
                     intent.putExtra("soldiRimasti", soldiRimasti.toString())
                     intent.putExtra("venditore", venditore.email)
+                    intent.putExtra("codiceAnn", codiceAnn)
                     startActivity(intent)
                     finish()
                 }
@@ -315,7 +320,7 @@ class AnnuncioActivity : AppCompatActivity() {
         }
     }
 
-    private fun showVoteDialog() {
+    private fun showVoteDialog(codiceAnn :String) {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Vota il servizio e lascia una recensione")
         val ratingOptions = arrayOf("1", "2", "3", "4", "5")
@@ -328,18 +333,37 @@ class AnnuncioActivity : AppCompatActivity() {
         input.hint="Scrivi qui la recensione"
         builder.setView(input)
 
-        builder.setPositiveButton("OK") { dialog, which ->
-            val intent = Intent(applicationContext, MainActivity::class.java)
-            startActivity(intent)
-            finish()
+        builder.setPositiveButton("Salva") { dialog, which ->
             val rating = ratingOptions[selectedRating]
             val review = input.text.toString()
             // Fai qualcosa con la votazione e la recensione
+            GlobalScope.launch {
+                FirebaseDbWrapper(applicationContext).modificaRecensioneVenditore(
+                    applicationContext,
+                    codiceAnn,
+                    rating.toInt(),
+                    review,
+                    true
+                )
+                val intent = Intent(applicationContext, MainActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
+
         }
         builder.setNegativeButton("Non voglio votare") { dialog, which ->
-            val intent = Intent(applicationContext, MainActivity::class.java)
-            startActivity(intent)
-            finish()
+            GlobalScope.launch {
+                FirebaseDbWrapper(applicationContext).modificaRecensioneVenditore(
+                    applicationContext,
+                    codiceAnn,
+                    0,
+                    "",
+                    false
+                )
+                val intent = Intent(applicationContext, MainActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
         }
         builder.show()
     }
@@ -391,13 +415,29 @@ class AnnuncioActivity : AppCompatActivity() {
                 startActivity(intent)
             }
             R.id.segnaVenduto -> {
-                GlobalScope.launch {
+                var bisognaRecensire : Boolean =false
+                CoroutineScope(Dispatchers.IO).launch {
                     FirebaseDbWrapper(applicationContext).segnaComeVenduto(
                         applicationContext,
                         codiceAnn!!
                     )
+                    bisognaRecensire = FirebaseDbWrapper(applicationContext).bisognaRecensire(
+                        applicationContext,
+                        codiceAnn!!
+                    )
+                    withContext(Dispatchers.Main) {
+                        if (bisognaRecensire) {
+                            showVoteDialog(codiceAnn)
+                        }
+                        else {
+                            val intent = Intent(applicationContext, MainActivity::class.java)
+                            startActivity(intent)
+                            finish()
+                        }
+
+                    }
                 }
-                showVoteDialog()
+
                 /*
                 GlobalScope.launch {
                     FirebaseDbWrapper(applicationContext).segnaComeVenduto(applicationContext,codiceAnn!!)

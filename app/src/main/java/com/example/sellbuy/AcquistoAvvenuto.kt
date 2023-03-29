@@ -9,6 +9,9 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import models.FirebaseDbWrapper
 
 class AcquistoAvvenuto: AppCompatActivity() {
 
@@ -18,13 +21,14 @@ class AcquistoAvvenuto: AppCompatActivity() {
         title=""
         val soldiRimasti = intent.getStringExtra("soldiRimasti")
         val venditore = intent.getStringExtra("venditore")
+        val codiceAnn = intent.getStringExtra("codiceAnn")
         val txtvCredito = findViewById<TextView>(R.id.soldi_rimasti)
         Log.i(TAG, "Soldi: $soldiRimasti")
         txtvCredito.text = soldiRimasti
         val btnHome = findViewById<Button>(R.id.back_to_home)
 
         btnHome.setOnClickListener {
-            showVoteDialog()
+            showVoteDialog(codiceAnn!!)
             /*
             val intent = Intent(applicationContext, MainActivity::class.java)
             startActivity(intent)*/
@@ -61,7 +65,7 @@ class AcquistoAvvenuto: AppCompatActivity() {
         builder.show()
     }*/
 
-    private fun showVoteDialog() {
+    private fun showVoteDialog(codiceAnn : String) {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Vota il servizio e lascia una recensione")
         val ratingOptions = arrayOf("1", "2", "3", "4", "5")
@@ -74,15 +78,35 @@ class AcquistoAvvenuto: AppCompatActivity() {
         input.hint="Scrivi qui la recensione"
         builder.setView(input)
 
-        builder.setPositiveButton("OK") { dialog, which ->
+        builder.setPositiveButton("Salva") { dialog, which ->
             val rating = ratingOptions[selectedRating]
             val review = input.text.toString()
-            // Fai qualcosa con la votazione e la recensione
+            GlobalScope.launch {
+                FirebaseDbWrapper(applicationContext).modificaRecensioneAcquirente(
+                    applicationContext,
+                    codiceAnn,
+                    rating.toInt(),
+                    review,
+                    true
+                )
+                val intent = Intent(applicationContext, MainActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
         }
         builder.setNegativeButton("Non voglio votare") { dialog, which ->
-            val intent = Intent(applicationContext, MainActivity::class.java)
-            startActivity(intent)
-            finish()
+            GlobalScope.launch {
+                FirebaseDbWrapper(applicationContext).modificaRecensioneAcquirente(
+                    applicationContext,
+                    codiceAnn,
+                    0,
+                    "",
+                    false
+                )
+                val intent = Intent(applicationContext, MainActivity::class.java)
+                startActivity(intent)
+                finish()
+            }
         }
         builder.show()
     }
