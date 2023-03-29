@@ -1,6 +1,7 @@
 package com.example.sellbuy
 
 import android.content.ContentValues.TAG
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
@@ -30,7 +31,7 @@ class AcquistoAvvenuto: AppCompatActivity() {
         }
 
     }
-
+    /*
     private fun showVoteDialog() {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Vota il servizio e lascia una recensione")
@@ -55,6 +56,38 @@ class AcquistoAvvenuto: AppCompatActivity() {
             // Fai qualcosa con la votazione e la recensione
         }
         builder.setNegativeButton("Annulla", null)
+
+        // Mostra l'AlertDialog
+        builder.show()
+    }*/
+
+    private fun showVoteDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Vota il servizio e lascia una recensione")
+
+        // Opzioni per la selezione della votazione
+        val ratingOptions = arrayOf("1", "2", "3", "4", "5")
+        var selectedRating = 0 // Valore predefinito
+
+        // Aggiungi le opzioni per la selezione della votazione
+        builder.setSingleChoiceItems(ratingOptions, selectedRating) { dialog, which ->
+            selectedRating = which
+        }
+
+        // Aggiungi un campo di testo per la recensione
+        val input = EditText(this)
+        builder.setView(input)
+
+        // Aggiungi i bottoni "OK" e "Annulla"
+        builder.setPositiveButton("OK") { dialog, which ->
+            val rating = ratingOptions[selectedRating]
+            val review = input.text.toString()
+            // Fai qualcosa con la votazione e la recensione
+        }
+        builder.setNegativeButton("Non voglio votare") { dialog, which ->
+            val intent = Intent(applicationContext, MainActivity::class.java)
+            startActivity(intent)
+        }
 
         // Mostra l'AlertDialog
         builder.show()
