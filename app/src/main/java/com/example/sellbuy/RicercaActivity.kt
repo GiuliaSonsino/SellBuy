@@ -37,6 +37,7 @@ class RicercaActivity: AppCompatActivity() {
         setContentView(R.layout.activity_ricerca)
         title = "Ricerca"
         var provapercommit: String
+        var prova22:String
         val recyclerview = findViewById<RecyclerView>(R.id.listView_search)
         recyclerview.layoutManager = LinearLayoutManager(this)
         adapter = AnnuncioAdapter(applicationContext, filteredList)
