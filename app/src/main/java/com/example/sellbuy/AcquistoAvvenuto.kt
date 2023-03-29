@@ -64,21 +64,16 @@ class AcquistoAvvenuto: AppCompatActivity() {
     private fun showVoteDialog() {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Vota il servizio e lascia una recensione")
-
-        // Opzioni per la selezione della votazione
         val ratingOptions = arrayOf("1", "2", "3", "4", "5")
         var selectedRating = 0 // Valore predefinito
-
-        // Aggiungi le opzioni per la selezione della votazione
         builder.setSingleChoiceItems(ratingOptions, selectedRating) { dialog, which ->
             selectedRating = which
         }
 
-        // Aggiungi un campo di testo per la recensione
         val input = EditText(this)
+        input.hint="Scrivi qui la recensione"
         builder.setView(input)
 
-        // Aggiungi i bottoni "OK" e "Annulla"
         builder.setPositiveButton("OK") { dialog, which ->
             val rating = ratingOptions[selectedRating]
             val review = input.text.toString()
@@ -87,9 +82,8 @@ class AcquistoAvvenuto: AppCompatActivity() {
         builder.setNegativeButton("Non voglio votare") { dialog, which ->
             val intent = Intent(applicationContext, MainActivity::class.java)
             startActivity(intent)
+            finish()
         }
-
-        // Mostra l'AlertDialog
         builder.show()
     }
 }

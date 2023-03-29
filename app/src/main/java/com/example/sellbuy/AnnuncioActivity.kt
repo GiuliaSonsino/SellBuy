@@ -8,10 +8,8 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
@@ -314,6 +312,35 @@ class AnnuncioActivity : AppCompatActivity() {
         }
     }
 
+    private fun showVoteDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Vota il servizio e lascia una recensione")
+        val ratingOptions = arrayOf("1", "2", "3", "4", "5")
+        var selectedRating = 0 // Valore predefinito
+        builder.setSingleChoiceItems(ratingOptions, selectedRating) { dialog, which ->
+            selectedRating = which
+        }
+
+        val input = EditText(this)
+        input.hint="Scrivi qui la recensione"
+        builder.setView(input)
+
+        builder.setPositiveButton("OK") { dialog, which ->
+            val intent = Intent(applicationContext, MainActivity::class.java)
+            startActivity(intent)
+            finish()
+            val rating = ratingOptions[selectedRating]
+            val review = input.text.toString()
+            // Fai qualcosa con la votazione e la recensione
+        }
+        builder.setNegativeButton("Non voglio votare") { dialog, which ->
+            val intent = Intent(applicationContext, MainActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+        builder.show()
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         var firebaseAuth = FirebaseAuth.getInstance()
         val codiceAnn = intent.getStringExtra("codice")
@@ -362,11 +389,20 @@ class AnnuncioActivity : AppCompatActivity() {
             }
             R.id.segnaVenduto -> {
                 GlobalScope.launch {
+                    FirebaseDbWrapper(applicationContext).segnaComeVenduto(
+                        applicationContext,
+                        codiceAnn!!
+                    )
+                }
+                showVoteDialog()
+                /*
+                GlobalScope.launch {
                     FirebaseDbWrapper(applicationContext).segnaComeVenduto(applicationContext,codiceAnn!!)
                     val intent = Intent(applicationContext, MainActivity::class.java)
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
                     startActivity(intent)
-                }
+                    showVoteDialog()
+                }*/
                 Toast.makeText(applicationContext, "Annuncio segnato come venduto", Toast.LENGTH_LONG).show()
             }
 
