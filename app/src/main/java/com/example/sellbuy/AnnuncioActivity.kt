@@ -72,6 +72,7 @@ class AnnuncioActivity : AppCompatActivity() {
                     applicationContext,
                     codiceAnn!!
                 )
+
             val titolo = findViewById<TextView>(R.id.tv_title)
             titolo.text = ann.nome
             val autore = findViewById<TextView>(R.id.tv_autore)
@@ -82,26 +83,28 @@ class AnnuncioActivity : AppCompatActivity() {
             val prezzo = findViewById<TextView>(R.id.tv_price)
             prezzo.text = ann.prezzo
             val venduto = findViewById<TextView>(R.id.tv_venduto)
-            if(ann.venduto) {
-                venduto.text= "VENDUTO"
+            if (ann.venduto) {
+                venduto.text = "VENDUTO"
             }
             val condizione = findViewById<TextView>(R.id.tv_condition)
             condizione.text = ann.stato
             cond = ann.stato
             val categoria = findViewById<TextView>(R.id.tv_category)
             categoria.text = ann.categoria
-            cat=ann.categoria
+            cat = ann.categoria
             val spedizione = findViewById<TextView>(R.id.tv_spedizione)
-            if(ann.spedizione) {
-                spedizione.text= "è disposto"
-            }
-            else {
-                spedizione.text= "non è disposto"
+            if (ann.spedizione) {
+                spedizione.text = "è disposto"
+            } else {
+                spedizione.text = "non è disposto"
             }
 
-            emailProprietarioAnn= ann.email
-            nomeArticolo=ann.nome
-            idProprietario=FirebaseDbWrapper(applicationContext).getIdUtenteFromEmail(applicationContext,emailProprietarioAnn!!)
+            emailProprietarioAnn = ann.email
+            nomeArticolo = ann.nome
+            idProprietario = FirebaseDbWrapper(applicationContext).getIdUtenteFromEmail(
+                applicationContext,
+                emailProprietarioAnn!!
+            )
 
             immagini = ann.foto
             strMainImm = immagini?.get(0)
@@ -112,7 +115,7 @@ class AnnuncioActivity : AppCompatActivity() {
                         .override(500, 500).into(mainImmagine)
                 }
             }
-            if(immagini?.size!! >=2) {
+            if (immagini?.size!! >= 2) {
                 strImmagine1 = immagini?.get(1)
                 storag = Firebase.storage.reference.child("images/$strImmagine1")
                 storag.downloadUrl.addOnSuccessListener { url ->
@@ -125,7 +128,7 @@ class AnnuncioActivity : AppCompatActivity() {
                 View.INVISIBLE.also { im1.visibility = it }
             }
 
-            if(immagini?.size!! >=3) {
+            if (immagini?.size!! >= 3) {
                 strImmagine2 = immagini?.get(2)
                 storag = Firebase.storage.reference.child("images/$strImmagine2")
                 storag.downloadUrl.addOnSuccessListener { url ->
@@ -138,7 +141,7 @@ class AnnuncioActivity : AppCompatActivity() {
                 View.INVISIBLE.also { im2.visibility = it }
             }
 
-            if(immagini?.size!! >=4) {
+            if (immagini?.size!! >= 4) {
                 strImmagine3 = immagini?.get(3)
                 storag = Firebase.storage.reference.child("images/$strImmagine3")
                 storag.downloadUrl.addOnSuccessListener { url ->
@@ -151,7 +154,7 @@ class AnnuncioActivity : AppCompatActivity() {
                 View.INVISIBLE.also { im3.visibility = it }
             }
 
-            if(immagini?.size!! >=5) {
+            if (immagini?.size!! >= 5) {
                 strImmagine4 = immagini?.get(4)
                 storag = Firebase.storage.reference.child("images/$strImmagine4")
                 storag.downloadUrl.addOnSuccessListener { url ->
@@ -166,15 +169,15 @@ class AnnuncioActivity : AppCompatActivity() {
 
 
             //handle visibility button
-            if(em.equals(ann.email)) {
+            if (em.equals(ann.email)) {
                 //btnElimina.visibility= View.VISIBLE
                 View.INVISIBLE.also { btnAcquista.visibility = it }
                 View.INVISIBLE.also { btnChat.visibility = it }
             } else {
                 View.VISIBLE.also { btnAcquista.visibility = it }
                 View.VISIBLE.also { btnChat.visibility = it }
-                if(ann.venduto) {
-                    btnAcquista.isClickable=false
+                if (ann.venduto) {
+                    btnAcquista.isClickable = false
                     runOnUiThread {
                         DynamicToast.makeError(
                             applicationContext,
