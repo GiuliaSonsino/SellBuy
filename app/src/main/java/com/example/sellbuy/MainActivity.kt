@@ -60,7 +60,6 @@ class MainActivity : AppCompatActivity() {
             // Ricevi il token del dispositivo
             val token = task.result
             Log.d(TAG, "FCM token: $token")
-
             // Qui puoi inviare il token del dispositivo al tuo server per inviare notifiche push
             // al dispositivo
         })
@@ -91,6 +90,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
+
 
     private fun createNotificationChannel() {
         val importance = NotificationManager.IMPORTANCE_LOW
