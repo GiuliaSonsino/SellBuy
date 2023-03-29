@@ -30,14 +30,11 @@ class RicercaActivity: AppCompatActivity() {
     private var parolaDigitata: String = ""
     private var prezzoDigitato:String = ""
     private var spedizioneDigitata: String = ""
-    private var prova:String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ricerca)
         title = "Ricerca"
-        var provapercommit: String
-        var prova22:String
         val recyclerview = findViewById<RecyclerView>(R.id.listView_search)
         recyclerview.layoutManager = LinearLayoutManager(this)
         adapter = AnnuncioAdapter(applicationContext, filteredList)
