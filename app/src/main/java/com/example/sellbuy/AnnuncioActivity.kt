@@ -296,6 +296,7 @@ class AnnuncioActivity : AppCompatActivity() {
                     FirebaseDbWrapper(applicationContext).modificaCreditoUtente(applicationContext,idProprietario!!,soldiAggiunti)
                     val intent = Intent(applicationContext, AcquistoAvvenuto::class.java)
                     intent.putExtra("soldiRimasti", soldiRimasti.toString())
+                    intent.putExtra("venditore", venditore.email)
                     startActivity(intent)
                     finish()
                 }
