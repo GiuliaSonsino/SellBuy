@@ -30,7 +30,7 @@ class RicercaActivity: AppCompatActivity() {
     private var parolaDigitata: String = ""
     private var prezzoDigitato:String = ""
     private var spedizioneDigitata: String = ""
-
+    private var prova:String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
