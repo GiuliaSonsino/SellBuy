@@ -1,9 +1,7 @@
 package com.example.sellbuy
 
-import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.*
@@ -38,6 +36,7 @@ class RicercaActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ricerca)
         title = "Ricerca"
+        var provapercommit: String
         val recyclerview = findViewById<RecyclerView>(R.id.listView_search)
         recyclerview.layoutManager = LinearLayoutManager(this)
         adapter = AnnuncioAdapter(applicationContext, filteredList)
