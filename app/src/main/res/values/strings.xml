@@ -42,6 +42,8 @@
     <string name="title_activity_maps">MapsActivity</string>
     <string name="cerca">Cerca</string>
     <string name="cerca_luogo">Cerca luogo</string>
+    <string name="modifica_luogo">Modifica luogo</string>
+
 
 
 

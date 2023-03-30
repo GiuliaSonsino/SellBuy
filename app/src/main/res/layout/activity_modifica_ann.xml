@@ -156,6 +156,29 @@
             android:text="@string/switch_spediz" />
 
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="LUOGO INSERITO ATTUALMENTE: "
+                android:textSize="15sp"
+                android:paddingStart="5dp"/>
+
+
+            <TextView
+                android:id="@+id/luogo_inserito"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="15sp"
+                android:textColor="@color/black"
+                android:paddingStart="5dp"
+                android:paddingBottom="5dp"/>
+
+        </LinearLayout>
 
         <fragment
             android:id="@+id/myMap"
@@ -173,7 +196,7 @@
                     android:layout_width="0dp"
                     android:layout_height="50dp"
                     android:layout_weight="1"
-                    android:hint="@string/cerca_luogo"
+                    android:hint="@string/modifica_luogo"
                     android:textColor="@color/design_default_color_error"
                     android:inputType="textPersonName"/>
 
@@ -189,11 +212,11 @@
         </fragment>
 
         <Button
-            android:id="@+id/btn_salva_localizzazione"
+            android:id="@+id/btn_modifica_localizzazione"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:textColor="@color/white"
-            android:text="Salva localizzazione"
+            android:text="Modifica localizzazione"
             android:layout_gravity="center"/>
 
         <Button

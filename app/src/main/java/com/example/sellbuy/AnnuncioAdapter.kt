@@ -33,7 +33,7 @@ class AnnuncioAdapter(context: Context, private val mList: List<AnnuncioViewMode
         val currentAnnuncio = mList[position]
         holder.textView.text=currentAnnuncio.text
         holder.tvPrice.text=currentAnnuncio.price
-        var im=currentAnnuncio.image
+        val im=currentAnnuncio.image
         val storag= Firebase.storage.reference.child("images/$im")
         storag.downloadUrl.addOnSuccessListener { url ->
             if (mcontext != null) {

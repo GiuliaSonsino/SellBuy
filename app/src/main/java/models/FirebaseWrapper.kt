@@ -622,7 +622,7 @@ class FirebaseDbWrapper(context: Context) {
         dbRef.setValue(annunci).await()
     }
 
-    suspend fun modificaInfoAnnuncio(context: Context, codice:String, nome: String, descrizione : String, prezzo: String, categoria : String, condizioni: String, spedizione: Boolean) {
+    suspend fun modificaInfoAnnuncio(context: Context, codice:String, nome: String, descrizione : String, prezzo: String, categoria : String, condizioni: String, spedizione: Boolean, luogo : String) {
         val dbRef = FirebaseDbWrapper(context).dbref.child("Annunci").child(codice).child("nome")
         dbRef.setValue(nome).await()
         val dbRef2 = FirebaseDbWrapper(context).dbref.child("Annunci").child(codice).child("descrizione")
@@ -635,6 +635,8 @@ class FirebaseDbWrapper(context: Context) {
         dbRef5.setValue(categoria).await()
         val dbRef6 = FirebaseDbWrapper(context).dbref.child("Annunci").child(codice).child("spedizione")
         dbRef6.setValue(spedizione).await()
+        val dbRef7 = FirebaseDbWrapper(context).dbref.child("Annunci").child(codice).child("localizzazione")
+        dbRef7.setValue(luogo).await()
     }
 
 
