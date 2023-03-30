@@ -39,6 +39,11 @@
     </string-array>
     <string name="salva_ricerca">Salva ricerca</string>
     <string name="ricarica">Ricarica</string>
+    <string name="title_activity_maps">MapsActivity</string>
+    <string name="cerca">Cerca</string>
+    <string name="cerca_luogo">Cerca luogo</string>
+
+
 
 
 

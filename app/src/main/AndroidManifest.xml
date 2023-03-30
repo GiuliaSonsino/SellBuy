@@ -4,11 +4,11 @@
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -21,9 +21,25 @@
         android:theme="@style/Theme.SellBuy"
         tools:targetApi="31">
 
+        <!--
+             TODO: Before you run your application, you need a Google Maps API key.
+
+             To get one, follow the directions here:
+
+                https://developers.google.com/maps/documentation/android-sdk/get-api-key
+
+             Once you have your API key (it starts with "AIza"), define a new property in your
+             project's local.properties file (e.g. MAPS_API_KEY=Aiza...), and replace the
+             "YOUR_API_KEY" string in this file with "${MAPS_API_KEY}".
+        -->
         <meta-data
             android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyApg-_rad6qNXIy_7_cRsiRHeATejk-u9Q"/>
+            android:value="AIzaSyApg-_rad6qNXIy_7_cRsiRHeATejk-u9Q" />
+
+        <activity
+            android:name=".MapsActivity"
+            android:exported="false"
+            android:label="@string/title_activity_maps" />
         <activity
             android:name=".SplashActivity"
             android:exported="true">
@@ -37,93 +53,61 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
-
         <activity
             android:name=".LoginActivity"
-            android:exported="false"
-        ></activity>
-
+            android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:exported="true"
-            ></activity>
-
+            android:exported="true" />
         <activity
             android:name=".RegistrationActivity"
-            android:exported="false"
-            ></activity>
-
+            android:exported="false" />
         <activity
             android:name=".AddActivity"
-            android:exported="false"
-            ></activity>
-
+            android:exported="false" />
         <activity
             android:name=".AnnuncioActivity"
-            android:exported="false"
-            ></activity>
-
+            android:exported="false" />
         <activity
             android:name=".ChatActivity"
             android:exported="false"
-            android:theme="@style/StyleNoToolbar"
-            ></activity>
-
+            android:theme="@style/StyleNoToolbar" />
         <activity
             android:name=".ElencoChatActivity"
-            android:exported="false"
-            ></activity>
-
+            android:exported="false" />
         <activity
             android:name=".AreaPersonaleActivity"
-            android:exported="false"
-            ></activity>
-
+            android:exported="false" />
         <activity
             android:name=".ModificaAnnActivity"
-            android:exported="false"
-            ></activity>
-
+            android:exported="false" />
         <activity
             android:name=".EliminaFotoActivity"
-            android:exported="false"
-            ></activity>
-
+            android:exported="false" />
         <activity
             android:name=".RicercaActivity"
-            android:exported="false"
-            ></activity>
-
+            android:exported="false" />
         <activity
             android:name=".AggiungiFotoActivity"
-            android:exported="false"
-            ></activity>
-
+            android:exported="false" />
         <activity
             android:name=".esperimento"
-            android:exported="false"
-            ></activity>
-
+            android:exported="false" />
         <activity
             android:name=".RicercheSalvateActivity"
-            android:exported="false"
-            ></activity>
-
+            android:exported="false" />
         <activity
             android:name=".AcquistoAvvenuto"
-            android:exported="false"
-            ></activity>
-
+            android:exported="false" />
         <activity
             android:name=".PagamentoActivity"
-            android:exported="false"
-            ></activity>
-
+            android:exported="false" />
         <activity
             android:name=".RecensioniActivity"
-            android:exported="false"
-            ></activity>
-
+            android:exported="false" />
+        <activity
+            android:name=".SearchMapActivity"
+            android:exported="false" />
     </application>
 
 </manifest>

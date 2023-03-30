@@ -1,9 +1,13 @@
 package com.example.sellbuy
 
 import android.app.Dialog
+import android.content.ContentValues.TAG
+import android.content.Context
 import android.content.Intent
+import android.location.Geocoder
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -12,6 +16,7 @@ import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.bumptech.glide.Glide
+import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageReference
@@ -22,6 +27,8 @@ import models.Annuncio
 import models.FirebaseDbWrapper
 import models.FirebaseStorageWrapper
 import models.Recensione
+import java.io.IOException
+import java.util.*
 
 class AnnuncioActivity : AppCompatActivity() {
 
@@ -87,6 +94,11 @@ class AnnuncioActivity : AppCompatActivity() {
             if (ann.venduto) {
                 venduto.text = "VENDUTO"
             }
+            val luogo = findViewById<TextView>(R.id.tv_luogo)
+            val stringaCoordinate = ann.localizzazione
+            val coordinate = stringToLatLng(stringaCoordinate!!)
+            val nomeCitta=getCityName(applicationContext,coordinate!!)
+            luogo.text = nomeCitta
             val condizione = findViewById<TextView>(R.id.tv_condition)
             condizione.text = ann.stato
             cond = ann.stato
@@ -319,6 +331,39 @@ class AnnuncioActivity : AppCompatActivity() {
 
         }
     }
+
+
+    fun stringToLatLng(inputString: String): LatLng? {
+        val regex = ".*\\(([^,]*),([^)]*)\\).*".toRegex()
+        val matchResult = regex.find(inputString)
+        if (matchResult != null && matchResult.groupValues.size >= 3) {
+            val lat = matchResult.groupValues[1].toDoubleOrNull()
+            val lng = matchResult.groupValues[2].toDoubleOrNull()
+            if (lat != null && lng != null) {
+                return LatLng(lat, lng)
+            }
+        }
+        return null
+    }
+
+
+    fun getCityName(context: Context, latLng: LatLng): String {
+        val geocoder = Geocoder(context, Locale.getDefault())
+        var cityName = ""
+
+        try {
+            val addresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)
+            if (addresses!!.isNotEmpty()) {
+                cityName = addresses[0].locality
+            }
+        } catch (e: IOException) {
+            Toast.makeText(context, "Errore di rete", Toast.LENGTH_SHORT).show()
+        }
+
+        return cityName
+    }
+
+
 
     private fun showVoteDialog(codiceAnn :String) {
         val builder = AlertDialog.Builder(this)

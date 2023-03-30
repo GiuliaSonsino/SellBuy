@@ -1,12 +1,19 @@
 package com.example.sellbuy
 
+import android.Manifest
 import android.app.AlertDialog
 import android.content.ContentValues.TAG
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
+import android.location.Address
+import android.location.Geocoder
+import android.location.Location
+import android.location.LocationListener
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -17,13 +24,19 @@ import android.widget.*
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
+import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.common.api.Status
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.LatLngBounds
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.*
 import com.google.android.gms.tasks.Task
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.AutocompletePrediction
@@ -47,6 +60,7 @@ import kotlinx.coroutines.launch
 import models.Annuncio
 import models.FirebaseDbWrapper
 import java.io.ByteArrayOutputStream
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -55,39 +69,30 @@ import java.util.*
 
 
 
-class AddActivity: AppCompatActivity() {
+class AddActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
+    GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
 
-    lateinit var ImageUri: Uri
+
     private val auth = FirebaseAuth.getInstance()
-    private val database = FirebaseDatabase.getInstance()
-    private val apiKey = "AIzaSyApg-_rad6qNXIy_7_cRsiRHeATejk-u9Q"
-
     private var pickup: Button? = null
     private var upload: Button? = null
     val color = Color.rgb(179, 238, 179)
-/*
-    // Creare una variabile per l'oggetto AutocompleteSessionToken
-    private lateinit var token: AutocompleteSessionToken
-    // Creare una variabile per l'API di Places
-    private lateinit var placesApi: PlacesClient
-    // Creare una variabile per l'elenco dei suggerimenti di autocompletamento
-    private var predictionsList: MutableList<AutocompletePrediction> = mutableListOf()
-    private var listLocaliz : ListView? = null
-*/
-    private lateinit var cityEditText: EditText
-    private lateinit var placesClient: PlacesClient
-    private var searchSessionToken: Any? = null
+    var countLoc = 0
 
-    private var selectedCityName: String? = null
-    private var selectedCityLatLng: Pair<Double, Double>? = null
 
-    private lateinit var cityAdapter: ArrayAdapter<String>
-
+    private var mMap: GoogleMap? = null
+    internal lateinit var mLastLocation: Location
+    internal var mCurrLocationMarker: Marker? = null
+    internal var mGoogleApiClient: GoogleApiClient? = null
+    internal lateinit var mLocationRequest: LocationRequest
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         title = "Crea Annuncio"
         setContentView(R.layout.activity_add)
+
+        val mapFragment = supportFragmentManager.findFragmentById(R.id.myMap) as SupportMapFragment
+        mapFragment.getMapAsync(this)
 
         var countImg = 0
         val nomeObj = findViewById<AutoCompleteTextView>(R.id.nomeAcTv)
@@ -112,7 +117,23 @@ class AddActivity: AppCompatActivity() {
         upload = findViewById(R.id.uploadImg)
         val imagev = findViewById<ImageView>(R.id.iv)
         val btnAggiungi = findViewById<Button>(R.id.btnCaricaAnn)
+        val lat = 75.122808
+        val lng = 0.106208
 
+        var loc : LatLng? = null
+        val salvaLoc = findViewById<Button>(R.id.btn_salva_localizzazione)
+        salvaLoc.setOnClickListener {
+            countLoc +=1
+            loc = saveLocation()
+
+            if(loc == LatLng(lat, lng) ) {
+                countLoc=0
+            }
+            else {
+                Toast.makeText(this, "Localizzazione salvata", Toast.LENGTH_SHORT).show()
+            }
+
+        }
 
         //Create a registry to act a getContent action
         val getImage = registerForActivityResult(
@@ -233,66 +254,19 @@ class AddActivity: AppCompatActivity() {
                 ).show()
                 return false
             }
+            else if(countLoc==0) {
+                DynamicToast.makeWarning(
+                    applicationContext,
+                    "Inserire localizzazione e salvare",
+                    Toast.LENGTH_SHORT
+                ).show()
+                return false
+            }
             else {
                 return true
             }
         }
 
-/*
-        val placeSearchTv= findViewById<TextView>(R.id.placeSearch_Tv)
-        if(!Places.isInitialized()) {
-            Places.initialize(applicationContext,apiKey) //mettere .toString
-        }
-        val placesClient= Places.createClient(this)
-
-        val fields = listOf(Place.Field.ID, Place.Field.NAME)
-
-        placeSearchTv.setOnClickListener {
-            val intent = Autocomplete.IntentBuilder(AutocompleteActivityMode.FULLSCREEN, fields)
-                .build(this)
-            startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
-
-        }
-
-        val autocompleteFragment =
-            supportFragmentManager.findFragmentById(R.id.map)
-                    as AutocompleteSupportFragment
-*/
-
-/*
-        val apiKey= getString(R.string.api_key)
-        if(!Places.isInitialized()) {
-            Places.initialize(applicationContext,apiKey, Locale.ITALY)
-        }
-        val placesClient= Places.createClient(this)
-        val autocompleteFragment =
-            supportFragmentManager.findFragmentById(R.id.autocomplete_fragment)
-                    as AutocompleteSupportFragment
-        autocompleteFragment.setTypeFilter(TypeFilter.CITIES)
-        autocompleteFragment.setPlaceFields(listOf(Place.Field.ID,Place.Field.NAME))
-
-        autocompleteFragment.setOnPlaceSelectedListener( object: PlaceSelectionListener {
-            override fun onPlaceSelected(place: Place) {
-                val textView= findViewById<TextView>(R.id.tv1)
-                val name=place.name
-                val address=place.address
-
-                val isOpenStatus:String = if(place.isOpen==true) {
-                    "Open"
-                }else {
-                    "Closed"
-                }
-                val rating=place.rating
-                val userRatings=place.userRatingsTotal
-                textView.text="Name: $name"
-            }
-
-            override fun onError(p0: Status) {
-                Log.i(TAG, "An error occurred: $p0")
-
-            }
-        })
-*/
 
         var switchSped = false
         val simpleSwitch: Switch = findViewById(R.id.switchSpediz)
@@ -313,7 +287,7 @@ class AddActivity: AppCompatActivity() {
                         UUID.randomUUID().toString(),
                         nomeObj.text.toString(),
                         autoCompleteTextViewCat.text.toString(),
-                        "Prova localizzazione",
+                        loc.toString(),
                         descrizioneObj.text.toString(),
                         prezzoObj.editText?.text.toString(),
                         autoCompleteTextViewCond.text.toString(),
@@ -339,145 +313,133 @@ class AddActivity: AppCompatActivity() {
 
 
 
-
-
-
-
     }
 
 
+    //inizio gestione mappa
 
-
-
-
-
-
-/*
-        // Inizializza l'API di Places
-        Places.initialize(applicationContext, apiKey)
-
-        // Inizializzare l'API di Places
-        placesApi = Places.createClient(this)
-        // Inizializzare l'oggetto AutocompleteSessionToken
-        token = AutocompleteSessionToken.newInstance()
-        // Inizializzare l'elenco dei suggerimenti di autocompletamento
-        predictionsList = mutableListOf()
-
-
-        listLocaliz = findViewById(R.id.listViewLocaliz)
-        val cercaLoc = findViewById<AutoCompleteTextView>(R.id.locationTextView)
-
-        // Aggiungere un listener all'EditText che gestisce l'autocompletamento
-        cercaLoc.addTextChangedListener(object : TextWatcher {
-            override fun afterTextChanged(s: Editable?) {
-                // Chiamare il metodo per ottenere i suggerimenti di autocompletamento
-                getAutocompletePredictions(s.toString())
+    override fun onMapReady(googleMap: GoogleMap) {
+        mMap = googleMap;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
+            if (ContextCompat.checkSelfPermission(
+                    this,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+                ) == PackageManager.PERMISSION_GRANTED
+            ){
+                buildGoogleApiClient()
+                mMap!!.isMyLocationEnabled = true
             }
-
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
-        })
-
-    }
-
-
-    // Metodo per ottenere i suggerimenti di autocompletamento
-    /*
-    private fun getAutocompletePredictionsk(query: String) {
-        // Creare una richiesta di autocompletamento
-        val request = Places.createAutocompleteSessionRequest()
-        request.query = query
-        request.locationBias = LatLngBounds(LatLng(-33.880490, 151.184363), LatLng(-33.858754, 151.229596))
-
-        // Eseguire la richiesta di autocompletamento
-        val task: Task<AutocompleteSessionResponse> = placesApi.findAutocompletePredictions(request)
-
-        // Gestire la risposta della richiesta di autocompletamento
-        task.addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                // Rimuovere i suggerimenti precedenti dall'elenco
-                predictionsList.clear()
-
-                // Aggiungere i nuovi suggerimenti all'elenco
-                val predictions: AutocompleteSessionResponse = task.result!!
-                for (prediction in predictions.autocompletePredictions) {
-                    predictionsList.add(prediction)
-                }
-
-                // Aggiornare la vista degli autocompletamenti
-                updateAutocompleteView()
-            } else {
-                // Gestire l'errore
-            }
+        }else{
+            buildGoogleApiClient()
+            mMap!!.isMyLocationEnabled = true
         }
     }
-*/
-    private fun getAutocompletePredictions(query: String) {
-        Places.initialize(applicationContext, apiKey)
 
-        // Inizializzare l'API di Places
-        val token = AutocompleteSessionToken.newInstance()
-        val request = FindAutocompletePredictionsRequest.builder()
-            .setSessionToken(token)
-            .setQuery(query)
-            .build()
-        val placesClient = Places.createClient(this)
-        placesClient.findAutocompletePredictions(request)
-            .addOnSuccessListener { response ->
-                val predictionsList = response.autocompletePredictions
-                updateAutocompleteView()
-            }
-            .addOnFailureListener { exception ->
-                if (exception is ApiException) {
-                    Log.e(TAG, "Errore durante la ricerca di previsioni di autocompletamento: " + exception.statusCode)
-                }
-            }
+    protected fun buildGoogleApiClient(){
+        mGoogleApiClient = GoogleApiClient.Builder(this)
+            .addConnectionCallbacks(this)
+            .addOnConnectionFailedListener(this)
+            .addApi(LocationServices.API).build()
+        mGoogleApiClient!!.connect()
+    }
+
+    override fun onLocationChanged(location: Location) {
+        mLastLocation = location
+        if (mCurrLocationMarker != null){
+            mCurrLocationMarker!!.remove()
+        }
+
+        val latLng = LatLng(location.latitude, location.longitude)
+        val markerOptions = MarkerOptions()
+        markerOptions.position(latLng)
+        markerOptions.title("Current Position")
+        markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+        mCurrLocationMarker = mMap!!.addMarker(markerOptions)
+
+        mMap!!.moveCamera(CameraUpdateFactory.newLatLng(latLng))
+        mMap!!.moveCamera(CameraUpdateFactory.zoomTo(11f))
+
+        if (mGoogleApiClient != null){
+            LocationServices.getFusedLocationProviderClient(this)
+        }
+    }
+
+    override fun onConnected(p0: Bundle?) {
+
+        mLocationRequest = LocationRequest()
+        mLocationRequest.interval = 1000
+        mLocationRequest.fastestInterval = 1000
+        mLocationRequest.priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
+        if (ContextCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ){
+            LocationServices.getFusedLocationProviderClient(this)
+        }
+    }
+
+    override fun onConnectionSuspended(p0: Int) {
+
+    }
+
+    override fun onConnectionFailed(p0: ConnectionResult) {
+
     }
 
 
-    // Metodo per aggiornare la vista degli autocompletamenti
-    private fun updateAutocompleteView() {
-        // Creare una lista di stringhe per contenere i nomi dei luoghi
-        val placeNames: MutableList<String> = mutableListOf()
+    fun searchLocation(view: View){
+        val locationSearch: EditText = findViewById(R.id.et_search)
+        var location: String
+        location = locationSearch.text.toString().trim()
+        var addressList: List<Address>? = null
 
-        // Aggiungere i nomi dei luoghi alla lista
-        for (prediction in predictionsList) {
-            placeNames.add(prediction.getPrimaryText(null).toString())
-        }
-
-        // Creare un ArrayAdapter per la lista di nomi dei luoghi
-        val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, placeNames)
-
-        // Aggiornare la ListView degli autocompletamenti con l'ArrayAdapter
-        listLocaliz!!.adapter = adapter
-
-        // Aggiungere un listener alla ListView degli autocompletamenti
-        listLocaliz!!.setOnItemClickListener { _, _, position, _ ->
-            // Ottieni l'oggetto AutocompletePrediction selezionato
-            val prediction = predictionsList[position]
-
-            // Recupera le informazioni sulla posizione dal Places API usando il Place ID
-            val placeId = prediction.placeId
-            val placeFields = listOf(Place.Field.LAT_LNG)
-
-            val request = FetchPlaceRequest.newInstance(placeId, placeFields)
-            placesApi.fetchPlace(request).addOnSuccessListener { response ->
-                // Aggiungi un Marker sulla mappa nella posizione selezionata
-                val place = response.place
-                val latLng = place.latLng
-                /*if (latLng != null) {
-                    val markerOptions = MarkerOptions().position(latLng)
-                    map.addMarker(markerOptions)
-                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(latLng, 15f))
-                }*/
-            }.addOnFailureListener { exception ->
-                // Gestire l'errore
+        if (location == null || location == ""){
+            Toast.makeText(this, "provide location", Toast.LENGTH_SHORT).show()
+        }else{
+            val geoCoder = Geocoder(this)
+            try {
+                addressList = geoCoder.getFromLocationName(location, 1)
+            }catch (e: IOException){
+                e.printStackTrace()
             }
 
-            // Nascondi la ListView degli autocompletamenti
-            listLocaliz!!.visibility = View.GONE
-        }*/
+            val address = addressList!![0]
+            val latLng = LatLng(address.latitude, address.longitude)
+            mMap!!.addMarker(MarkerOptions().position(latLng).title(location))
+            mMap!!.animateCamera(CameraUpdateFactory.newLatLng(latLng))
+        }
+    }
+
+
+    private fun saveLocation(): LatLng {
+        var latLng: LatLng? = null
+        val locationSearch: EditText = findViewById(R.id.et_search)
+        val location: String
+        location = locationSearch.text.toString().trim()
+        var addressList: List<Address>? = null
+
+        if (location == null || location == ""){
+            DynamicToast.makeWarning(this, "Inserisci luogo", Toast.LENGTH_SHORT).show()
+            //valori di default nel caso non selezionasse un luogo
+            val lat = 75.122808
+            val lng = 0.106208
+            latLng = LatLng(lat, lng)
+        }else{
+            val geoCoder = Geocoder(this)
+            try {
+                addressList = geoCoder.getFromLocationName(location, 1)
+            }catch (e: IOException){
+                e.printStackTrace()
+            }
+
+            val address = addressList!![0]
+            latLng = LatLng(address.latitude, address.longitude)
+            mMap!!.addMarker(MarkerOptions().position(latLng).title(location))
+            mMap!!.animateCamera(CameraUpdateFactory.newLatLng(latLng))
+        }
+        return latLng!!
+    }
 
 }
 

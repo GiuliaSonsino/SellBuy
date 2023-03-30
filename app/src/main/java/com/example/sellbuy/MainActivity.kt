@@ -74,7 +74,7 @@ class MainActivity : AppCompatActivity() {
 
         val loc = findViewById<Button>(R.id.loc)
         loc.setOnClickListener {
-            val intent = Intent(applicationContext, esperimento::class.java)
+            val intent = Intent(applicationContext, SearchMapActivity::class.java)
             startActivity(intent)
         }
 
