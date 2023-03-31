@@ -2,8 +2,10 @@ package models
 
 import android.content.ContentValues
 import android.content.Context
+import android.location.Location
 import android.util.Log
 import android.widget.Toast
+import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
@@ -697,7 +699,7 @@ class FirebaseDbWrapper(context: Context) {
         val lock = ReentrantLock()
         val condition = lock.newCondition()
         var tr: Boolean
-        var annList: MutableList<Annuncio> = mutableListOf()
+        val annList: MutableList<Annuncio> = mutableListOf()
         if (context != null) {
             GlobalScope.launch {
                 FirebaseDbWrapper(context).dbref.addValueEventListener(object :
@@ -753,6 +755,204 @@ class FirebaseDbWrapper(context: Context) {
         return annList
     }
 
+
+    fun stringToLatLng(inputString: String): LatLng? {
+        val regex = ".*\\(([^,]*),([^)]*)\\).*".toRegex()
+        val matchResult = regex.find(inputString)
+        if (matchResult != null && matchResult.groupValues.size >= 3) {
+            val lat = matchResult.groupValues[1].toDoubleOrNull()
+            val lng = matchResult.groupValues[2].toDoubleOrNull()
+            if (lat != null && lng != null) {
+                return LatLng(lat, lng)
+            }
+        }
+        return null
+    }
+
+    fun ricercaConFiltriELocalizzazione(context: Context, parola: String, prezzo: String, spedizione: String?, distanzaInserita: String, posizioneAttuale: LatLng): MutableList<Annuncio> {
+        val lock = ReentrantLock()
+        val condition = lock.newCondition()
+        val annList: MutableList<Annuncio> = mutableListOf()
+        if (context != null) {
+            GlobalScope.launch {
+                FirebaseDbWrapper(context).dbref.addValueEventListener(object :
+                    ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val children = snapshot.child("Annunci").children
+                        for (child in children) {
+                            val list = child.getValue() as HashMap<*, *>
+                            var nome:String?=null
+                            var prez:String?=null
+                            var spediz: Boolean? = false
+                            val distance = FloatArray(1)
+                            var luogoLatLng: LatLng? = null
+                            for (record in list) {
+                                if(!record.key.equals("foto")) {
+                                    if(record.key.equals("nome")) {
+                                        nome = record.value.toString()
+                                    }
+                                    if(record.key.equals("prezzo")) {
+                                        prez = record.value.toString()
+                                    }
+                                    if(record.key.equals("spedizione") && record.value==true) {
+                                        spediz = true
+                                    }
+                                    if(record.key.equals("localizzazione")) {
+                                        luogoLatLng = stringToLatLng(record.value.toString())
+                                    }
+                                }
+                            }
+                            if(spedizione.equals("Tutti")) {
+                                if( nome!!.lowercase().contains(parola.lowercase()) && prez!!.toDouble()<=prezzo.toDouble() ) {
+                                    if(distanzaInserita=="Ovunque") {
+                                        annList.add(child.getValue(Annuncio::class.java)!!)
+                                    }
+                                    else {
+                                        Location.distanceBetween(posizioneAttuale.latitude, posizioneAttuale.longitude, luogoLatLng!!.latitude, luogoLatLng.longitude, distance)
+                                        if (distance[0] < distanzaInserita.toInt() * 1000) {
+                                            annList.add(child.getValue(Annuncio::class.java)!!)
+                                        }
+                                    }
+                                }
+                            }
+                            if(spedizione.equals("Si")) {
+                                if( nome!!.lowercase().contains(parola.lowercase()) && prez!!.toDouble()<=prezzo.toDouble() && spediz!!) {
+                                    if(distanzaInserita=="Ovunque") {
+                                        annList.add(child.getValue(Annuncio::class.java)!!)
+                                    }
+                                    else {
+                                        Location.distanceBetween(posizioneAttuale.latitude, posizioneAttuale.longitude, luogoLatLng!!.latitude, luogoLatLng.longitude, distance)
+                                        if (distance[0] < distanzaInserita.toInt() * 1000) {
+                                            annList.add(child.getValue(Annuncio::class.java)!!)
+                                        }
+                                    }
+                                }
+                            }
+                            if(spedizione.equals("No")) {
+                                if( nome!!.lowercase().contains(parola.lowercase()) && prez!!.toDouble()<=prezzo.toDouble() && !spediz!!) {
+                                    if (distanzaInserita == "Ovunque") {
+                                        annList.add(child.getValue(Annuncio::class.java)!!)
+                                    } else {
+                                        Location.distanceBetween(
+                                            posizioneAttuale.latitude,
+                                            posizioneAttuale.longitude,
+                                            luogoLatLng!!.latitude,
+                                            luogoLatLng.longitude,
+                                            distance
+                                        )
+                                        if (distance[0] < distanzaInserita.toInt() * 1000) {
+                                            annList.add(child.getValue(Annuncio::class.java)!!)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        lock.withLock { condition.signal() }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.w(ContentValues.TAG, "Failed to read value", error.toException())
+                    }
+                })
+            }
+            lock.withLock { condition.await() }
+        }
+        return annList
+    }
+
+    fun ricercaKeysConFiltriELocalizzazione(context: Context, parola: String, prezzo: String, spedizione: String?, distanzaInserita: String, posizioneAttuale: LatLng): MutableList<String> {
+        val lock = ReentrantLock()
+        val condition = lock.newCondition()
+        var chiavi: MutableList<String> = mutableListOf()
+        var codicetmp = ""
+        if (context != null) {
+            GlobalScope.launch {
+                FirebaseDbWrapper(context).dbref.addValueEventListener(object :
+                    ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val children = snapshot.child("Annunci").children
+                        for (child in children) {
+                            codicetmp=child.key.toString()
+                            val list = child.getValue() as HashMap<*, *>
+                            var nome:String?=null
+                            var prez:String?=null
+                            var spediz: Boolean? = false
+                            val distance = FloatArray(1)
+                            var luogoLatLng: LatLng? = null
+                            for (record in list) {
+                                if(!record.key.equals("foto")) {
+                                    if(record.key.equals("nome")) {
+                                        nome = record.value.toString()
+                                    }
+                                    if(record.key.equals("prezzo")) {
+                                        prez = record.value.toString()
+                                    }
+                                    if(record.key.equals("spedizione") && record.value==true) {
+                                        spediz = true
+                                    }
+                                    if(record.key.equals("localizzazione")) {
+                                        luogoLatLng = stringToLatLng(record.value.toString())
+                                    }
+                                }
+                            }
+                            if(spedizione.equals("Tutti")) {
+                                if( nome!!.lowercase().contains(parola.lowercase()) && prez!!.toDouble()<=prezzo.toDouble() ) {
+                                    if(distanzaInserita == "Ovunque") {
+                                        chiavi.add(codicetmp)
+                                    }
+                                    else {
+                                        Location.distanceBetween(posizioneAttuale.latitude, posizioneAttuale.longitude, luogoLatLng!!.latitude, luogoLatLng.longitude, distance)
+                                        if (distance[0] < distanzaInserita.toInt() * 1000) {
+                                            chiavi.add(codicetmp)
+                                        }
+                                    }
+                                }
+                            }
+                            if(spedizione.equals("Si")) {
+                                if( nome!!.lowercase().contains(parola.lowercase()) && prez!!.toDouble()<=prezzo.toDouble() && spediz!!) {
+                                    if(distanzaInserita=="Ovunque") {
+                                        chiavi.add(codicetmp)
+                                    }
+                                    else {
+                                        Location.distanceBetween(posizioneAttuale.latitude, posizioneAttuale.longitude, luogoLatLng!!.latitude, luogoLatLng.longitude, distance)
+                                        if (distance[0] < distanzaInserita.toInt() * 1000) {
+                                            chiavi.add(codicetmp)
+                                        }
+                                    }
+                                }
+                            }
+                            if(spedizione.equals("No")) {
+                                if( nome!!.lowercase().contains(parola.lowercase()) && prez!!.toDouble()<=prezzo.toDouble() && !spediz!!) {
+                                    if (distanzaInserita == "Ovunque") {
+                                        chiavi.add(codicetmp)
+                                    }
+                                    else {
+                                        Location.distanceBetween(
+                                            posizioneAttuale.latitude,
+                                            posizioneAttuale.longitude,
+                                            luogoLatLng!!.latitude,
+                                            luogoLatLng.longitude,
+                                            distance
+                                        )
+                                        if (distance[0] < distanzaInserita.toInt() * 1000) {
+                                            chiavi.add(codicetmp)
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                        lock.withLock { condition.signal() }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.w(ContentValues.TAG, "Failed to read value", error.toException())
+                    }
+                })
+            }
+            lock.withLock { condition.await() }
+        }
+        return chiavi
+    }
 
     fun ricercaKeysFromFiltri(context: Context, parola: String, prezzo: String, spedizione: String?): MutableList<String> {
         val lock = ReentrantLock()

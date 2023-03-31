@@ -241,10 +241,12 @@ class MainActivity : AppCompatActivity() {
                 val parolaDigitata=""
                 val prezzo=""
                 val spedizione="Tutti"
+                val distanza = "Ovunque"
                 val intent = Intent(applicationContext, RicercaActivity::class.java)
                 intent.putExtra("parolaDigitata", parolaDigitata)
                 intent.putExtra("prezzo", prezzo)
                 intent.putExtra("spedizione", spedizione)
+                intent.putExtra("distanza", distanza)
                 startActivity(intent)
             }
         }

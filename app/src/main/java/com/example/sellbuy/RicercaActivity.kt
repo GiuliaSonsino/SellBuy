@@ -1,13 +1,22 @@
 package com.example.sellbuy
 
+import android.content.ContentProviderClient
+import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.location.Location
+import android.location.LocationManager
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.pranavpandey.android.dynamic.toasts.DynamicToast
@@ -18,6 +27,9 @@ import kotlinx.coroutines.withContext
 import models.AnnuncioViewModel
 import models.FirebaseDbWrapper
 import models.RicercaSalvata
+import com.google.android.gms.maps.model.LatLng
+import android.Manifest
+
 
 
 class RicercaActivity: AppCompatActivity() {
@@ -30,6 +42,11 @@ class RicercaActivity: AppCompatActivity() {
     private var parolaDigitata: String = ""
     private var prezzoDigitato:String = ""
     private var spedizioneDigitata: String = ""
+    private var distanzaDigitata: String = ""
+
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION =123
+    private var currentLatLng : LatLng? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +61,7 @@ class RicercaActivity: AppCompatActivity() {
         parolaDigitata = intent.getStringExtra("parolaDigitata").toString()
         prezzoDigitato = intent.getStringExtra("prezzo").toString()
         spedizioneDigitata = intent.getStringExtra("spedizione").toString()
-
+        distanzaDigitata = intent.getStringExtra("distanza").toString()
 
         val emailLoggato = FirebaseAuth.getInstance().currentUser?.email
         //gestione filtri
@@ -55,6 +72,8 @@ class RicercaActivity: AppCompatActivity() {
         spedizioni.setAdapter(adapterSped)
         val prezzo = findViewById<TextInputLayout>(R.id.prezzo_max)
         prezzo.editText?.setText(prezzoDigitato) //imposto il valore che arriva dall'esterno
+        val distanza = findViewById<TextInputLayout>(R.id.distanza)
+        distanza.editText?.setText(distanzaDigitata) //imposto il valore che arriva dall'esterno
         val btnCerca = findViewById<Button>(R.id.btn_filtri)
         val btnSalvaRicerca = findViewById<TextView>(R.id.salvaRicerca)
         searchView = findViewById(R.id.search_view)
@@ -79,44 +98,97 @@ class RicercaActivity: AppCompatActivity() {
         btnCerca.setOnClickListener {
             prezzoDigitato = prezzo.editText?.text.toString()
             spedizioneDigitata = spedizioni.text.toString()
+            distanzaDigitata = distanza.editText?.text.toString()
             val b = checkFilters(prezzoDigitato)
             if (b) {
                 filteredList = createList(
                     parolaDigitata,
                     prezzoDigitato,
-                    spedizioneDigitata
+                    spedizioneDigitata,
+                    distanzaDigitata
                 )
             } else {
-                filteredList = createList(parolaDigitata, "10000", spedizioneDigitata)
+                filteredList = createList(parolaDigitata, "10000", spedizioneDigitata, distanzaDigitata)
             }
         }
 
 
         btnSalvaRicerca.setOnClickListener {
             GlobalScope.launch {
-                val annunciFromRicerca = FirebaseDbWrapper(applicationContext).ricercaConFiltri(
-                    applicationContext,
-                    parola,
-                    prezzo.editText?.text.toString(),
-                    spedizioni.text.toString()
-                )
-                val ricerca = RicercaSalvata(
-                    emailLoggato!!,
-                    parola,
-                    prezzo.editText?.text.toString(),
-                    spedizioni.text.toString(),
-                    "",
-                    annunciFromRicerca
-                )
-                FirebaseDbWrapper(applicationContext).creaRicercaSalvata(ricerca)
-                runOnUiThread() {
-                    DynamicToast.makeSuccess(
+                val b = checkFilters(prezzo.editText?.text.toString())
+                if (b) {
+                    val annunciFromRicerca = FirebaseDbWrapper(applicationContext).ricercaConFiltri(
                         applicationContext,
-                        "Ricerca salvata",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                        parola,
+                        prezzo.editText?.text.toString(),
+                        spedizioni.text.toString()
+                    )
+                    val ricerca = RicercaSalvata(
+                        emailLoggato!!,
+                        parola,
+                        prezzo.editText?.text.toString(),
+                        spedizioni.text.toString(),
+                        "",
+                        annunciFromRicerca
+                    )
+                    FirebaseDbWrapper(applicationContext).creaRicercaSalvata(ricerca)
+                    runOnUiThread() {
+                        DynamicToast.makeSuccess(
+                            applicationContext,
+                            "Ricerca salvata",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+                else {
+                    val annunciFromRicerca = FirebaseDbWrapper(applicationContext).ricercaConFiltri(
+                        applicationContext,
+                        parola,
+                        "10000",
+                        spedizioni.text.toString()
+                    )
+                    val ricerca = RicercaSalvata(
+                        emailLoggato!!,
+                        parola,
+                        "10000",
+                        spedizioni.text.toString(),
+                        "",
+                        annunciFromRicerca
+                    )
+                    FirebaseDbWrapper(applicationContext).creaRicercaSalvata(ricerca)
+                    runOnUiThread() {
+                        DynamicToast.makeSuccess(
+                            applicationContext,
+                            "Ricerca salvata",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 }
             }
+        }
+
+/*
+        val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
+        val currentLatLng =
+            location?.let { com.google.android.gms.maps.model.LatLng(it.latitude, location.longitude) }*/
+
+
+        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION)
+
+        } else {
+            fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+            fusedLocationClient.lastLocation.addOnSuccessListener { location : Location? ->
+                if(location!=null) {
+                    currentLatLng = LatLng(location.latitude,location.longitude)
+                }
+                else {
+
+                }
+        }
+
+
         }
     }
 
@@ -127,12 +199,14 @@ class RicercaActivity: AppCompatActivity() {
     }
 
 
-    fun createList(parola: String, prezzo: String, spedizione : String): MutableList<AnnuncioViewModel> {
+
+
+    fun createList(parola: String, prezzo: String, spedizione : String, distanza : String): MutableList<AnnuncioViewModel> {
         var count = 0
         if (auth.currentUser != null) {
             GlobalScope.launch {
-                val an = FirebaseDbWrapper(applicationContext).ricercaConFiltri(applicationContext, parola, prezzo, spedizione)
-                val codici = FirebaseDbWrapper(applicationContext).ricercaKeysFromFiltri(applicationContext, parola, prezzo, spedizione)
+                val an = FirebaseDbWrapper(applicationContext).ricercaConFiltriELocalizzazione(applicationContext, parola, prezzo, spedizione,distanza,currentLatLng!!)
+                val codici = FirebaseDbWrapper(applicationContext).ricercaKeysConFiltriELocalizzazione(applicationContext, parola, prezzo, spedizione,distanza, currentLatLng!!)
                 filteredList.clear()
                 for (record in an) {
                     val nomeAn = record.nome
