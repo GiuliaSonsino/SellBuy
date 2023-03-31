@@ -173,6 +173,7 @@ class MainActivity : AppCompatActivity() {
 
 
     // Return true if there are new Annunci in a RicercaSalvata
+    @OptIn(DelicateCoroutinesApi::class)
     private suspend fun controllaAnnunciFromRicerca() : Boolean {
         val deferred = GlobalScope.async {
             var ris = false
