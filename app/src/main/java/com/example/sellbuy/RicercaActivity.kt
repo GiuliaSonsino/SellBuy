@@ -117,18 +117,20 @@ class RicercaActivity: AppCompatActivity() {
             GlobalScope.launch {
                 val b = checkFilters(prezzo.editText?.text.toString())
                 if (b) {
-                    val annunciFromRicerca = FirebaseDbWrapper(applicationContext).ricercaConFiltri(
+                    val annunciFromRicerca = FirebaseDbWrapper(applicationContext).ricercaConFiltriELocalizzazione(
                         applicationContext,
                         parola,
                         prezzo.editText?.text.toString(),
-                        spedizioni.text.toString()
+                        spedizioni.text.toString(),
+                        distanza.editText?.text.toString(),
+                        currentLatLng!!
                     )
                     val ricerca = RicercaSalvata(
                         emailLoggato!!,
                         parola,
                         prezzo.editText?.text.toString(),
                         spedizioni.text.toString(),
-                        "",
+                        distanza.editText?.text.toString(),
                         annunciFromRicerca
                     )
                     FirebaseDbWrapper(applicationContext).creaRicercaSalvata(ricerca)
@@ -141,18 +143,20 @@ class RicercaActivity: AppCompatActivity() {
                     }
                 }
                 else {
-                    val annunciFromRicerca = FirebaseDbWrapper(applicationContext).ricercaConFiltri(
+                    val annunciFromRicerca = FirebaseDbWrapper(applicationContext).ricercaConFiltriELocalizzazione(
                         applicationContext,
                         parola,
                         "10000",
-                        spedizioni.text.toString()
+                        spedizioni.text.toString(),
+                        distanza.editText?.text.toString(),
+                        currentLatLng!!
                     )
                     val ricerca = RicercaSalvata(
                         emailLoggato!!,
                         parola,
                         "10000",
                         spedizioni.text.toString(),
-                        "",
+                        distanza.editText?.text.toString(),
                         annunciFromRicerca
                     )
                     FirebaseDbWrapper(applicationContext).creaRicercaSalvata(ricerca)
@@ -177,7 +181,8 @@ class RicercaActivity: AppCompatActivity() {
         if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION)
 
-        } else {
+        }
+        else {
             fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
             fusedLocationClient.lastLocation.addOnSuccessListener { location : Location? ->
                 if(location!=null) {
@@ -186,9 +191,7 @@ class RicercaActivity: AppCompatActivity() {
                 else {
 
                 }
-        }
-
-
+            }
         }
     }
 

@@ -804,7 +804,7 @@ class FirebaseDbWrapper(context: Context) {
                             }
                             if(spedizione.equals("Tutti")) {
                                 if( nome!!.lowercase().contains(parola.lowercase()) && prez!!.toDouble()<=prezzo.toDouble() ) {
-                                    if(distanzaInserita=="Ovunque") {
+                                    if(distanzaInserita=="") {
                                         annList.add(child.getValue(Annuncio::class.java)!!)
                                     }
                                     else {
@@ -817,7 +817,7 @@ class FirebaseDbWrapper(context: Context) {
                             }
                             if(spedizione.equals("Si")) {
                                 if( nome!!.lowercase().contains(parola.lowercase()) && prez!!.toDouble()<=prezzo.toDouble() && spediz!!) {
-                                    if(distanzaInserita=="Ovunque") {
+                                    if(distanzaInserita=="") {
                                         annList.add(child.getValue(Annuncio::class.java)!!)
                                     }
                                     else {
@@ -830,7 +830,7 @@ class FirebaseDbWrapper(context: Context) {
                             }
                             if(spedizione.equals("No")) {
                                 if( nome!!.lowercase().contains(parola.lowercase()) && prez!!.toDouble()<=prezzo.toDouble() && !spediz!!) {
-                                    if (distanzaInserita == "Ovunque") {
+                                    if (distanzaInserita == "") {
                                         annList.add(child.getValue(Annuncio::class.java)!!)
                                     } else {
                                         Location.distanceBetween(
@@ -897,7 +897,7 @@ class FirebaseDbWrapper(context: Context) {
                             }
                             if(spedizione.equals("Tutti")) {
                                 if( nome!!.lowercase().contains(parola.lowercase()) && prez!!.toDouble()<=prezzo.toDouble() ) {
-                                    if(distanzaInserita == "Ovunque") {
+                                    if(distanzaInserita == "") {
                                         chiavi.add(codicetmp)
                                     }
                                     else {
@@ -910,7 +910,7 @@ class FirebaseDbWrapper(context: Context) {
                             }
                             if(spedizione.equals("Si")) {
                                 if( nome!!.lowercase().contains(parola.lowercase()) && prez!!.toDouble()<=prezzo.toDouble() && spediz!!) {
-                                    if(distanzaInserita=="Ovunque") {
+                                    if(distanzaInserita=="") {
                                         chiavi.add(codicetmp)
                                     }
                                     else {
@@ -923,7 +923,7 @@ class FirebaseDbWrapper(context: Context) {
                             }
                             if(spedizione.equals("No")) {
                                 if( nome!!.lowercase().contains(parola.lowercase()) && prez!!.toDouble()<=prezzo.toDouble() && !spediz!!) {
-                                    if (distanzaInserita == "Ovunque") {
+                                    if (distanzaInserita == "") {
                                         chiavi.add(codicetmp)
                                     }
                                     else {

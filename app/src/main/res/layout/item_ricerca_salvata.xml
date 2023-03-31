@@ -76,7 +76,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Localizzazione: "
+                android:text="Distanza massima (Km): "
                 android:textSize="15dp"
                 android:textColor="@color/black"/>
 
@@ -84,7 +84,7 @@
                 android:id="@+id/localizzazione"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Novi Ligure"
+                android:text="60"
                 android:textSize="15dp"
                 android:textColor="@color/black"/>
         </LinearLayout>

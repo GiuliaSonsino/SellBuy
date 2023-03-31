@@ -1,12 +1,15 @@
 package com.example.sellbuy
 
+import android.Manifest
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Color
+import android.location.Location
 import android.media.RingtoneManager
 import android.media.audiofx.BassBoost
 import android.net.Uri
@@ -17,9 +20,13 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.messaging.FirebaseMessaging
@@ -34,6 +41,10 @@ class MainActivity : AppCompatActivity() {
     //private var storage = FirebaseStorage.getInstance().getReferenceFromUrl("gs://sellbuy-abe26.appspot.com")
     private var adapter = AnnuncioAdapter(this, mutableListOf())
     var mList: MutableList<AnnuncioViewModel> = mutableListOf()
+
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION =123
+    private var currentLatLng : LatLng? = null
 
     //gestione notifiche
     private lateinit var notificationManager: NotificationManager
@@ -78,6 +89,23 @@ class MainActivity : AppCompatActivity() {
         loc.setOnClickListener {
             val intent = Intent(applicationContext, SearchMapActivity::class.java)
             startActivity(intent)
+        }
+
+
+        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION)
+
+        }
+        else {
+            fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+            fusedLocationClient.lastLocation.addOnSuccessListener { location : Location? ->
+                if(location!=null) {
+                    currentLatLng = LatLng(location.latitude,location.longitude)
+                }
+                else {
+
+                }
+            }
         }
 
     }
@@ -155,9 +183,10 @@ class MainActivity : AppCompatActivity() {
                 val parola = ric.parolaDigitata
                 val prezzo = ric.prezzo
                 val spedizione = ric.spedizione
+                val distanza = ric.localizzazione
                 val annunciVecchi = ric.elencoAnnunciTrovati
                 //Facciamo un'altra ricerca da confrontare con quella nel DB
-                val annunciTrovati = FirebaseDbWrapper(applicationContext).ricercaConFiltri(applicationContext,parola,prezzo,spedizione)
+                val annunciTrovati = FirebaseDbWrapper(applicationContext).ricercaConFiltriELocalizzazione(applicationContext,parola,prezzo,spedizione,distanza!!,currentLatLng!!)
                 for(an in annunciTrovati) {
                     var prova=false
                     for(aVecchio in annunciVecchi) {
@@ -241,7 +270,7 @@ class MainActivity : AppCompatActivity() {
                 val parolaDigitata=""
                 val prezzo=""
                 val spedizione="Tutti"
-                val distanza = "Ovunque"
+                val distanza = ""
                 val intent = Intent(applicationContext, RicercaActivity::class.java)
                 intent.putExtra("parolaDigitata", parolaDigitata)
                 intent.putExtra("prezzo", prezzo)

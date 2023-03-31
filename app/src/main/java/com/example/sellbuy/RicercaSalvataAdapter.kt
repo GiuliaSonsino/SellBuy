@@ -35,11 +35,13 @@ class RicercaSalvataAdapter(context: Context, private val listaRicerche: List<Ri
             val parolaDigitata=currentRicerca.parolaDigitata
             val prezzo=currentRicerca.prezzo
             val spedizione=currentRicerca.spedizione
+            val distanza= currentRicerca.localizzazione
             val intent= Intent(mcontext,RicercaActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
             intent.putExtra("parolaDigitata", parolaDigitata)
             intent.putExtra("prezzo", prezzo)
             intent.putExtra("spedizione", spedizione)
+            intent.putExtra("distanza", distanza)
             mcontext?.startActivity(intent)
         }
     }
