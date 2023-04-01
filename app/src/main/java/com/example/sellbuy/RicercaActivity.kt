@@ -243,6 +243,10 @@ class RicercaActivity: AppCompatActivity() {
                 val intent = Intent(applicationContext, RicercheSalvateActivity::class.java)
                 startActivity(intent)
             }
+            R.id.home -> {
+                val intent = Intent(applicationContext, MainActivity::class.java)
+                startActivity(intent)
+            }
         }
         return true
     }

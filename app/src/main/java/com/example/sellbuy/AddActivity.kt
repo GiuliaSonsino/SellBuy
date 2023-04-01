@@ -24,12 +24,14 @@ import android.widget.*
 import androidx.activity.result.ActivityResultCallback
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import com.google.android.gms.common.ConnectionResult
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.common.api.GoogleApiClient
 import com.google.android.gms.common.api.Status
+import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -86,6 +88,10 @@ class AddActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
     internal var mGoogleApiClient: GoogleApiClient? = null
     internal lateinit var mLocationRequest: LocationRequest
 
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION =123
+    private var currentLatLng : LatLng? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         title = "Crea Annuncio"
@@ -112,6 +118,22 @@ class AddActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
         val dialogView = layoutInflater.inflate(R.layout.progress_bar, null)
         val message = dialogView.findViewById<TextView>(R.id.message)
 
+        //gestione posizione attuale
+        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION)
+
+        }
+        else {
+            fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+            fusedLocationClient.lastLocation.addOnSuccessListener { location : Location? ->
+                if(location!=null) {
+                    currentLatLng = LatLng(location.latitude,location.longitude)
+                }
+                else {
+
+                }
+            }
+        }
 
         pickup = findViewById(R.id.pickUpImg)
         upload = findViewById(R.id.uploadImg)
@@ -395,19 +417,26 @@ class AddActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
         var addressList: List<Address>? = null
 
         if (location == null || location == ""){
-            Toast.makeText(this, "provide location", Toast.LENGTH_SHORT).show()
-        }else{
+            DynamicToast.makeWarning(this, "Inserisci luogo", Toast.LENGTH_SHORT).show()
+        }
+        else{
             val geoCoder = Geocoder(this)
             try {
                 addressList = geoCoder.getFromLocationName(location, 1)
             }catch (e: IOException){
                 e.printStackTrace()
             }
+            if(addressList!!.isEmpty()) {
+                DynamicToast.makeWarning(this, "Luogo non trovato", Toast.LENGTH_SHORT).show()
 
-            val address = addressList!![0]
-            val latLng = LatLng(address.latitude, address.longitude)
-            mMap!!.addMarker(MarkerOptions().position(latLng).title(location))
-            mMap!!.animateCamera(CameraUpdateFactory.newLatLng(latLng))
+            }
+            else {
+                val address = addressList!![0]
+                val latLng = LatLng(address.latitude, address.longitude)
+                mMap!!.addMarker(MarkerOptions().position(latLng).title(location))
+                mMap!!.animateCamera(CameraUpdateFactory.newLatLng(latLng))
+            }
+
         }
     }
 
@@ -433,12 +462,22 @@ class AddActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
                 e.printStackTrace()
             }
 
-            val address = addressList!![0]
-            latLng = LatLng(address.latitude, address.longitude)
-            mMap!!.addMarker(MarkerOptions().position(latLng).title(location))
-            mMap!!.animateCamera(CameraUpdateFactory.newLatLng(latLng))
+            if(addressList!!.isEmpty()) {
+                DynamicToast.makeWarning(this, "Luogo non trovato, è stata inserita la tua posizione attuale", Toast.LENGTH_LONG).show()
+                latLng = currentLatLng
+                mMap!!.addMarker(MarkerOptions().position(latLng!!).title(location))
+                mMap!!.animateCamera(CameraUpdateFactory.newLatLng(latLng))
+            }
+
+            else {
+                val address = addressList!![0]
+                latLng = LatLng(address.latitude, address.longitude)
+                mMap!!.addMarker(MarkerOptions().position(latLng).title(location))
+                mMap!!.animateCamera(CameraUpdateFactory.newLatLng(latLng))
+            }
+
         }
-        return latLng!!
+        return latLng
     }
 
 }

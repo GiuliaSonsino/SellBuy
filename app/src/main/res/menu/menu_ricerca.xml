@@ -3,8 +3,16 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/home"
+        android:icon="@drawable/baseline_home_48"
+        app:showAsAction="always"
+        android:title="Home"/>
+
+    <item
         android:id="@+id/ricercheSalvate"
         android:icon="@drawable/baseline_saved_search_48"
         app:showAsAction="always"
-        android:title="Home"/>
+        android:title="Ricerche salvate"/>
+
+
 </menu>

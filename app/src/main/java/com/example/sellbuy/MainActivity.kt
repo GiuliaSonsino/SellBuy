@@ -60,21 +60,6 @@ class MainActivity : AppCompatActivity() {
                 Context.NOTIFICATION_SERVICE) as NotificationManager
 
         createNotificationChannel()
-        /*
-        //gestione notifiche push
-        FirebaseMessaging.getInstance().token.addOnCompleteListener(OnCompleteListener { task ->
-            if (!task.isSuccessful) {
-                Log.w(TAG, "Fetching FCM registration token failed", task.exception)
-                return@OnCompleteListener
-            }
-
-            // Ricevi il token del dispositivo
-            val token = task.result
-            Log.d(TAG, "FCM token: $token")
-            // Qui puoi inviare il token del dispositivo al tuo server per inviare notifiche push
-            // al dispositivo
-        })
-*/
 
         val recyclerview = findViewById<RecyclerView>(R.id.recyclerview)
         title=""
@@ -82,14 +67,6 @@ class MainActivity : AppCompatActivity() {
         recyclerview.layoutManager = LinearLayoutManager(this)
         adapter = AnnuncioAdapter(applicationContext, mList)
         recyclerview.adapter = adapter
-
-
-
-        val loc = findViewById<Button>(R.id.loc)
-        loc.setOnClickListener {
-            val intent = Intent(applicationContext, SearchMapActivity::class.java)
-            startActivity(intent)
-        }
 
 
         if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -145,14 +122,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun sendNotification() {
-        val resultIntent = Intent(this, MainActivity::class.java)
+        val resultIntent = Intent(this, RicercheSalvateActivity::class.java)
         val pendingIntent = PendingIntent.getActivity(
             this,
             0,
             resultIntent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE
         )
-
 
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("Annuncio inserito")
