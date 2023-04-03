@@ -182,23 +182,28 @@ class AnnuncioActivity : AppCompatActivity() {
 
 
             //handle visibility button
-            if (em.equals(ann.email)) {
-                //btnElimina.visibility= View.VISIBLE
+            if(FirebaseDbWrapper(applicationContext).isAmministratore(applicationContext)) {
                 View.INVISIBLE.also { btnAcquista.visibility = it }
-                View.INVISIBLE.also { btnChat.visibility = it }
-            } else {
-                View.VISIBLE.also { btnAcquista.visibility = it }
                 View.VISIBLE.also { btnChat.visibility = it }
-                if (ann.venduto) {
-                    btnAcquista.isClickable = false
-                    runOnUiThread {
-                        DynamicToast.makeError(
-                            applicationContext,
-                            "Annuncio già venduto",
-                            Toast.LENGTH_LONG
-                        ).show()
+            }
+            else {
+                if (em.equals(ann.email)) {
+                    //btnElimina.visibility= View.VISIBLE
+                    View.INVISIBLE.also { btnAcquista.visibility = it }
+                    View.INVISIBLE.also { btnChat.visibility = it }
+                } else {
+                    View.VISIBLE.also { btnAcquista.visibility = it }
+                    View.VISIBLE.also { btnChat.visibility = it }
+                    if (ann.venduto) {
+                        btnAcquista.isClickable = false
+                        runOnUiThread {
+                            DynamicToast.makeError(
+                                applicationContext,
+                                "Annuncio già venduto",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
                     }
-
                 }
             }
         }
@@ -514,13 +519,19 @@ class AnnuncioActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         val codiceAnn = intent.getStringExtra("codice")
         CoroutineScope(Dispatchers.IO).launch {
+            val isAmm=FirebaseDbWrapper(applicationContext).isAmministratore(applicationContext)
             val bool = FirebaseDbWrapper(applicationContext).isProprietarioAnnuncio(applicationContext,codiceAnn!!)
             withContext(Dispatchers.Main) {
-                if(!bool) {
-                    menuInflater.inflate(R.menu.menu_to_home, menu)
+                if(isAmm) {
+                    menuInflater.inflate(R.menu.menu_proprietario, menu)
                 }
                 else {
-                    menuInflater.inflate(R.menu.menu_proprietario, menu)
+                    if(!bool) {
+                        menuInflater.inflate(R.menu.menu_to_home, menu)
+                    }
+                    else {
+                        menuInflater.inflate(R.menu.menu_proprietario, menu)
+                    }
                 }
             }
         }

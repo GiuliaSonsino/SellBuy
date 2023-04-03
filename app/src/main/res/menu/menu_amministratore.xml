@@ -8,7 +8,7 @@
         app:showAsAction="always"
         android:title="chat"/>
     <item
-        android:id="@+id/profilo"
+        android:id="@+id/profiloAmm"
         android:title="Area personale"/>
     <item
         android:id="@+id/aggiungi_cat"
@@ -16,9 +16,6 @@
     <item
         android:id="@+id/elimina_cat"
         android:title="Elimina categoria"/>
-    <item
-        android:id="@+id/statistiche"
-        android:title="Statistiche"/>
     <item
         android:id="@+id/elimina_utenti"
         android:title="Elimina utenti"/>

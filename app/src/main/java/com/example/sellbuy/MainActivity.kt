@@ -220,17 +220,13 @@ class MainActivity : AppCompatActivity() {
         return mList
     }
 
-    private fun eliminaCategoria(opzioni : Array<String>) {
+    private fun eliminaCategoriaDialog(opzioni : Array<String>) {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Elimina una categoria")
-
         var selectedRating = 0
         builder.setSingleChoiceItems(opzioni, selectedRating) { dialog, which ->
             selectedRating = which
         }
-
-
-
 
         builder.setPositiveButton("Elimina") { dialog, which ->
             val catSel= opzioni[selectedRating]
@@ -255,6 +251,8 @@ class MainActivity : AppCompatActivity() {
         }
         builder.show()
     }
+
+
     private fun aggiungiCatDialog() {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Aggiungi una categoria")
@@ -279,6 +277,43 @@ class MainActivity : AppCompatActivity() {
 
         }
         builder.setNegativeButton("Esci") { dialog, which ->
+            val intent = Intent(applicationContext, MainActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+        builder.show()
+    }
+
+
+    private fun eliminaUtenteDialog(utenti : Array<String>) {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Elimina un utente")
+        var selectedRating = 0
+        builder.setSingleChoiceItems(utenti, selectedRating) { dialog, which ->
+            selectedRating = which
+        }
+
+        builder.setPositiveButton("Elimina") { dialog, which ->
+            val utenteSelezionato= utenti[selectedRating]
+            GlobalScope.launch {
+                FirebaseDbWrapper(applicationContext).deleteUtente(
+                    applicationContext,
+                    utenteSelezionato
+                )
+                FirebaseDbWrapper(applicationContext).deleteAnnunciUtente(
+                    applicationContext,
+                    utenteSelezionato
+                )
+                val intent = Intent(applicationContext, MainActivity::class.java)
+                startActivity(intent)
+                runOnUiThread {
+                    DynamicToast.makeSuccess(applicationContext, "Utente e relativi annunci eliminati", Toast.LENGTH_LONG).show()
+                }
+                finish()
+            }
+
+        }
+        builder.setNegativeButton("Annulla") { dialog, which ->
             val intent = Intent(applicationContext, MainActivity::class.java)
             startActivity(intent)
             finish()
@@ -322,6 +357,10 @@ class MainActivity : AppCompatActivity() {
                 val intent = Intent(applicationContext, AreaPersonaleActivity::class.java)
                 startActivity(intent)
             }
+            R.id.profiloAmm -> {
+                val intent = Intent(applicationContext, AreaPersonaleAmministratoreAct::class.java)
+                startActivity(intent)
+            }
             R.id.search -> {
                 val parolaDigitata=""
                 val prezzo=""
@@ -339,20 +378,19 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.elimina_cat -> {
                 CoroutineScope(Dispatchers.IO).launch() {
-                    var options= FirebaseDbWrapper(applicationContext).getCategorie(applicationContext).toTypedArray()
+                    val options= FirebaseDbWrapper(applicationContext).getCategorie(applicationContext).toTypedArray()
                     withContext(Dispatchers.Main) {
-                        eliminaCategoria(options)
+                        eliminaCategoriaDialog(options)
                     }
                 }
-
             }
             R.id.elimina_utenti -> {
-                val intent = Intent(applicationContext, AreaPersonaleActivity::class.java)
-                startActivity(intent)
-            }
-            R.id.statistiche -> {
-                val intent = Intent(applicationContext, AreaPersonaleActivity::class.java)
-                startActivity(intent)
+                CoroutineScope(Dispatchers.IO).launch() {
+                    val options= FirebaseDbWrapper(applicationContext).getUtenti(applicationContext).toTypedArray()
+                    withContext(Dispatchers.Main) {
+                        eliminaUtenteDialog(options)
+                    }
+                }
             }
         }
         return true

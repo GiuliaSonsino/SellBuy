@@ -1106,7 +1106,7 @@ class FirebaseDbWrapper(context: Context) {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val children = snapshot.child("RicercheSalvate").children
                         for (child in children) {
-                            val list = child.getValue() as HashMap<String, String>
+                            val list = child.getValue() as HashMap<*, *>
                             val key = child.key.toString()
                             for (record in list) {
                                 if(record.key.equals("email") && record.value.equals(maill)) {
@@ -1167,6 +1167,103 @@ class FirebaseDbWrapper(context: Context) {
         dbRef.removeValue().await()
     }
 
+
+
+    fun getUtenti(context: Context): MutableList<String> {
+        val lock = ReentrantLock()
+        val condition = lock.newCondition()
+        val maill = Firebase.auth.currentUser?.email
+
+        val listaUtenti: MutableList<String> = mutableListOf()
+        if (maill != null) {
+            GlobalScope.launch {
+                listaUtenti.clear()
+                FirebaseDbWrapper(context).dbref.addValueEventListener(object :
+                    ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val children = snapshot.child("Utenti").children
+                        var nome: String = ""
+                        for (child in children) {
+                            val list = child.getValue() as HashMap<*, *>
+                            for (record in list) {
+                                if (record.key.equals("email")) {
+                                    nome = record.value.toString()
+                                }
+                            }
+                            for (record in list) {
+                                if(record.key.equals("amministratore") && record.value==false) {
+                                    listaUtenti.add(nome)
+                                }
+                            }
+                        }
+                        lock.withLock { condition.signal() }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.w(ContentValues.TAG, "Failed to read value", error.toException())
+                    }
+                })
+            }
+            lock.withLock { condition.await() }
+        }
+        return listaUtenti
+    }
+
+
+    fun deleteUtente(context: Context, nomeUtente: String){
+        val lock = ReentrantLock()
+        val condition = lock.newCondition()
+        GlobalScope.launch {
+            FirebaseDbWrapper(context).dbref.addValueEventListener(object :
+                ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val children = snapshot.child("Utenti").children
+                    for (child in children) {
+                        val list = child.getValue() as HashMap<*,*>
+                        for (record in list) {
+                            if(record.key.equals("email") && record.value.equals(nomeUtente)) {
+                                child.ref.removeValue()
+                            }
+                        }
+                    }
+                    lock.withLock { condition.signal() }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.w(ContentValues.TAG, "Failed to delete value", error.toException())
+                }
+            })
+        }
+        lock.withLock { condition.await() }
+    }
+
+
+    fun deleteAnnunciUtente(context: Context, nomeUtente: String){
+        val lock = ReentrantLock()
+        val condition = lock.newCondition()
+        GlobalScope.launch {
+            FirebaseDbWrapper(context).dbref.addValueEventListener(object :
+                ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val children = snapshot.child("Annunci").children
+                    for (child in children) {
+                        val list = child.getValue() as HashMap<*,*>
+                        for (record in list) {
+                            if(record.key.equals("email") && record.value.equals(nomeUtente)) {
+                                child.ref.removeValue()
+                            }
+                        }
+                    }
+                    lock.withLock { condition.signal() }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.w(ContentValues.TAG, "Failed to delete value", error.toException())
+                }
+            })
+        }
+        lock.withLock { condition.await() }
+    }
 
 
     fun creaUtente(utente: Utente) {

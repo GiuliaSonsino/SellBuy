@@ -15,14 +15,6 @@
     <string name="desc_articolo">Descrizione</string>
     <string name="switch_spediz">Disponibilità a spedire</string>
     <string name="crea_ann">CREA ANNUNCIO</string>
-    <string-array name="categorie">
-        <item>Sport</item>
-        <item>Tecnologia</item>
-        <item>Motori</item>
-        <item>Giardinaggio</item>
-        <item>Abbigliamento</item>
-        <item>Arredamento</item>
-    </string-array>
     <string-array name="condizioni">
         <item>Nuovo</item>
         <item>Usato ma in perfette condizioni</item>

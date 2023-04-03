@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -41,18 +42,10 @@ class AreaPersonaleActivity: AppCompatActivity() {
         CoroutineScope(Dispatchers.IO).launch {
             val utente = FirebaseDbWrapper(applicationContext).getUtenteFromEmail(applicationContext)
             withContext(Dispatchers.Main) {
-                val ruoloo = utente!!.isAmministratore
                 val numTell = utente!!.numTel
-                if (ruoloo) {
-                    ruolo.text = "Amministratore"
-                    tel.text = numTell.toString()
-                    credito.text = utente.credito.toString()
-                } else {
-                    ruolo.text = "Utente"
-                    tel.text = numTell.toString()
-                    credito.text = utente.credito.toString()
-
-                }
+                ruolo.text = "Utente"
+                tel.text = numTell.toString()
+                credito.text = utente.credito.toString()
             }
         }
         tel.setOnClickListener {
@@ -108,17 +101,13 @@ class AreaPersonaleActivity: AppCompatActivity() {
         if (auth.currentUser != null) {
             GlobalScope.launch {
                 val codici = FirebaseDbWrapper(applicationContext).getKeyFromEmail(applicationContext)
-                Log.i(TAG,"codici utente trivati $codici")
                 val an = FirebaseDbWrapper(applicationContext).getAnnunciFromEmail(applicationContext)
-                Log.i(TAG,"annunci utente trivati $an")
                 mList.clear()
                 for (record in an) {
                     val nomeAn = record.nome
                     val imageName = record.foto?.get(0)
                     val prezzoAn = record.prezzo
                     val codice = codici[count]
-                    //val codice = if (count < codici.size) codici[count] else "012334"
-                    Log.i(TAG,"codice associato $codice")
                     val nuovoan =
                         imageName?.let { AnnuncioViewModel(it, nomeAn, prezzoAn, codice!!) }
                     if (nuovoan != null) {
