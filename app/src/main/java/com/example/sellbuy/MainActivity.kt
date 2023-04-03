@@ -19,6 +19,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
@@ -30,8 +31,10 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.messaging.FirebaseMessaging
+import com.pranavpandey.android.dynamic.toasts.DynamicToast
 import kotlinx.coroutines.*
 import models.AnnuncioViewModel
+import models.Categoria
 import models.FirebaseDbWrapper
 
 
@@ -217,8 +220,84 @@ class MainActivity : AppCompatActivity() {
         return mList
     }
 
+    private fun eliminaCategoria(opzioni : Array<String>) {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Elimina una categoria")
+
+        var selectedRating = 0
+        builder.setSingleChoiceItems(opzioni, selectedRating) { dialog, which ->
+            selectedRating = which
+        }
+
+
+
+
+        builder.setPositiveButton("Elimina") { dialog, which ->
+            val catSel= opzioni[selectedRating]
+            GlobalScope.launch {
+                FirebaseDbWrapper(applicationContext).deleteCategoria(
+                    applicationContext,
+                    catSel
+                )
+                val intent = Intent(applicationContext, MainActivity::class.java)
+                startActivity(intent)
+                runOnUiThread {
+                    DynamicToast.makeSuccess(applicationContext, "Categoria eliminata", Toast.LENGTH_LONG).show()
+                }
+                finish()
+            }
+
+        }
+        builder.setNegativeButton("Annulla") { dialog, which ->
+            val intent = Intent(applicationContext, MainActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+        builder.show()
+    }
+    private fun aggiungiCatDialog() {
+        val builder = AlertDialog.Builder(this)
+        builder.setTitle("Aggiungi una categoria")
+
+        val input = EditText(this)
+        input.hint="Scrivi qui"
+        builder.setView(input)
+
+        builder.setPositiveButton("Aggiungi") { dialog, which ->
+            val nome = input.text.toString()
+            GlobalScope.launch {
+                val cat = Categoria(nome)
+                FirebaseDbWrapper(applicationContext).creaCategoria(cat)
+                val intent = Intent(applicationContext, MainActivity::class.java)
+                startActivity(intent)
+                runOnUiThread {
+                    DynamicToast.makeSuccess(applicationContext, "Categoria aggiunta", Toast.LENGTH_LONG).show()
+                }
+                finish()
+
+            }
+
+        }
+        builder.setNegativeButton("Esci") { dialog, which ->
+            val intent = Intent(applicationContext, MainActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
+        builder.show()
+    }
+
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        menuInflater.inflate(R.menu.main_menu, menu)
+        CoroutineScope(Dispatchers.IO).launch {
+            val bool = FirebaseDbWrapper(applicationContext).isAmministratore(applicationContext)
+            withContext(Dispatchers.Main) {
+                if(!bool) {
+                    menuInflater.inflate(R.menu.main_menu, menu)
+                }
+                else {
+                    menuInflater.inflate(R.menu.menu_amministratore, menu)
+                }
+            }
+        }
         return true
     }
 
@@ -253,6 +332,26 @@ class MainActivity : AppCompatActivity() {
                 intent.putExtra("prezzo", prezzo)
                 intent.putExtra("spedizione", spedizione)
                 intent.putExtra("distanza", distanza)
+                startActivity(intent)
+            }
+            R.id.aggiungi_cat -> {
+                aggiungiCatDialog()
+            }
+            R.id.elimina_cat -> {
+                CoroutineScope(Dispatchers.IO).launch() {
+                    var options= FirebaseDbWrapper(applicationContext).getCategorie(applicationContext).toTypedArray()
+                    withContext(Dispatchers.Main) {
+                        eliminaCategoria(options)
+                    }
+                }
+
+            }
+            R.id.elimina_utenti -> {
+                val intent = Intent(applicationContext, AreaPersonaleActivity::class.java)
+                startActivity(intent)
+            }
+            R.id.statistiche -> {
+                val intent = Intent(applicationContext, AreaPersonaleActivity::class.java)
                 startActivity(intent)
             }
         }

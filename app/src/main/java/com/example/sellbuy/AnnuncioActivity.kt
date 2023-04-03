@@ -205,7 +205,6 @@ class AnnuncioActivity : AppCompatActivity() {
 
 
         val dialog = Dialog(this)
-        // Imposta le proprietà del dialog e le dimensioni
         val lp = WindowManager.LayoutParams()
         lp.copyFrom(dialog.window!!.attributes)
         lp.width = WindowManager.LayoutParams.MATCH_PARENT
@@ -214,7 +213,6 @@ class AnnuncioActivity : AppCompatActivity() {
         mainImmagine?.setOnClickListener {
             val dialog = Dialog(this)
             dialog.setContentView(R.layout.dialog_box)
-            // Trova la ImageView nella vista del dialog
             val dialogImage = dialog.findViewById<ImageView>(R.id.imgDialog)
             strMainImm = immagini?.get(0)
             storag = Firebase.storage.reference.child("images/$strMainImm")
@@ -369,7 +367,7 @@ class AnnuncioActivity : AppCompatActivity() {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Vota il servizio e lascia una recensione")
         val ratingOptions = arrayOf("1", "2", "3", "4", "5")
-        var selectedRating = 0 // Valore predefinito
+        var selectedRating = 0
         builder.setSingleChoiceItems(ratingOptions, selectedRating) { dialog, which ->
             selectedRating = which
         }
@@ -381,7 +379,6 @@ class AnnuncioActivity : AppCompatActivity() {
         builder.setPositiveButton("Salva") { dialog, which ->
             val rating = ratingOptions[selectedRating]
             val review = input.text.toString()
-            // Fai qualcosa con la votazione e la recensione
             GlobalScope.launch {
                 FirebaseDbWrapper(applicationContext).modificaRecensioneVenditore(
                     applicationContext,
@@ -414,7 +411,7 @@ class AnnuncioActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        var firebaseAuth = FirebaseAuth.getInstance()
+        val firebaseAuth = FirebaseAuth.getInstance()
         val codiceAnn = intent.getStringExtra("codice")
         when (item.itemId) {
             R.id.logout -> {

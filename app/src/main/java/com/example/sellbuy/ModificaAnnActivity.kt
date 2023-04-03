@@ -17,6 +17,8 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
@@ -40,6 +42,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.textfield.TextInputLayout
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.ktx.storage
@@ -96,6 +99,9 @@ class ModificaAnnActivity: AppCompatActivity(), OnMapReadyCallback, LocationList
             }
         }
 
+        var prezzoIniziale : String? = null
+        var titoloIniziale : String? = null
+        var descrizioneIniziale: String? = null
         val titolo = findViewById<EditText>(R.id.edit_title)
         val descrizione = findViewById<EditText>(R.id.edit_description)
         val prezzo = findViewById<EditText>(R.id.edit_price)
@@ -104,12 +110,15 @@ class ModificaAnnActivity: AppCompatActivity(), OnMapReadyCallback, LocationList
         var localizzazione = findViewById<TextView>(R.id.luogo_inserito)
         val btnSalva = findViewById<Button>(R.id.btnSalva)
 
-        val categorie = resources.getStringArray(R.array.categorie)
-        val adapterCat = ArrayAdapter(this, R.layout.list_item, categorie)
-        val categoriaEdit = findViewById<AutoCompleteTextView>(R.id.edit_categoria)
-        categoriaEdit.setText(catAnn)
-        categoriaEdit.setAdapter(adapterCat)
-
+        var categorie : MutableList<String>? = null
+        val autoCompleteTextViewCat = findViewById<AutoCompleteTextView>(R.id.edit_categoria)
+        CoroutineScope(Dispatchers.IO).launch {
+            categorie = FirebaseDbWrapper(applicationContext).getCategorie(applicationContext)
+            withContext(Dispatchers.Main) {
+                val adapterCat = ArrayAdapter(applicationContext, R.layout.list_item, categorie!!)
+                autoCompleteTextViewCat.setAdapter(adapterCat)
+            }
+        }
         val listaCondizioni = resources.getStringArray(R.array.condizioni)
         val adapterCond = ArrayAdapter(this, R.layout.list_item, listaCondizioni)
         val condizioniEdit = findViewById<AutoCompleteTextView>(R.id.edit_condizioni)
@@ -125,6 +134,9 @@ class ModificaAnnActivity: AppCompatActivity(), OnMapReadyCallback, LocationList
                 titolo.setText(currentAnnuncio.nome)
                 descrizione.setText(currentAnnuncio.descrizione)
                 prezzo.setText(currentAnnuncio.prezzo)
+                prezzoIniziale = currentAnnuncio.prezzo
+                titoloIniziale = currentAnnuncio.nome
+                descrizioneIniziale = currentAnnuncio.descrizione
                 sped = currentAnnuncio.spedizione
                 spedizione.isChecked = sped!!
                 val stringaCoordinate = currentAnnuncio.localizzazione
@@ -159,14 +171,35 @@ class ModificaAnnActivity: AppCompatActivity(), OnMapReadyCallback, LocationList
             return spedizione.isChecked
         }
 
+        fun checkPrezzo(prezzo : String) : Boolean {
+            return prezzo != ""
+        }
+
+        fun checkTitolo(titolo : String) : Boolean {
+            return titolo != ""
+        }
+
+        fun checkDescrizione(descrizione : String) : Boolean {
+            return descrizione != ""
+        }
+
         btnSalva.setOnClickListener {
             GlobalScope.launch {
-                val tit = titolo.text.toString()
-                val desc = descrizione.text.toString()
-                val prez = prezzo.text.toString()
-                val cat = categoriaEdit.text.toString()
+                var tit = titolo.text.toString()
+                var desc = descrizione.text.toString()
+                var prez = prezzo.text.toString()
+                val cat = autoCompleteTextViewCat.text.toString()
                 val stato = condizioniEdit.text.toString()
                 val stringaLuogo = localizzazione.text.toString()
+                if(!checkTitolo(tit)) {
+                    tit = titoloIniziale.toString()
+                }
+                if(!checkDescrizione(desc)) {
+                    desc = descrizioneIniziale.toString()
+                }
+                if(!checkPrezzo(prez)) {
+                    prez = prezzoIniziale.toString()
+                }
                 val coordinateLuogo = getLatLngFromCityName(applicationContext,stringaLuogo)
                 val s = sped()
                 FirebaseDbWrapper(applicationContext).modificaInfoAnnuncio(

@@ -178,6 +178,47 @@ class FirebaseDbWrapper(context: Context) {
     }
 
 
+    fun isAmministratore(context: Context): Boolean  {
+        var ris = false
+        val utenteLoggato = FirebaseAuth.getInstance().currentUser?.email
+        val lock = ReentrantLock()
+        val condition = lock.newCondition()
+
+        GlobalScope.launch {
+            FirebaseDbWrapper(context).dbref.addValueEventListener(object :
+                ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val children = snapshot.child("Utenti").children
+                    var utenteAmm = false
+                    for (child in children) {
+                        val list = child.getValue() as HashMap<*, *>
+                        for (record in list) {
+                            if (record.key.equals("amministratore")) {
+                                utenteAmm = record.value as Boolean
+                            }
+                        }
+                        for (record in list) {
+                            if (record.key.equals("email") && record.value.equals(utenteLoggato)) {
+                                if (utenteAmm) {
+                                    ris = utenteAmm
+                                }
+                            }
+                        }
+
+                    }
+                    lock.withLock { condition.signal() }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    Log.w(ContentValues.TAG, "Failed to read value", error.toException())
+                }
+            })
+        }
+        lock.withLock { condition.await() }
+
+        return ris
+    }
+
 
     fun getTuttiAnnunci(context: Context): MutableList<Annuncio> {
         val lock = ReentrantLock()
@@ -1086,6 +1127,45 @@ class FirebaseDbWrapper(context: Context) {
         return keysRicercheList
     }
 
+    fun getCategorie(context: Context): MutableList<String> {
+        val lock = ReentrantLock()
+        val condition = lock.newCondition()
+        val maill = Firebase.auth.currentUser?.email
+
+        val catList: MutableList<String> = mutableListOf()
+        if (maill != null) {
+            GlobalScope.launch {
+                catList.clear()
+                FirebaseDbWrapper(context).dbref.addValueEventListener(object :
+                    ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val children = snapshot.child("Categorie").children
+                        for (child in children) {
+                            val list = child.getValue() as HashMap<*, *>
+                            for (record in list) {
+                                if(record.key.equals("nome")) {
+                                    catList.add(record.value.toString())
+                                }
+                            }
+                        }
+                        lock.withLock { condition.signal() }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.w(ContentValues.TAG, "Failed to read value", error.toException())
+                    }
+                })
+            }
+            lock.withLock { condition.await() }
+        }
+        return catList
+    }
+
+
+    suspend fun deleteCategoria(context: Context, nomeCategoria: String) {
+        val dbRef = FirebaseDbWrapper(context).dbref.child("Categorie").child(nomeCategoria)
+        dbRef.removeValue().await()
+    }
 
 
 
@@ -1110,6 +1190,10 @@ class FirebaseDbWrapper(context: Context) {
 
     fun creaRecensione(recensione : Recensione) {
         dbref.child("Recensioni").child(recensione.idOggettoRecensito!!).setValue(recensione)
+    }
+
+    fun creaCategoria(categoria : Categoria) {
+        dbref.child("Categorie").child(categoria.nome).setValue(categoria)
     }
 }
 

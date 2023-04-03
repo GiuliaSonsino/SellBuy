@@ -57,9 +57,9 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ServerValue
 import com.google.firebase.storage.FirebaseStorage
 import com.pranavpandey.android.dynamic.toasts.DynamicToast
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import models.Annuncio
+import models.Categoria
 import models.FirebaseDbWrapper
 import java.io.ByteArrayOutputStream
 import java.io.IOException
@@ -104,11 +104,24 @@ class AddActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
         val nomeObj = findViewById<AutoCompleteTextView>(R.id.nomeAcTv)
         val descrizioneObj = findViewById<AutoCompleteTextView>(R.id.descrizioneAcTv)
         val prezzoObj = findViewById<TextInputLayout>(R.id.prezzo)
-        val categorie = resources.getStringArray(R.array.categorie)
+        //val categorie = resources.getStringArray(R.array.categorie)
+        var categorie : MutableList<String>? = null
+        val autoCompleteTextViewCat = findViewById<AutoCompleteTextView>(R.id.categoriaAcTv)
+        CoroutineScope(Dispatchers.IO).launch {
+            categorie = FirebaseDbWrapper(applicationContext).getCategorie(applicationContext)
+            withContext(Dispatchers.Main) {
+                val adapterCat = ArrayAdapter(applicationContext, R.layout.list_item, categorie!!)
+                autoCompleteTextViewCat.setAdapter(adapterCat)
+            }
+        }
+
+
+
+        /*
         val adapterCat = ArrayAdapter(this, R.layout.list_item, categorie)
         val autoCompleteTextViewCat = findViewById<AutoCompleteTextView>(R.id.categoriaAcTv)
         autoCompleteTextViewCat.setAdapter(adapterCat)
-
+        */
         val condizioni = resources.getStringArray(R.array.condizioni)
         val adapterCond = ArrayAdapter(this, R.layout.list_item, condizioni)
         val autoCompleteTextViewCond = findViewById<AutoCompleteTextView>(R.id.statoAcTv)
