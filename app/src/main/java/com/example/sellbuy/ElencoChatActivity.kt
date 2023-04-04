@@ -27,11 +27,12 @@ class ElencoChatActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_elenco_chat)
+        title= "Chat"
         recyclerView = findViewById(R.id.userRecyclerView)
         recyclerView.layoutManager = LinearLayoutManager(this)
         chatAdapter=ItemChatAdapter(this,chatList)
         recyclerView.adapter = chatAdapter
-        //chatAdapter.notifyDataSetChanged()
+
     }
 
     override fun onStart() {
@@ -41,16 +42,16 @@ class ElencoChatActivity : AppCompatActivity() {
 
     @SuppressLint("NotifyDataSetChanged")
     private fun createList(): MutableList<Message> {
-        var emailUtente= FirebaseAuth.getInstance().currentUser?.email
-        var listaKeyChat: MutableList<String> = mutableListOf()
+        val emailUtente= FirebaseAuth.getInstance().currentUser?.email
+        val listaKeyChat: MutableList<String> = mutableListOf()
         if (auth.currentUser != null) {
             GlobalScope.launch {
-                 var idUserLoggato =
+                 val idUserLoggato =
                         FirebaseDbWrapper(applicationContext).getIdUtenteFromEmail(
                             applicationContext,
                             emailUtente!!
                         )
-                var elencoMessages =
+                val elencoMessages =
                     FirebaseDbWrapper(applicationContext).getChats(
                         applicationContext,
                         idUserLoggato!!
@@ -65,10 +66,9 @@ class ElencoChatActivity : AppCompatActivity() {
                     else if(idUserLoggato==record.sender) {
                         idUtente=record.receiver
                     }
-
-                    val nomeAn = record.articolo
                     val codiceAn=record.codiceArticolo
-                    val nuovaChat = Message(mess, idUserLoggato, idUtente,nomeAn,codiceAn)
+
+                    val nuovaChat = Message(mess, idUserLoggato, idUtente,codiceAn)
                     var id= idUtente + codiceAn
                     //check if nuovaChat exists and if it is already present in the list
                     if (nuovaChat != null && id !in listaKeyChat)  {

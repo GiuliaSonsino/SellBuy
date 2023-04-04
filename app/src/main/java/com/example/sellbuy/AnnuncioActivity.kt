@@ -8,10 +8,7 @@ import android.location.Geocoder
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
-import android.view.WindowManager
+import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -44,17 +41,19 @@ class AnnuncioActivity : AppCompatActivity() {
         var idCurrentUser:String?=null
         var idProprietario:String?=null
         var nomeArticolo:String?=null
+        var ann: Annuncio = Annuncio()
+        val codiceAnn = intent.getStringExtra("codice")
         GlobalScope.launch {
             idCurrentUser=FirebaseDbWrapper(applicationContext).getIdUtenteFromEmail(applicationContext,em!!)
         }
 
-        var ann: Annuncio
+
         var emailProprietarioAnn: String? = "*"
-        var strMainImm : String?
-        var strImmagine1: String?
-        var strImmagine2: String?
-        var strImmagine3: String?
-        var strImmagine4: String?
+        var strMainImm : String? = null
+        var strImmagine1: String?= null
+        var strImmagine2: String?= null
+        var strImmagine3: String?= null
+        var strImmagine4: String?= null
         var storag: StorageReference
         val im1=findViewById<ImageView>(R.id.image1)
         val im2=findViewById<ImageView>(R.id.image2)
@@ -62,7 +61,7 @@ class AnnuncioActivity : AppCompatActivity() {
         val im4=findViewById<ImageView>(R.id.image4)
         val mainImmagine= findViewById<ImageView>(R.id.main_image)
 
-        val codiceAnn = intent.getStringExtra("codice")
+
         val btnChat = findViewById<Button>(R.id.btnChat)
         val btnAcquista= findViewById<Button>(R.id.btnAcquista)
         val numTel = findViewById<TextView>(R.id.tv_num_tel)
@@ -73,120 +72,234 @@ class AnnuncioActivity : AppCompatActivity() {
         }
 
 
-        GlobalScope.launch {
-            //val codiceAnn = intent.getStringExtra("codice")
+        val titolo = findViewById<TextView>(R.id.tv_title)
+        val autore = findViewById<TextView>(R.id.tv_autore)
+        val descrizione = findViewById<TextView>(R.id.tv_description)
+        val prezzo = findViewById<TextView>(R.id.tv_price)
+        val venduto = findViewById<TextView>(R.id.tv_venduto)
+        val luogo = findViewById<TextView>(R.id.tv_luogo)
+        val condizione = findViewById<TextView>(R.id.tv_condition)
+        val categoria = findViewById<TextView>(R.id.tv_category)
+        val spedizione = findViewById<TextView>(R.id.tv_spedizione)
+
+
+        CoroutineScope(Dispatchers.IO).launch {
             ann =
                 FirebaseDbWrapper(applicationContext).getAnnuncioFromCodice(
                     applicationContext,
                     codiceAnn!!
                 )
+            withContext(Dispatchers.Main) {
+                titolo.text = ann.nome
+                autore.text = ann.email
+                numTel.text = ann.numTel.toString()
+                descrizione.text = ann.descrizione
+                prezzo.text = ann.prezzo
+                if (ann.venduto) {
+                    venduto.text = "VENDUTO"
+                }
+                val stringaCoordinate = ann.localizzazione
+                val coordinate = stringToLatLng(stringaCoordinate!!)
+                val nomeCitta = getCityName(applicationContext, coordinate!!)
+                luogo.text = nomeCitta
+                immagini = ann.foto
+                strMainImm = immagini?.get(0)
+                storag = Firebase.storage.reference.child("images/$strMainImm")
+                storag.downloadUrl.addOnSuccessListener { url ->
+                    if (applicationContext != null) {
+                        Glide.with(applicationContext).load(url).skipMemoryCache(true) // Opzione 2
+                            .override(500, 500).into(mainImmagine)
+                    }
+                }
+                if (immagini?.size!! >= 2) {
+                    strImmagine1 = immagini?.get(1)
+                    storag = Firebase.storage.reference.child("images/$strImmagine1")
+                    storag.downloadUrl.addOnSuccessListener { url ->
+                        if (applicationContext != null) {
+                            Glide.with(applicationContext).load(url)
+                                .skipMemoryCache(true)
+                                .override(500, 500).into(im1)
+                        }
+                    }
+                } else {
+                    View.INVISIBLE.also { im1.visibility = it }
+                }
+                if (immagini?.size!! >= 3) {
+                    strImmagine1 = immagini?.get(2)
+                    storag = Firebase.storage.reference.child("images/$strImmagine2")
+                    storag.downloadUrl.addOnSuccessListener { url ->
+                        if (applicationContext != null) {
+                            Glide.with(applicationContext).load(url)
+                                .skipMemoryCache(true)
+                                .override(500, 500).into(im2)
+                        }
+                    }
+                }else {
+                    View.INVISIBLE.also { im2.visibility = it }
+                }
+                if (immagini?.size!! >= 4) {
+                    strImmagine1 = immagini?.get(3)
+                    storag = Firebase.storage.reference.child("images/$strImmagine3")
+                    storag.downloadUrl.addOnSuccessListener { url ->
+                        if (applicationContext != null) {
+                            Glide.with(applicationContext).load(url)
+                                .skipMemoryCache(true)
+                                .override(500, 500).into(im3)
+                        }
+                    }
+                }else {
+                    View.INVISIBLE.also { im3.visibility = it }
+                }
+                if (immagini?.size!! >= 5) {
+                    strImmagine1 = immagini?.get(4)
+                    storag = Firebase.storage.reference.child("images/$strImmagine4")
+                    storag.downloadUrl.addOnSuccessListener { url ->
+                        if (applicationContext != null) {
+                            Glide.with(applicationContext).load(url)
+                                .skipMemoryCache(true)
+                                .override(500, 500).into(im4)
+                        }
+                    }
+                }else {
+                    View.INVISIBLE.also { im4.visibility = it }
+                }
 
-            val titolo = findViewById<TextView>(R.id.tv_title)
-            titolo.text = ann.nome
-            val autore = findViewById<TextView>(R.id.tv_autore)
-            autore.text = ann.email
-            numTel.text = ann.numTel.toString()
-            val descrizione = findViewById<TextView>(R.id.tv_description)
-            descrizione.text = ann.descrizione
-            val prezzo = findViewById<TextView>(R.id.tv_price)
-            prezzo.text = ann.prezzo
-            val venduto = findViewById<TextView>(R.id.tv_venduto)
-            if (ann.venduto) {
-                venduto.text = "VENDUTO"
+                emailProprietarioAnn = ann.email
+                nomeArticolo = ann.nome
+                condizione.text = ann.stato
+                cond = ann.stato
+                categoria.text = ann.categoria
+                cat = ann.categoria
+                if (ann.spedizione) {
+                    spedizione.text = "è disposto"
+                } else {
+                    spedizione.text = "non è disposto"
+                }
             }
-            val luogo = findViewById<TextView>(R.id.tv_luogo)
-            val stringaCoordinate = ann.localizzazione
-            val coordinate = stringToLatLng(stringaCoordinate!!)
-            val nomeCitta=getCityName(applicationContext,coordinate!!)
-            luogo.text = nomeCitta
-            val condizione = findViewById<TextView>(R.id.tv_condition)
-            condizione.text = ann.stato
-            cond = ann.stato
-            val categoria = findViewById<TextView>(R.id.tv_category)
-            categoria.text = ann.categoria
-            cat = ann.categoria
-            val spedizione = findViewById<TextView>(R.id.tv_spedizione)
-            if (ann.spedizione) {
-                spedizione.text = "è disposto"
-            } else {
-                spedizione.text = "non è disposto"
-            }
+            withContext(Dispatchers.Default) {
+                idProprietario = FirebaseDbWrapper(applicationContext).getIdUtenteFromEmail(
+                    applicationContext,
+                    emailProprietarioAnn!!
+                )
 
-            emailProprietarioAnn = ann.email
-            nomeArticolo = ann.nome
+                if (FirebaseDbWrapper(applicationContext).isAmministratore(applicationContext)) {
+                    View.INVISIBLE.also { btnAcquista.visibility = it }
+                    View.VISIBLE.also { btnChat.visibility = it }
+                } else {
+                    if (em.equals(ann.email)) {
+                        //btnElimina.visibility= View.VISIBLE
+                        View.INVISIBLE.also { btnAcquista.visibility = it }
+                        View.INVISIBLE.also { btnChat.visibility = it }
+                    } else {
+                        View.VISIBLE.also { btnAcquista.visibility = it }
+                        View.VISIBLE.also { btnChat.visibility = it }
+                        if (ann.venduto) {
+                            btnAcquista.isClickable = false
+                            runOnUiThread {
+                                DynamicToast.makeError(
+                                    applicationContext,
+                                    "Annuncio già venduto",
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
+
+
+
+
+
+/*
+        GlobalScope.launch {
             idProprietario = FirebaseDbWrapper(applicationContext).getIdUtenteFromEmail(
                 applicationContext,
                 emailProprietarioAnn!!
             )
+        }
+*/
 
-            immagini = ann.foto
-            strMainImm = immagini?.get(0)
-            storag = Firebase.storage.reference.child("images/$strMainImm")
-            storag.downloadUrl.addOnSuccessListener { url ->
-                if (applicationContext != null) {
-                    Glide.with(applicationContext).load(url).skipMemoryCache(true) // Opzione 2
-                        .override(500, 500).into(mainImmagine)
-                }
-            }
-            if (immagini?.size!! >= 2) {
-                strImmagine1 = immagini?.get(1)
-                storag = Firebase.storage.reference.child("images/$strImmagine1")
+
+
+/*
+                storag = Firebase.storage.reference.child("images/$strMainImm")
                 storag.downloadUrl.addOnSuccessListener { url ->
                     if (applicationContext != null) {
                         Glide.with(applicationContext).load(url).skipMemoryCache(true) // Opzione 2
-                            .override(500, 500).into(im1)
+                            .override(500, 500).into(mainImmagine)
                     }
                 }
-            } else {
-                View.INVISIBLE.also { im1.visibility = it }
-            }
 
-            if (immagini?.size!! >= 3) {
-                strImmagine2 = immagini?.get(2)
-                storag = Firebase.storage.reference.child("images/$strImmagine2")
-                storag.downloadUrl.addOnSuccessListener { url ->
-                    if (applicationContext != null) {
-                        Glide.with(applicationContext).load(url).skipMemoryCache(true) // Opzione 2
-                            .override(500, 500).into(im2)
+                if (immagini?.size!! >= 2) {
+
+                    storag = Firebase.storage.reference.child("images/$strImmagine1")
+                    storag.downloadUrl.addOnSuccessListener { url ->
+                        if (applicationContext != null) {
+                            Glide.with(applicationContext).load(url)
+                                .skipMemoryCache(true)
+                                .override(500, 500).into(im1)
+                        }
                     }
+                } else {
+                    View.INVISIBLE.also { im1.visibility = it }
                 }
-            } else {
-                View.INVISIBLE.also { im2.visibility = it }
-            }
 
-            if (immagini?.size!! >= 4) {
-                strImmagine3 = immagini?.get(3)
-                storag = Firebase.storage.reference.child("images/$strImmagine3")
-                storag.downloadUrl.addOnSuccessListener { url ->
-                    if (applicationContext != null) {
-                        Glide.with(applicationContext).load(url).skipMemoryCache(true) // Opzione 2
-                            .override(500, 500).into(im3)
+                if (immagini?.size!! >= 3) {
+
+                    storag = Firebase.storage.reference.child("images/$strImmagine2")
+                    storag.downloadUrl.addOnSuccessListener { url ->
+                        if (applicationContext != null) {
+                            Glide.with(applicationContext).load(url)
+                                .skipMemoryCache(true)
+                                .override(500, 500).into(im2)
+                        }
                     }
+                } else {
+                    View.INVISIBLE.also { im2.visibility = it }
                 }
-            } else {
-                View.INVISIBLE.also { im3.visibility = it }
-            }
 
-            if (immagini?.size!! >= 5) {
-                strImmagine4 = immagini?.get(4)
-                storag = Firebase.storage.reference.child("images/$strImmagine4")
-                storag.downloadUrl.addOnSuccessListener { url ->
-                    if (applicationContext != null) {
-                        Glide.with(applicationContext).load(url).skipMemoryCache(true) // Opzione 2
-                            .override(500, 500).into(im4)
+                if (immagini?.size!! >= 4) {
+
+                    storag = Firebase.storage.reference.child("images/$strImmagine3")
+                    storag.downloadUrl.addOnSuccessListener { url ->
+                        if (applicationContext != null) {
+                            Glide.with(applicationContext).load(url)
+                                .skipMemoryCache(true)
+                                .override(500, 500).into(im3)
+                        }
                     }
+                } else {
+                    View.INVISIBLE.also { im3.visibility = it }
                 }
-            } else {
-                View.INVISIBLE.also { im4.visibility = it }
-            }
 
+                if (immagini?.size!! >= 5) {
 
+                    storag = Firebase.storage.reference.child("images/$strImmagine4")
+                    storag.downloadUrl.addOnSuccessListener { url ->
+                        if (applicationContext != null) {
+                            Glide.with(applicationContext).load(url)
+                                .skipMemoryCache(true)
+                                .override(500, 500).into(im4)
+                        }
+                    }
+                } else {
+                    View.INVISIBLE.also { im4.visibility = it }
+                }
+            //}//with
+       // } //chiusura global scope
+
+ */
+/*
+        GlobalScope.launch {
             //handle visibility button
-            if(FirebaseDbWrapper(applicationContext).isAmministratore(applicationContext)) {
+            if (FirebaseDbWrapper(applicationContext).isAmministratore(applicationContext)) {
                 View.INVISIBLE.also { btnAcquista.visibility = it }
                 View.VISIBLE.also { btnChat.visibility = it }
-            }
-            else {
+            } else {
                 if (em.equals(ann.email)) {
                     //btnElimina.visibility= View.VISIBLE
                     View.INVISIBLE.also { btnAcquista.visibility = it }
@@ -207,6 +320,14 @@ class AnnuncioActivity : AppCompatActivity() {
                 }
             }
         }
+
+
+ */
+                /*
+            }//with
+        } //chiusura global scope
+
+                 */
 
 
         val dialog = Dialog(this)
@@ -336,7 +457,7 @@ class AnnuncioActivity : AppCompatActivity() {
     }
 
 
-    fun stringToLatLng(inputString: String): LatLng? {
+    private fun stringToLatLng(inputString: String): LatLng? {
         val regex = ".*\\(([^,]*),([^)]*)\\).*".toRegex()
         val matchResult = regex.find(inputString)
         if (matchResult != null && matchResult.groupValues.size >= 3) {
@@ -350,7 +471,7 @@ class AnnuncioActivity : AppCompatActivity() {
     }
 
 
-    fun getCityName(context: Context, latLng: LatLng): String {
+    private fun getCityName(context: Context, latLng: LatLng): String {
         val geocoder = Geocoder(context, Locale.getDefault())
         var cityName = ""
 

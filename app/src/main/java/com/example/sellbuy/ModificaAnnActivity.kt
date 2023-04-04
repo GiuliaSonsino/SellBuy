@@ -116,6 +116,7 @@ class ModificaAnnActivity: AppCompatActivity(), OnMapReadyCallback, LocationList
             categorie = FirebaseDbWrapper(applicationContext).getCategorie(applicationContext)
             withContext(Dispatchers.Main) {
                 val adapterCat = ArrayAdapter(applicationContext, R.layout.list_item, categorie!!)
+                autoCompleteTextViewCat.setText(catAnn)
                 autoCompleteTextViewCat.setAdapter(adapterCat)
             }
         }
@@ -183,6 +184,10 @@ class ModificaAnnActivity: AppCompatActivity(), OnMapReadyCallback, LocationList
             return descrizione != ""
         }
 
+        fun checkPrezzoMax( prezzo : String) : Boolean {
+            return prezzo.toDouble() <= 10000
+        }
+
         btnSalva.setOnClickListener {
             GlobalScope.launch {
                 var tit = titolo.text.toString()
@@ -202,22 +207,29 @@ class ModificaAnnActivity: AppCompatActivity(), OnMapReadyCallback, LocationList
                 }
                 val coordinateLuogo = getLatLngFromCityName(applicationContext,stringaLuogo)
                 val s = sped()
-                FirebaseDbWrapper(applicationContext).modificaInfoAnnuncio(
-                    applicationContext,
-                    codiceAnn!!,
-                    tit,
-                    desc,
-                    prez,
-                    cat,
-                    stato,
-                    s,
-                    coordinateLuogo.toString(),
-                )
+                if(!checkPrezzoMax(prez)) {
+                    runOnUiThread {
+                        DynamicToast.makeWarning(applicationContext, "Prezzo massimo consentito: 10000€", Toast.LENGTH_LONG).show()
+                    }
+                }
+                else {
+                    FirebaseDbWrapper(applicationContext).modificaInfoAnnuncio(
+                        applicationContext,
+                        codiceAnn!!,
+                        tit,
+                        desc,
+                        prez,
+                        cat,
+                        stato,
+                        s,
+                        coordinateLuogo.toString(),
+                    )
+                    finish()
+                    val intent = Intent(applicationContext, MainActivity::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+                    applicationContext.startActivity(intent)
+                }
             }
-            finish()
-            val intent = Intent(applicationContext, MainActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-            applicationContext.startActivity(intent)
         }
     }
 

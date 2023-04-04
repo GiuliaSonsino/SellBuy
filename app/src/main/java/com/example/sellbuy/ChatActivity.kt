@@ -56,7 +56,7 @@ class ChatActivity : AppCompatActivity() {
         val emailProprietarioAnn = intent.getStringExtra("emailProprietarioAnn")
         val sender = intent.getStringExtra("idCurrentUser")
         val codiceAnn = intent.getStringExtra("codiceAnn")
-        val nomeArticolo= intent.getStringExtra("nomeArticolo")
+       // val nomeArticolo= intent.getStringExtra("nomeArticolo")
 
         senderRoom = receiver + sender + codiceAnn
         receiverRoom = sender + receiver + codiceAnn
@@ -94,7 +94,7 @@ class ChatActivity : AppCompatActivity() {
 
         sendButton.setOnClickListener{
             val message = messageBox.text.toString()
-            val messageObject = models.Message(message,sender,receiver,nomeArticolo,codiceAnn)
+            val messageObject = models.Message(message,sender,receiver,codiceAnn)
 
             FirebaseDbWrapper(applicationContext).creaChat(senderRoom,receiverRoom,messageObject)
             messageBox.setText("")

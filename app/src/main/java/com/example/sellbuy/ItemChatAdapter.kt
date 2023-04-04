@@ -7,8 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import models.FirebaseDbWrapper
 import models.Message
 
@@ -28,13 +27,29 @@ class ItemChatAdapter( context: Context,private val chatList: MutableList<Messag
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val currentChat = chatList[position]
+        val idUtenteSullaChat = currentChat.receiver
+        val codiceArticolo = currentChat.codiceArticolo
+        CoroutineScope(Dispatchers.IO).launch {
+            val nomeUtenteSullaChat =
+                FirebaseDbWrapper(mcontext!!).getEmailFromIdUtente(
+                    mcontext,
+                    idUtenteSullaChat!!
+                )
+            val articolo =
+                FirebaseDbWrapper(mcontext!!).getAnnuncioFromCodice(
+                    mcontext,
+                    codiceArticolo!!
+                )
 
-        holder.nomeArticolo.text=currentChat.articolo
+            withContext(Dispatchers.Main) {
+                holder.nomeSullaChat.text = nomeUtenteSullaChat
+                holder.nomeArticolo.text = articolo.nome
+            }
+        }
         var emailProprietario:String?=null
         holder.itemView.setOnClickListener{
-        val nomeArticolo= currentChat.articolo
         val codiceAnn= currentChat.codiceArticolo
-        var idProprietario= currentChat.receiver
+        val idProprietario= currentChat.receiver
 
         GlobalScope.launch {
             emailProprietario =
@@ -47,7 +62,6 @@ class ItemChatAdapter( context: Context,private val chatList: MutableList<Messag
 
             val intent = Intent(mcontext, ChatActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            intent.putExtra("nomeArticolo", nomeArticolo)
             intent.putExtra("emailProprietarioAnn", emailProprietario)
             intent.putExtra("idCurrentUser", idCurrentUser)
             intent.putExtra("idProprietario", idProprietario)

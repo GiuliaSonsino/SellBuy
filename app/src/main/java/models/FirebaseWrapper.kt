@@ -580,13 +580,13 @@ class FirebaseDbWrapper(context: Context) {
                             var c=0
                             for(message in messages) {
                                 if(c==0) {
-                                    var e = message.getValue() as HashMap<String, String>
+                                    var e = message.getValue() as HashMap<*, *>
                                     for (y in e) {
                                         if ((y.key.equals("receiver") && y.value.equals(id)) || (y.key.equals(
                                                 "sender"
                                             ) && y.value.equals(id))
                                         ) {
-                                            chatList!!.add(message.getValue(Message::class.java)!!)
+                                            chatList.add(message.getValue(Message::class.java)!!)
                                         }
                                     }
                                 }

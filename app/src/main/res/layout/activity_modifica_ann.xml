@@ -75,7 +75,7 @@
                 android:textSize="16sp"
                 android:textColor="@color/black"
                 android:paddingStart="5dp"
-                android:inputType="numberDecimal"/>
+                android:inputType="numberDecimal" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -87,28 +87,31 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:layout_marginTop="8dp">
+            android:layout_marginTop="8dp"
+            android:weightSum="100">
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="MODIFICA CONDIZIONI: "
                 android:textSize="15sp"
+                android:layout_weight="35"
                 android:paddingStart="5dp"/>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/condizioni"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                android:layout_width="230dp"
+                android:layout_width="0dp"
+                android:layout_weight="60"
                 android:layout_height="wrap_content"
-                android:hint="Condizioni oggetto">
+                android:hint="Condizioni">
 
                 <AutoCompleteTextView
                     android:id="@+id/edit_condizioni"
-                    android:layout_width="230dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="none" />
             </com.google.android.material.textfield.TextInputLayout>
@@ -116,31 +119,34 @@
         </LinearLayout>
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
+            android:weightSum="100"
             android:layout_marginTop="8dp">
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="MODIFICA CATEGORIA: "
+                android:layout_weight="35"
                 android:textSize="15sp"
                 android:paddingStart="5dp" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/categoria"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-                android:layout_width="230dp"
-                android:layout_height="57dp"
-                android:hint="Seleziona categoria dell'annuncio">
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="60"
+                android:hint="Categoria">
 
 
 
                 <AutoCompleteTextView
                     android:id="@+id/edit_categoria"
-                    android:layout_width="230dp"
-                    android:layout_height="match_parent"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     android:inputType="none" />
             </com.google.android.material.textfield.TextInputLayout>
 
