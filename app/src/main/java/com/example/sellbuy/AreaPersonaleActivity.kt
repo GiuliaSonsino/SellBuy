@@ -55,6 +55,7 @@ class AreaPersonaleActivity: AppCompatActivity() {
         }
         btn_rece.setOnClickListener{
             val intent = Intent(applicationContext, RecensioniActivity::class.java)
+            intent.putExtra("emailRecensioni", FirebaseAuth.getInstance().currentUser!!.email)
             startActivity(intent)
         }
         val recyclerview = findViewById<RecyclerView>(R.id.recyclerviewPersonale)

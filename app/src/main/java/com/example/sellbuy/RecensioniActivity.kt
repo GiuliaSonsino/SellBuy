@@ -17,16 +17,18 @@ class RecensioniActivity : AppCompatActivity() {
     private val auth = FirebaseAuth.getInstance()
     private var adapter = RecensioneAdapter(this, mutableListOf(), String())
     var mList: MutableList<Recensione> = mutableListOf()
+    private var emailRecensioni: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_recensioni)
 
         val recyclerview = findViewById<RecyclerView>(R.id.recyclerviewRecensioni)
-        title="RECENSIONI"
+        title="Recensioni"
         //mList= createList()
+        emailRecensioni = intent.getStringExtra("emailRecensioni").toString()
         recyclerview.layoutManager = LinearLayoutManager(this)
-        adapter = RecensioneAdapter(applicationContext, mList, FirebaseAuth.getInstance().currentUser?.email!!)
+        adapter = RecensioneAdapter(applicationContext, mList, emailRecensioni)
         recyclerview.adapter = adapter
 
     }
@@ -38,12 +40,10 @@ class RecensioniActivity : AppCompatActivity() {
     }
 
     fun createList(): MutableList<Recensione> {
-        //var mList:MutableList<AnnuncioViewModel> = mutableListOf()
-        var count = 0
         if (auth.currentUser != null) {
             GlobalScope.launch {
-                var recensioni =
-                    FirebaseDbWrapper(applicationContext).getRecensioniFromUtente(applicationContext,FirebaseAuth.getInstance().currentUser?.email!! )
+                val recensioni =
+                    FirebaseDbWrapper(applicationContext).getRecensioniFromUtente(applicationContext,emailRecensioni)
                 mList.clear()
                 for (record in recensioni) {
                     mList.add(record)

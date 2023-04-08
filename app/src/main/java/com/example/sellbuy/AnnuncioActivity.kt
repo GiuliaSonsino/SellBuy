@@ -37,7 +37,7 @@ class AnnuncioActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_annuncio)
 
-        var em=FirebaseAuth.getInstance().currentUser?.email
+        val em=FirebaseAuth.getInstance().currentUser?.email
         var idCurrentUser:String?=null
         var idProprietario:String?=null
         var nomeArticolo:String?=null
@@ -60,7 +60,7 @@ class AnnuncioActivity : AppCompatActivity() {
         val im3=findViewById<ImageView>(R.id.image3)
         val im4=findViewById<ImageView>(R.id.image4)
         val mainImmagine= findViewById<ImageView>(R.id.main_image)
-
+        val tvRecensioni = findViewById<TextView>(R.id.tv_info_recensioni)
 
         val btnChat = findViewById<Button>(R.id.btnChat)
         val btnAcquista= findViewById<Button>(R.id.btnAcquista)
@@ -410,6 +410,11 @@ class AnnuncioActivity : AppCompatActivity() {
             dialog.show()
         }
 
+        tvRecensioni.setOnClickListener {
+            val intent = Intent(this, RecensioniActivity::class.java)
+            intent.putExtra("emailRecensioni", emailProprietarioAnn)
+            startActivity(intent)
+        }
 
         btnChat.setOnClickListener {
             val intent = Intent(this, ChatActivity::class.java)

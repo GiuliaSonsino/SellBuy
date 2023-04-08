@@ -703,6 +703,7 @@ class FirebaseDbWrapper(context: Context) {
         dbRef3.setValue(haRecensito).await()
     }
 
+    // restituisce true se il proprietario dell'annuncio deve recensire perchè qualcuno ha eseguito l'acquisto
     fun bisognaRecensire(context: Context, idOggetto:String): Boolean {
         val lock = ReentrantLock()
         val condition = lock.newCondition()
@@ -714,7 +715,7 @@ class FirebaseDbWrapper(context: Context) {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val children = snapshot.child("Recensioni").children
                         for (child in children) {
-                            val list = child.getValue() as HashMap<String, String>
+                            val list = child.getValue() as HashMap<*, *>
                             for (record in list) {
                                 if(record.key.equals("idOggettoRecensito") && record.value.equals(idOggetto) ) {
                                     ris =true
