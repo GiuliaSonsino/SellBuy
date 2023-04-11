@@ -25,6 +25,15 @@ class AreaPersonaleAmministratoreAct : AppCompatActivity() {
         nomeUtente.text = emailUtente
         val ruolo = findViewById<TextView>(R.id.ruolo)
         val tel = findViewById<TextView>(R.id.num_tel)
+        val numAnnunciTot = findViewById<TextView>(R.id.num_oggetti_tot)
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val listaAnnunci = FirebaseDbWrapper(applicationContext).getTuttiAnnunci(applicationContext)
+            withContext(Dispatchers.Main) {
+                val num = listaAnnunci.size
+                numAnnunciTot.text = num.toString()
+            }
+        }
 
         CoroutineScope(Dispatchers.IO).launch {
             val utente = FirebaseDbWrapper(applicationContext).getUtenteFromEmail(applicationContext)

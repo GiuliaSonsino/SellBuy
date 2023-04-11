@@ -66,7 +66,6 @@ class MainActivity : AppCompatActivity() {
 
         val recyclerview = findViewById<RecyclerView>(R.id.recyclerview)
         title=""
-        //mList= createList()
         recyclerview.layoutManager = LinearLayoutManager(this)
         adapter = AnnuncioAdapter(applicationContext, mList)
         recyclerview.adapter = adapter
