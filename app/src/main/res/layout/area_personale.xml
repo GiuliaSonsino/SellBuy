@@ -80,8 +80,6 @@
                     android:textSize="17dp"
                     android:textColor="@color/black"
                     android:layout_gravity="center"
-                    android:autoLink="phone"
-                    android:textColorLink="@color/verde_scuro"
                     android:layout_marginStart="4dp"/>
 
             </LinearLayout>
@@ -105,8 +103,6 @@
                     android:textSize="17dp"
                     android:textColor="@color/black"
                     android:layout_gravity="center"
-                    android:autoLink="phone"
-                    android:textColorLink="@color/verde_scuro"
                     android:layout_marginStart="4dp"/>
 
                 <TextView

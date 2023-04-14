@@ -167,7 +167,7 @@ class AggiungiFotoActivity: AppCompatActivity() {
                             immagini!!
                         )
                     }
-                    val intent = Intent(applicationContext, AreaPersonaleActivity::class.java)
+                    val intent = Intent(applicationContext, MainActivity::class.java)
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     //intent.putExtra("codice", codiceAnn)
                     startActivity(intent)

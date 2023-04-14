@@ -48,11 +48,6 @@ class AreaPersonaleActivity: AppCompatActivity() {
                 credito.text = utente.credito.toString()
             }
         }
-        tel.setOnClickListener {
-            val phoneUri = Uri.parse("tel:${tel.text}")
-            val phoneIntent = Intent(Intent.ACTION_DIAL, phoneUri)
-            startActivity(phoneIntent)
-        }
         btn_rece.setOnClickListener{
             val intent = Intent(applicationContext, RecensioniActivity::class.java)
             intent.putExtra("emailRecensioni", FirebaseAuth.getInstance().currentUser!!.email)

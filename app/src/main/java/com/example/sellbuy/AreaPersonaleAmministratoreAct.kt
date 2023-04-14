@@ -5,6 +5,9 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
+import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
@@ -25,30 +28,43 @@ class AreaPersonaleAmministratoreAct : AppCompatActivity() {
         nomeUtente.text = emailUtente
         val ruolo = findViewById<TextView>(R.id.ruolo)
         val tel = findViewById<TextView>(R.id.num_tel)
+        val numUtentiTot = findViewById<TextView>(R.id.num_utenti_tot)
         val numAnnunciTot = findViewById<TextView>(R.id.num_oggetti_tot)
+        val utentiEdit = findViewById<AutoCompleteTextView>(R.id.edit_utenti)
+        val btnMostraAnnunciUtente = findViewById<Button>(R.id.btn_mostra_annunci)
+        val numAnnunciUtente = findViewById<TextView>(R.id.num_annunci_utente)
+        numAnnunciUtente.text=""
 
         CoroutineScope(Dispatchers.IO).launch {
             val listaAnnunci = FirebaseDbWrapper(applicationContext).getTuttiAnnunci(applicationContext)
-            withContext(Dispatchers.Main) {
-                val num = listaAnnunci.size
-                numAnnunciTot.text = num.toString()
-            }
-        }
-
-        CoroutineScope(Dispatchers.IO).launch {
             val utente = FirebaseDbWrapper(applicationContext).getUtenteFromEmail(applicationContext)
+            val listaUtenti = FirebaseDbWrapper(applicationContext).getUtenti(applicationContext)
             withContext(Dispatchers.Main) {
                 val numTell = utente!!.numTel
                 ruolo.text = "Amministratore"
                 tel.text = numTell.toString()
+
+                val num = listaAnnunci.size
+                numAnnunciTot.text = num.toString()
+
+                val adapterUtenti = ArrayAdapter(applicationContext, R.layout.list_item, listaUtenti)
+                //condizioniEdit.setText(condAnn)
+                utentiEdit.setAdapter(adapterUtenti)
+
+                val numUtenti = listaUtenti.size
+                numUtentiTot.text = numUtenti.toString()
             }
         }
 
-        tel.setOnClickListener {
-            val phoneUri = Uri.parse("tel:${tel.text}")
-            val phoneIntent = Intent(Intent.ACTION_DIAL, phoneUri)
-            startActivity(phoneIntent)
+        btnMostraAnnunciUtente.setOnClickListener {
+            CoroutineScope(Dispatchers.IO).launch {
+                val num = FirebaseDbWrapper(applicationContext).getNumeroAnnunciFromEmailUtente(applicationContext, utentiEdit.text.toString())
+                withContext(Dispatchers.Main) {
+                    numAnnunciUtente.text = num.toString()
+                }
+            }
         }
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {

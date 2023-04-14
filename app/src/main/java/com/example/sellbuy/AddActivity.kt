@@ -341,7 +341,7 @@ class AddActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
                     FirebaseDbWrapper(applicationContext).creaAnnuncio(annuncio)
                     val intent = Intent(this@AddActivity, MainActivity::class.java)
                     startActivity(intent)
-
+                    finish()
                 }
             }
         }

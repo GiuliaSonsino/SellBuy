@@ -101,6 +101,11 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+    override fun onBackPressed() {
+        finishAffinity()
+        finish()
+    }
+
     private fun createNotificationChannel() {
         val importance = NotificationManager.IMPORTANCE_LOW
         val channel = NotificationChannel(CHANNEL_ID, "UPO News", importance)

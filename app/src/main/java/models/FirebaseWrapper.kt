@@ -1210,6 +1210,39 @@ class FirebaseDbWrapper(context: Context) {
         return listaUtenti
     }
 
+    fun getNumeroAnnunciFromEmailUtente(context: Context, email: String): Int {
+        val lock = ReentrantLock()
+        val condition = lock.newCondition()
+        var count=0
+
+        if (email != null) {
+            count=0
+            GlobalScope.launch {
+                FirebaseDbWrapper(context).dbref.addValueEventListener(object :
+                    ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val children = snapshot.child("Annunci").children
+                        for (child in children) {
+                            val list = child.getValue() as HashMap<*, *>
+                            for (record in list) {
+                                if (record.key.equals("email") && record.value.equals(email)) {
+                                    count+=1
+                                }
+                            }
+                        }
+                        lock.withLock { condition.signal() }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.w(ContentValues.TAG, "Failed to read value", error.toException())
+                    }
+                })
+            }
+            lock.withLock { condition.await() }
+        }
+        return count
+    }
+
 
     fun deleteUtente(context: Context, nomeUtente: String){
         val lock = ReentrantLock()

@@ -38,6 +38,8 @@ class LoginActivity: AppCompatActivity() {
                         DynamicToast.makeSuccess(this, "Ciao $mail",Toast.LENGTH_SHORT).show()
                         val intent= Intent(this,MainActivity::class.java)
                         startActivity(intent)
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+                        finish()
                     }
                     else {
                         DynamicToast.makeError(this,"Email o password errati",Toast.LENGTH_LONG).show()
@@ -51,5 +53,11 @@ class LoginActivity: AppCompatActivity() {
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
         }
+    }
+
+
+    override fun onBackPressed() {
+        finishAffinity()
+        finish()
     }
 }
