@@ -1272,19 +1272,34 @@ class FirebaseDbWrapper(context: Context) {
     }
 
 
-    fun deleteAnnunciUtente(context: Context, nomeUtente: String){
+    fun deleteAnnunciUtente(context: Context, nomeUtente: String) : MutableList<String>{
         val lock = ReentrantLock()
         val condition = lock.newCondition()
+        var tmp=false
+        val immaginiDaCancellare : MutableList<String> = mutableListOf()
         GlobalScope.launch {
+            immaginiDaCancellare.clear()
             FirebaseDbWrapper(context).dbref.addValueEventListener(object :
                 ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
                     val children = snapshot.child("Annunci").children
                     for (child in children) {
+                        tmp = false
                         val list = child.getValue() as HashMap<*,*>
                         for (record in list) {
                             if(record.key.equals("email") && record.value.equals(nomeUtente)) {
+                                tmp=true
                                 child.ref.removeValue()
+                            }
+                        }
+                        if(tmp) {
+                            for (record in list) {
+                                if(record.key.equals("foto")) {
+                                    val photos = record.value as MutableList<*>
+                                    for(photo in photos) {
+                                        immaginiDaCancellare.add(photo.toString())
+                                    }
+                                }
                             }
                         }
                     }
@@ -1297,6 +1312,7 @@ class FirebaseDbWrapper(context: Context) {
             })
         }
         lock.withLock { condition.await() }
+        return immaginiDaCancellare
     }
 
 

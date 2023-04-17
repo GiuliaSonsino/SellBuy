@@ -36,6 +36,7 @@ import kotlinx.coroutines.*
 import models.AnnuncioViewModel
 import models.Categoria
 import models.FirebaseDbWrapper
+import models.FirebaseStorageWrapper
 
 
 class MainActivity : AppCompatActivity() {
@@ -172,14 +173,18 @@ class MainActivity : AppCompatActivity() {
                 //Facciamo un'altra ricerca da confrontare con quella nel DB
                 val annunciTrovati = FirebaseDbWrapper(applicationContext).ricercaConFiltriELocalizzazione(applicationContext,parola,prezzo,spedizione,distanza!!,currentLatLng!!)
                 for(an in annunciTrovati) {
-                    var prova=false
+                    var same=false
                     for(aVecchio in annunciVecchi) {
                         //true if there are no changes
                         if(aVecchio.id==an.id) {
-                            prova=true
+                            same=true
+                        }
+                        //per gestire che se l'annuncio inserito e inerente alla ricerca è dell'utente loggato non appaia la notifica
+                        if(an.email == FirebaseAuth.getInstance().currentUser?.email){
+                            same= true
                         }
                     }
-                    if(!prova) {
+                    if(!same) {
                         ris = true
                     }
                 }
@@ -304,10 +309,11 @@ class MainActivity : AppCompatActivity() {
                     applicationContext,
                     utenteSelezionato
                 )
-                FirebaseDbWrapper(applicationContext).deleteAnnunciUtente(
+                val listaImmaginiDaEliminare =FirebaseDbWrapper(applicationContext).deleteAnnunciUtente(
                     applicationContext,
                     utenteSelezionato
                 )
+                FirebaseStorageWrapper(applicationContext).deleteImgsFromStorage(applicationContext,listaImmaginiDaEliminare)
                 val intent = Intent(applicationContext, MainActivity::class.java)
                 startActivity(intent)
                 runOnUiThread {

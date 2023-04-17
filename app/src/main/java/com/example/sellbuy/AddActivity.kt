@@ -104,7 +104,6 @@ class AddActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
         val nomeObj = findViewById<AutoCompleteTextView>(R.id.nomeAcTv)
         val descrizioneObj = findViewById<AutoCompleteTextView>(R.id.descrizioneAcTv)
         val prezzoObj = findViewById<TextInputLayout>(R.id.prezzo)
-        //val categorie = resources.getStringArray(R.array.categorie)
         var categorie : MutableList<String>? = null
         val autoCompleteTextViewCat = findViewById<AutoCompleteTextView>(R.id.categoriaAcTv)
         CoroutineScope(Dispatchers.IO).launch {
@@ -116,12 +115,6 @@ class AddActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
         }
 
 
-
-        /*
-        val adapterCat = ArrayAdapter(this, R.layout.list_item, categorie)
-        val autoCompleteTextViewCat = findViewById<AutoCompleteTextView>(R.id.categoriaAcTv)
-        autoCompleteTextViewCat.setAdapter(adapterCat)
-        */
         val condizioni = resources.getStringArray(R.array.condizioni)
         val adapterCond = ArrayAdapter(this, R.layout.list_item, condizioni)
         val autoCompleteTextViewCond = findViewById<AutoCompleteTextView>(R.id.statoAcTv)
@@ -205,7 +198,7 @@ class AddActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
         //Upload the image in the imageview widget
         upload!!.setOnClickListener {
             // execute the progress bar
-            message.text = "Uploading..."
+            message.text = "Caricamento immagine"
             builder.setView(dialogView)
             builder.setCancelable(false)
             // Remove dialogView from its current parent
@@ -220,7 +213,7 @@ class AddActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
             fileName.add(nameImg)
             val storageReference = FirebaseStorage.getInstance().getReference("images/$nameImg")
 
-            //Get the byte of the image shown in the ImageView widget
+
             imagev.isDrawingCacheEnabled = true
             imagev.buildDrawingCache()
             val bitmap = (imagev.drawable as BitmapDrawable).bitmap
@@ -228,17 +221,17 @@ class AddActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
             val data = baos.toByteArray()
 
-            //Upload the image
+            // Carica immagine
             val uploadTask = storageReference.putBytes(data)
-            //When the image is uploaded the dialog will be closed
+            // When the image is uploaded the dialog will be closed
             uploadTask.addOnCompleteListener {
                 dialog.dismiss()
             }
             uploadTask.addOnFailureListener {
-                Toast.makeText(applicationContext, "Upload failed", Toast.LENGTH_LONG).show()
+                Toast.makeText(applicationContext, "Caricamento fallito", Toast.LENGTH_LONG).show()
             }.addOnSuccessListener {
                 countImg += 1
-                Toast.makeText(applicationContext, "Uploaded successfully", Toast.LENGTH_LONG)
+                Toast.makeText(applicationContext, "Caricamento avvenuto", Toast.LENGTH_LONG)
                     .show()
                 pickup!!.isEnabled = true
                 upload!!.isEnabled = false
