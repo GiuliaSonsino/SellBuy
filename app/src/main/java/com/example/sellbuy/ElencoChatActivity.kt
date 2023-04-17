@@ -1,10 +1,8 @@
 package com.example.sellbuy
 
 import android.annotation.SuppressLint
-import android.content.ContentValues.TAG
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
@@ -16,14 +14,11 @@ import models.FirebaseDbWrapper
 import models.Message
 
 class ElencoChatActivity : AppCompatActivity() {
-    //private var adapter = ItemChatAdapter( mutableListOf())
     private lateinit var recyclerView : RecyclerView
     private lateinit var chatAdapter: ItemChatAdapter
-    //private lateinit var mDbRef : DatabaseReference
     private val auth = FirebaseAuth.getInstance()
     var chatList: MutableList<Message> = mutableListOf()
 
-    private var dataloaded=false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_elenco_chat)
@@ -59,7 +54,7 @@ class ElencoChatActivity : AppCompatActivity() {
                 chatList.clear()
                 for (record in elencoMessages) {
                     var idUtente:String?=null
-                    var mess=record.contenuto
+                    val mess=record.contenuto
                     if(idUserLoggato==record.receiver) {
                         idUtente=record.sender
                     }
@@ -69,8 +64,8 @@ class ElencoChatActivity : AppCompatActivity() {
                     val codiceAn=record.codiceArticolo
 
                     val nuovaChat = Message(mess, idUserLoggato, idUtente,codiceAn)
-                    var id= idUtente + codiceAn
-                    //check if nuovaChat exists and if it is already present in the list
+                    val id= idUtente + codiceAn
+                    // controllo se nuovaChat esiste e se è già presente nella lista
                     if (nuovaChat != null && id !in listaKeyChat)  {
                         listaKeyChat.add(id)
                         chatList.add(nuovaChat)
@@ -91,7 +86,7 @@ class ElencoChatActivity : AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        var firebaseAuth = FirebaseAuth.getInstance()
+        val firebaseAuth = FirebaseAuth.getInstance()
         when (item.itemId) {
             R.id.logout -> {
                 firebaseAuth.signOut()

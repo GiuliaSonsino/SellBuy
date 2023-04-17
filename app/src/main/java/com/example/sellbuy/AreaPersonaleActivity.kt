@@ -1,13 +1,10 @@
 package com.example.sellbuy
 
-import android.content.ContentValues.TAG
+import android.annotation.SuppressLint
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -31,7 +28,7 @@ class AreaPersonaleActivity: AppCompatActivity() {
         setContentView(R.layout.area_personale)
         title = "Area personale"
         val ricaricaCartaTv= findViewById<TextView>(R.id.ricarica_credito)
-        val btn_rece = findViewById<Button>(R.id.btn_rece)
+        val btnRece = findViewById<Button>(R.id.btn_rece)
         val emailUtente: String? = auth.currentUser?.email
         val nomeUtente = findViewById<TextView>(R.id.nomeUtente)
         nomeUtente.text = emailUtente
@@ -48,7 +45,7 @@ class AreaPersonaleActivity: AppCompatActivity() {
                 credito.text = utente.credito.toString()
             }
         }
-        btn_rece.setOnClickListener{
+        btnRece.setOnClickListener{
             val intent = Intent(applicationContext, RecensioniActivity::class.java)
             intent.putExtra("emailRecensioni", FirebaseAuth.getInstance().currentUser!!.email)
             startActivity(intent)
@@ -70,15 +67,17 @@ class AreaPersonaleActivity: AppCompatActivity() {
                     startActivity(intent)
                 }
             }
-
         }
+
+
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun onStart() {
         super.onStart()
         job = GlobalScope.launch(Dispatchers.Main) {
             mList.clear()
-            createList()?.let {
+            createList().let {
                 mList.addAll(it)
                 adapter.notifyDataSetChanged()
             }
@@ -92,6 +91,7 @@ class AreaPersonaleActivity: AppCompatActivity() {
 
 
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun createList(): MutableList<AnnuncioViewModel> {
         count=0
         if (auth.currentUser != null) {

@@ -93,9 +93,6 @@
             android:name=".AggiungiFotoActivity"
             android:exported="false" />
         <activity
-            android:name=".esperimento"
-            android:exported="false" />
-        <activity
             android:name=".RicercheSalvateActivity"
             android:exported="false" />
         <activity

@@ -1,7 +1,6 @@
 package com.example.sellbuy
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -12,7 +11,6 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.*
-import models.AnnuncioViewModel
 import models.FirebaseDbWrapper
 
 class AreaPersonaleAmministratoreAct : AppCompatActivity() {
@@ -48,7 +46,6 @@ class AreaPersonaleAmministratoreAct : AppCompatActivity() {
                 numAnnunciTot.text = num.toString()
 
                 val adapterUtenti = ArrayAdapter(applicationContext, R.layout.list_item, listaUtenti)
-                //condizioniEdit.setText(condAnn)
                 utentiEdit.setAdapter(adapterUtenti)
 
                 val numUtenti = listaUtenti.size

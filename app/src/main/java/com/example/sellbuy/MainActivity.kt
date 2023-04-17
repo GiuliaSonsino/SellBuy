@@ -1,23 +1,18 @@
 package com.example.sellbuy
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
-import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Location
-import android.media.RingtoneManager
-import android.media.audiofx.BassBoost
-import android.net.Uri
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -28,9 +23,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.messaging.FirebaseMessaging
 import com.pranavpandey.android.dynamic.toasts.DynamicToast
 import kotlinx.coroutines.*
 import models.AnnuncioViewModel
@@ -42,7 +35,6 @@ import models.FirebaseStorageWrapper
 class MainActivity : AppCompatActivity() {
 
     private val auth = FirebaseAuth.getInstance()
-    //private var storage = FirebaseStorage.getInstance().getReferenceFromUrl("gs://sellbuy-abe26.appspot.com")
     private var adapter = AnnuncioAdapter(this, mutableListOf())
     var mList: MutableList<AnnuncioViewModel> = mutableListOf()
 
@@ -62,7 +54,6 @@ class MainActivity : AppCompatActivity() {
         notificationManager =
             getSystemService(
                 Context.NOTIFICATION_SERVICE) as NotificationManager
-
         createNotificationChannel()
 
         val recyclerview = findViewById<RecyclerView>(R.id.recyclerview)
@@ -70,20 +61,15 @@ class MainActivity : AppCompatActivity() {
         recyclerview.layoutManager = LinearLayoutManager(this)
         adapter = AnnuncioAdapter(applicationContext, mList)
         recyclerview.adapter = adapter
-
-
+        // permessi localiz
         if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION)
-
         }
         else {
             fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
             fusedLocationClient.lastLocation.addOnSuccessListener { location : Location? ->
                 if(location!=null) {
                     currentLatLng = LatLng(location.latitude,location.longitude)
-                }
-                else {
-
                 }
             }
         }
@@ -109,24 +95,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun createNotificationChannel() {
         val importance = NotificationManager.IMPORTANCE_LOW
-        val channel = NotificationChannel(CHANNEL_ID, "UPO News", importance)
-        channel.description = "All the news from your university"
+        val channel = NotificationChannel(CHANNEL_ID, "Sell&Buy channel", importance)
+        channel.description = "All the news from your app"
         notificationManager.createNotificationChannel(channel)
-
         channel.lightColor = Color.RED
-        //prova
-        /*
-        channel.setVibrationPattern(longArrayOf(0, 1000, 500, 1000))
-        channel.enableVibration(true)
-        channel.enableLights(true)
-        channel.lightColor = Color.RED
-        channel.lockscreenVisibility = NotificationCompat.VISIBILITY_PUBLIC
-        channel.setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION), null)
-        channel.setShowBadge(true)
-        channel.setBypassDnd(true)*/
-
-
-
     }
 
     private fun sendNotification() {
@@ -150,13 +122,10 @@ class MainActivity : AppCompatActivity() {
             .build()
 
         notificationManager.notify(NOTIFICATION_ID, notification)
-
-
-
     }
 
 
-    // Return true if there are new Annunci in a RicercaSalvata
+    // Restituisce true se c'è un nuovo annuncio inerente a RicercaSalvata
     @OptIn(DelicateCoroutinesApi::class)
     private suspend fun controllaAnnunciFromRicerca() : Boolean {
         val deferred = GlobalScope.async {
@@ -175,7 +144,7 @@ class MainActivity : AppCompatActivity() {
                 for(an in annunciTrovati) {
                     var same=false
                     for(aVecchio in annunciVecchi) {
-                        //true if there are no changes
+                        //true se trova l'annuncio
                         if(aVecchio.id==an.id) {
                             same=true
                         }
@@ -199,19 +168,19 @@ class MainActivity : AppCompatActivity() {
 
 
 
+    @SuppressLint("NotifyDataSetChanged")
     fun createList(): MutableList<AnnuncioViewModel> {
-        //var mList:MutableList<AnnuncioViewModel> = mutableListOf()
         var count = 0
         if (auth.currentUser != null) {
             GlobalScope.launch {
-                var an =
+                val an =
                     FirebaseDbWrapper(applicationContext).getTuttiAnnunci(applicationContext)
-                var codici =
+                val codici =
                     FirebaseDbWrapper(applicationContext).getTutteKeysAnnunci(applicationContext)
                 mList.clear()
                 for (record in an) {
                     val nomeAn = record.nome
-                    val imageName = record.foto?.get(0) //get the filename from the edit text
+                    val imageName = record.foto?.get(0)
                     val prezzoAn = record.prezzo
                     val codice = codici[count]
                     val nuovoan =
@@ -269,7 +238,6 @@ class MainActivity : AppCompatActivity() {
         val input = EditText(this)
         input.hint="Scrivi qui"
         builder.setView(input)
-
         builder.setPositiveButton("Aggiungi") { dialog, which ->
             val nome = input.text.toString()
             GlobalScope.launch {

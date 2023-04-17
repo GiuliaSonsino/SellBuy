@@ -41,12 +41,11 @@ class AnnuncioActivity : AppCompatActivity() {
         var idCurrentUser:String?=null
         var idProprietario:String?=null
         var nomeArticolo:String?=null
-        var ann: Annuncio = Annuncio()
+        var ann: Annuncio
         val codiceAnn = intent.getStringExtra("codice")
         GlobalScope.launch {
             idCurrentUser=FirebaseDbWrapper(applicationContext).getIdUtenteFromEmail(applicationContext,em!!)
         }
-
 
         var emailProprietarioAnn: String? = "*"
         var strMainImm : String? = null
@@ -71,7 +70,6 @@ class AnnuncioActivity : AppCompatActivity() {
             startActivity(phoneIntent)
         }
 
-
         val titolo = findViewById<TextView>(R.id.tv_title)
         val autore = findViewById<TextView>(R.id.tv_autore)
         val descrizione = findViewById<TextView>(R.id.tv_description)
@@ -81,7 +79,6 @@ class AnnuncioActivity : AppCompatActivity() {
         val condizione = findViewById<TextView>(R.id.tv_condition)
         val categoria = findViewById<TextView>(R.id.tv_category)
         val spedizione = findViewById<TextView>(R.id.tv_spedizione)
-
 
         CoroutineScope(Dispatchers.IO).launch {
             ann =
@@ -107,7 +104,7 @@ class AnnuncioActivity : AppCompatActivity() {
                 storag = Firebase.storage.reference.child("images/$strMainImm")
                 storag.downloadUrl.addOnSuccessListener { url ->
                     if (applicationContext != null) {
-                        Glide.with(applicationContext).load(url).skipMemoryCache(true) // Opzione 2
+                        Glide.with(applicationContext).load(url).skipMemoryCache(true)
                             .override(500, 500).into(mainImmagine)
                     }
                 }
@@ -187,7 +184,6 @@ class AnnuncioActivity : AppCompatActivity() {
                     View.VISIBLE.also { btnChat.visibility = it }
                 } else {
                     if (em.equals(ann.email)) {
-                        //btnElimina.visibility= View.VISIBLE
                         View.INVISIBLE.also { btnAcquista.visibility = it }
                         View.INVISIBLE.also { btnChat.visibility = it }
                     } else {
@@ -208,128 +204,7 @@ class AnnuncioActivity : AppCompatActivity() {
             }
         }
 
-
-
-
-
-
-
-/*
-        GlobalScope.launch {
-            idProprietario = FirebaseDbWrapper(applicationContext).getIdUtenteFromEmail(
-                applicationContext,
-                emailProprietarioAnn!!
-            )
-        }
-*/
-
-
-
-/*
-                storag = Firebase.storage.reference.child("images/$strMainImm")
-                storag.downloadUrl.addOnSuccessListener { url ->
-                    if (applicationContext != null) {
-                        Glide.with(applicationContext).load(url).skipMemoryCache(true) // Opzione 2
-                            .override(500, 500).into(mainImmagine)
-                    }
-                }
-
-                if (immagini?.size!! >= 2) {
-
-                    storag = Firebase.storage.reference.child("images/$strImmagine1")
-                    storag.downloadUrl.addOnSuccessListener { url ->
-                        if (applicationContext != null) {
-                            Glide.with(applicationContext).load(url)
-                                .skipMemoryCache(true)
-                                .override(500, 500).into(im1)
-                        }
-                    }
-                } else {
-                    View.INVISIBLE.also { im1.visibility = it }
-                }
-
-                if (immagini?.size!! >= 3) {
-
-                    storag = Firebase.storage.reference.child("images/$strImmagine2")
-                    storag.downloadUrl.addOnSuccessListener { url ->
-                        if (applicationContext != null) {
-                            Glide.with(applicationContext).load(url)
-                                .skipMemoryCache(true)
-                                .override(500, 500).into(im2)
-                        }
-                    }
-                } else {
-                    View.INVISIBLE.also { im2.visibility = it }
-                }
-
-                if (immagini?.size!! >= 4) {
-
-                    storag = Firebase.storage.reference.child("images/$strImmagine3")
-                    storag.downloadUrl.addOnSuccessListener { url ->
-                        if (applicationContext != null) {
-                            Glide.with(applicationContext).load(url)
-                                .skipMemoryCache(true)
-                                .override(500, 500).into(im3)
-                        }
-                    }
-                } else {
-                    View.INVISIBLE.also { im3.visibility = it }
-                }
-
-                if (immagini?.size!! >= 5) {
-
-                    storag = Firebase.storage.reference.child("images/$strImmagine4")
-                    storag.downloadUrl.addOnSuccessListener { url ->
-                        if (applicationContext != null) {
-                            Glide.with(applicationContext).load(url)
-                                .skipMemoryCache(true)
-                                .override(500, 500).into(im4)
-                        }
-                    }
-                } else {
-                    View.INVISIBLE.also { im4.visibility = it }
-                }
-            //}//with
-       // } //chiusura global scope
-
- */
-/*
-        GlobalScope.launch {
-            //handle visibility button
-            if (FirebaseDbWrapper(applicationContext).isAmministratore(applicationContext)) {
-                View.INVISIBLE.also { btnAcquista.visibility = it }
-                View.VISIBLE.also { btnChat.visibility = it }
-            } else {
-                if (em.equals(ann.email)) {
-                    //btnElimina.visibility= View.VISIBLE
-                    View.INVISIBLE.also { btnAcquista.visibility = it }
-                    View.INVISIBLE.also { btnChat.visibility = it }
-                } else {
-                    View.VISIBLE.also { btnAcquista.visibility = it }
-                    View.VISIBLE.also { btnChat.visibility = it }
-                    if (ann.venduto) {
-                        btnAcquista.isClickable = false
-                        runOnUiThread {
-                            DynamicToast.makeError(
-                                applicationContext,
-                                "Annuncio già venduto",
-                                Toast.LENGTH_LONG
-                            ).show()
-                        }
-                    }
-                }
-            }
-        }
-
-
- */
-                /*
-            }//with
-        } //chiusura global scope
-
-                 */
-
-
+        // dialog per aprire imgs
         val dialog = Dialog(this)
         val lp = WindowManager.LayoutParams()
         lp.copyFrom(dialog.window!!.attributes)
@@ -350,12 +225,9 @@ class AnnuncioActivity : AppCompatActivity() {
             dialog.show()
         }
 
-
-        //val im1 = findViewById<ImageView>(R.id.image1)
         im1?.setOnClickListener {
             val dialog = Dialog(this)
             dialog.setContentView(R.layout.dialog_box)
-            // Trova la ImageView nella vista del dialog
             val dialogImage = dialog.findViewById<ImageView>(R.id.imgDialog)
             strImmagine1 = immagini?.get(1)
             storag = Firebase.storage.reference.child("images/$strImmagine1")
@@ -434,7 +306,7 @@ class AnnuncioActivity : AppCompatActivity() {
                 val an = FirebaseDbWrapper(applicationContext).getAnnuncioFromCodice(applicationContext, codiceAnn!!)
                 if(acquirente!!.credito >= an.prezzo.toDouble()) {
                     //creo un oggetto Recensione
-                    var recensione = Recensione(FirebaseAuth.getInstance().currentUser?.email,0,"",false,venditore.email,0,"",false,codiceAnn)
+                    val recensione = Recensione(FirebaseAuth.getInstance().currentUser?.email,0,"",false,venditore.email,0,"",false,codiceAnn)
                     FirebaseDbWrapper(applicationContext).creaRecensione(recensione)
                     val soldiRimasti = acquirente.credito - an.prezzo.toDouble()
                     val soldiAggiunti = venditore.credito + an.prezzo.toDouble()
@@ -462,6 +334,7 @@ class AnnuncioActivity : AppCompatActivity() {
     }
 
 
+    // formattazione localizzazione da stringa presa dall'annuncio a tipo LatLng
     private fun stringToLatLng(inputString: String): LatLng? {
         val regex = ".*\\(([^,]*),([^)]*)\\).*".toRegex()
         val matchResult = regex.find(inputString)
@@ -476,6 +349,7 @@ class AnnuncioActivity : AppCompatActivity() {
     }
 
 
+    // da LatLng a nome della città
     private fun getCityName(context: Context, latLng: LatLng): String {
         val geocoder = Geocoder(context, Locale.getDefault())
         var cityName = ""
@@ -493,7 +367,7 @@ class AnnuncioActivity : AppCompatActivity() {
     }
 
 
-
+    //per aprire dialog per recensione
     private fun showVoteDialog(codiceAnn :String) {
         val builder = AlertDialog.Builder(this)
         builder.setTitle("Vota il servizio e lascia una recensione")
@@ -588,7 +462,7 @@ class AnnuncioActivity : AppCompatActivity() {
                 startActivity(intent)
             }
             R.id.segnaVenduto -> {
-                var bisognaRecensire : Boolean =false
+                var bisognaRecensire : Boolean //true se è stato acquistato e bisogna recensire l'acquirente
                 CoroutineScope(Dispatchers.IO).launch {
                     FirebaseDbWrapper(applicationContext).segnaComeVenduto(
                         applicationContext,
@@ -596,7 +470,7 @@ class AnnuncioActivity : AppCompatActivity() {
                     )
                     bisognaRecensire = FirebaseDbWrapper(applicationContext).bisognaRecensire(
                         applicationContext,
-                        codiceAnn!!
+                        codiceAnn
                     )
                     withContext(Dispatchers.Main) {
                         if (bisognaRecensire) {
@@ -607,18 +481,8 @@ class AnnuncioActivity : AppCompatActivity() {
                             startActivity(intent)
                             finish()
                         }
-
                     }
                 }
-
-                /*
-                GlobalScope.launch {
-                    FirebaseDbWrapper(applicationContext).segnaComeVenduto(applicationContext,codiceAnn!!)
-                    val intent = Intent(applicationContext, MainActivity::class.java)
-                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-                    startActivity(intent)
-                    showVoteDialog()
-                }*/
                 Toast.makeText(applicationContext, "Annuncio segnato come venduto", Toast.LENGTH_LONG).show()
             }
 
@@ -663,7 +527,4 @@ class AnnuncioActivity : AppCompatActivity() {
         }
         return true
     }
-
-
-
 }

@@ -1,6 +1,7 @@
 package com.example.sellbuy
 
 import android.Manifest
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.ContentValues.TAG
 import android.content.Intent
@@ -83,15 +84,16 @@ class AddActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
 
 
     private var mMap: GoogleMap? = null
-    internal lateinit var mLastLocation: Location
-    internal var mCurrLocationMarker: Marker? = null
-    internal var mGoogleApiClient: GoogleApiClient? = null
-    internal lateinit var mLocationRequest: LocationRequest
+    private lateinit var mLastLocation: Location
+    private var mCurrLocationMarker: Marker? = null
+    private var mGoogleApiClient: GoogleApiClient? = null
+    private lateinit var mLocationRequest: LocationRequest
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION =123
     private var currentLatLng : LatLng? = null
 
+    @SuppressLint("UseSwitchCompatOrMaterialCode")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         title = "Crea Annuncio"
@@ -114,7 +116,6 @@ class AddActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
             }
         }
 
-
         val condizioni = resources.getStringArray(R.array.condizioni)
         val adapterCond = ArrayAdapter(this, R.layout.list_item, condizioni)
         val autoCompleteTextViewCond = findViewById<AutoCompleteTextView>(R.id.statoAcTv)
@@ -127,7 +128,6 @@ class AddActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
         //gestione posizione attuale
         if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION)
-
         }
         else {
             fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
@@ -163,13 +163,11 @@ class AddActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
 
         }
 
-        //Create a registry to act a getContent action
+        // per scegliere img
         val getImage = registerForActivityResult(
-            ActivityResultContracts.GetContent(), //here we specify that we want pick up a content
+            ActivityResultContracts.GetContent(),
             ActivityResultCallback {
-                imagev.setImageURI(it) //once the user has selected the image, I get the URI of
-                // the image and I use it to set the image into the
-                //imageview widget
+                imagev.setImageURI(it)
                 if (it != null) {
                     upload!!.isEnabled = true
                     pickup!!.isEnabled = false
@@ -177,8 +175,7 @@ class AddActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
             }
         )
 
-        //Choose an image from image gallery and load it into ImageView widget
-
+        // Scegliere img da mettere nell' ImgV
         pickup!!.setOnClickListener {
             if (countImg < 5) {
                 getImage.launch("image/*")
@@ -193,26 +190,22 @@ class AddActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
             }
         }
 
-
         val fileName: MutableList<String> = mutableListOf()
-        //Upload the image in the imageview widget
         upload!!.setOnClickListener {
-            // execute the progress bar
+            // progress bar
             message.text = "Caricamento immagine"
             builder.setView(dialogView)
             builder.setCancelable(false)
-            // Remove dialogView from its current parent
             val parent = dialogView.parent as ViewGroup?
             parent?.removeView(dialogView)
             val dialog = builder.create()
             dialog.show()
-            //Handler().postDelayed({dialog.dismiss()}, 5000)
+            //formattare nome img
             val formatter = SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.getDefault())
             val now = Date()
             val nameImg = formatter.format(now)
             fileName.add(nameImg)
             val storageReference = FirebaseStorage.getInstance().getReference("images/$nameImg")
-
 
             imagev.isDrawingCacheEnabled = true
             imagev.buildDrawingCache()
@@ -223,7 +216,7 @@ class AddActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
 
             // Carica immagine
             val uploadTask = storageReference.putBytes(data)
-            // When the image is uploaded the dialog will be closed
+            // chiusura dialog quando img caricata
             uploadTask.addOnCompleteListener {
                 dialog.dismiss()
             }
@@ -295,7 +288,6 @@ class AddActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
             }
         }
 
-
         var switchSped = false
         val simpleSwitch: Switch = findViewById(R.id.switchSpediz)
         simpleSwitch.setOnCheckedChangeListener { _, isChecked ->
@@ -304,7 +296,7 @@ class AddActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
             }
         }
 
-        // Check data and go to AddActivity
+        // CheckAdd e aggiunta annuncio
         GlobalScope.launch {
             val tel = FirebaseDbWrapper(applicationContext).getUtenteFromEmail(applicationContext)
             val n = tel?.numTel
@@ -319,7 +311,6 @@ class AddActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
                         descrizioneObj.text.toString(),
                         prezzoObj.editText?.text.toString(),
                         autoCompleteTextViewCond.text.toString(),
-                        //foto.text.toString(),
                         fileName,
                         auth.currentUser?.email.toString(),
                         n!!.toLong(),
@@ -340,12 +331,10 @@ class AddActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
         }
 
 
-
     }
 
 
     //inizio gestione mappa
-
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M){
@@ -418,8 +407,7 @@ class AddActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
 
     fun searchLocation(view: View){
         val locationSearch: EditText = findViewById(R.id.et_search)
-        var location: String
-        location = locationSearch.text.toString().trim()
+        val location: String = locationSearch.text.toString().trim()
         var addressList: List<Address>? = null
 
         if (location == null || location == ""){
@@ -437,7 +425,7 @@ class AddActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
 
             }
             else {
-                val address = addressList!![0]
+                val address = addressList[0]
                 val latLng = LatLng(address.latitude, address.longitude)
                 mMap!!.addMarker(MarkerOptions().position(latLng).title(location))
                 mMap!!.animateCamera(CameraUpdateFactory.newLatLng(latLng))
@@ -448,10 +436,9 @@ class AddActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
 
 
     private fun saveLocation(): LatLng {
-        var latLng: LatLng? = null
+        val latLng: LatLng?
         val locationSearch: EditText = findViewById(R.id.et_search)
-        val location: String
-        location = locationSearch.text.toString().trim()
+        val location: String = locationSearch.text.toString().trim()
         var addressList: List<Address>? = null
 
         if (location == null || location == ""){
@@ -476,12 +463,11 @@ class AddActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
             }
 
             else {
-                val address = addressList!![0]
+                val address = addressList[0]
                 latLng = LatLng(address.latitude, address.longitude)
                 mMap!!.addMarker(MarkerOptions().position(latLng).title(location))
                 mMap!!.animateCamera(CameraUpdateFactory.newLatLng(latLng))
             }
-
         }
         return latLng
     }

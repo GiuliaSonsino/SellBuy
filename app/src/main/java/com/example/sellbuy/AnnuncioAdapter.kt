@@ -1,9 +1,7 @@
 package com.example.sellbuy
 
-import android.content.ContentValues.TAG
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,11 +13,9 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.ktx.storage
 import models.AnnuncioViewModel
 
-//RecyclerView.Adapter<AnnuncioAdapter.ViewHolder>()
-class AnnuncioAdapter(context: Context, private val mList: List<AnnuncioViewModel>) : RecyclerView.Adapter<AnnuncioAdapter.ViewHolder>()    {
+class AnnuncioAdapter(context: Context, private val mList: List<AnnuncioViewModel>) : RecyclerView.Adapter<AnnuncioAdapter.ViewHolder>() {
 
-    private val mcontext:Context?=context
-
+    private val mcontext: Context =context
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder{
 
@@ -36,9 +32,7 @@ class AnnuncioAdapter(context: Context, private val mList: List<AnnuncioViewMode
         val im=currentAnnuncio.image
         val storag= Firebase.storage.reference.child("images/$im")
         storag.downloadUrl.addOnSuccessListener { url ->
-            if (mcontext != null) {
-                Glide.with(mcontext).load(url).into(holder.imageView)
-            }
+            Glide.with(mcontext).load(url).into(holder.imageView)
         }
 
         //per rendere le card cliccabili
@@ -47,20 +41,16 @@ class AnnuncioAdapter(context: Context, private val mList: List<AnnuncioViewMode
             val intent= Intent(mcontext,AnnuncioActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             intent.putExtra("codice", codiceAnn)
-            mcontext?.startActivity(intent)
+            mcontext.startActivity(intent)
         }
     }
 
-
-    // return the number of the items in the list
     override fun getItemCount(): Int {
         return mList.size
     }
 
 
-
      class ViewHolder(ItemView: View) : RecyclerView.ViewHolder(ItemView){
-
         val textView: TextView = itemView.findViewById(R.id.textView)
         val imageView: ImageView = itemView.findViewById(R.id.imageview)
         val tvPrice: TextView = itemView.findViewById(R.id.price)

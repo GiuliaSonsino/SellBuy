@@ -12,8 +12,7 @@ import models.FirebaseDbWrapper
 import models.Message
 
 class ItemChatAdapter( context: Context,private val chatList: MutableList<Message>): RecyclerView.Adapter<ItemChatAdapter.ViewHolder>() {
-    private val mcontext:Context?=context
-
+    private val mcontext:Context = context
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -31,12 +30,12 @@ class ItemChatAdapter( context: Context,private val chatList: MutableList<Messag
         val codiceArticolo = currentChat.codiceArticolo
         CoroutineScope(Dispatchers.IO).launch {
             val nomeUtenteSullaChat =
-                FirebaseDbWrapper(mcontext!!).getEmailFromIdUtente(
+                FirebaseDbWrapper(mcontext).getEmailFromIdUtente(
                     mcontext,
                     idUtenteSullaChat!!
                 )
             val articolo =
-                FirebaseDbWrapper(mcontext!!).getAnnuncioFromCodice(
+                FirebaseDbWrapper(mcontext).getAnnuncioFromCodice(
                     mcontext,
                     codiceArticolo!!
                 )
@@ -46,19 +45,19 @@ class ItemChatAdapter( context: Context,private val chatList: MutableList<Messag
                 holder.nomeArticolo.text = articolo.nome
             }
         }
-        var emailProprietario:String?=null
+        var emailProprietario:String?
         holder.itemView.setOnClickListener{
         val codiceAnn= currentChat.codiceArticolo
         val idProprietario= currentChat.receiver
 
         GlobalScope.launch {
             emailProprietario =
-                FirebaseDbWrapper(mcontext!!).getEmailFromIdUtente(
+                FirebaseDbWrapper(mcontext).getEmailFromIdUtente(
                     mcontext,
                     idProprietario!!
                 )
 
-            var idCurrentUser = currentChat.sender
+            val idCurrentUser = currentChat.sender
 
             val intent = Intent(mcontext, ChatActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
@@ -67,12 +66,10 @@ class ItemChatAdapter( context: Context,private val chatList: MutableList<Messag
             intent.putExtra("idProprietario", idProprietario)
             intent.putExtra("codiceAnn", codiceAnn)
 
-            mcontext?.startActivity(intent)
+            mcontext.startActivity(intent)
+            }
         }
     }
-}
-
-
 
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         val nomeArticolo: TextView = itemView.findViewById(R.id.txtName_annuncioChat)

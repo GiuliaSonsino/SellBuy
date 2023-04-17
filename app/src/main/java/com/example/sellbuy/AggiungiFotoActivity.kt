@@ -37,7 +37,6 @@ class AggiungiFotoActivity: AppCompatActivity() {
             }
         }
 
-
         val codiceAnn = intent.getStringExtra("codiceAnn")
         val nomeAnn = findViewById<TextView>(R.id.title)
         val im1 = findViewById<ImageView>(R.id.edit_image1)
@@ -46,7 +45,6 @@ class AggiungiFotoActivity: AppCompatActivity() {
         val im4 = findViewById<ImageView>(R.id.edit_image4)
         val mainImmagine = findViewById<ImageView>(R.id.editmain_image)
         var immagini: MutableList<String>? = null
-        var numeroImm: Int = 0
 
 
         CoroutineScope(Dispatchers.IO).launch {
@@ -57,7 +55,6 @@ class AggiungiFotoActivity: AppCompatActivity() {
             withContext(Dispatchers.Main) { // quando la funz getAnn.. ha recuperato l'annuncio allora fa questo codice seguente
                 nomeAnn.setText(currentAnnuncio.nome)
                 immagini = currentAnnuncio.foto
-                numeroImm = immagini!!.size
             }
 
             val strMainImm = immagini?.get(0)
@@ -75,8 +72,6 @@ class AggiungiFotoActivity: AppCompatActivity() {
                         Glide.with(applicationContext).load(url).into(im1!!)
                     }
                 }
-            } else {
-                // View.INVISIBLE.also { im1!!.visibility = it }
             }
 
             if (immagini?.size!! >= 3) {
@@ -87,8 +82,6 @@ class AggiungiFotoActivity: AppCompatActivity() {
                         Glide.with(applicationContext).load(url).into(im2)
                     }
                 }
-            } else {
-                //im2.visibility = View.INVISIBLE
             }
 
             if (immagini?.size!! >= 4) {
@@ -99,8 +92,6 @@ class AggiungiFotoActivity: AppCompatActivity() {
                         Glide.with(applicationContext).load(url).into(im3)
                     }
                 }
-            } else {
-                //im3.visibility = View.INVISIBLE
             }
 
             if (immagini?.size!! >= 5) {
@@ -111,17 +102,10 @@ class AggiungiFotoActivity: AppCompatActivity() {
                         Glide.with(applicationContext).load(url).into(im4)
                     }
                 }
-            } else {
-                // im4.visibility = View.INVISIBLE
             }
-
 
             val pickup = findViewById<Button>(R.id.pickUpImg)
             val upload = findViewById<Button>(R.id.uploadImg)
-            val builder = AlertDialog.Builder(applicationContext)
-            val dialogView = layoutInflater.inflate(R.layout.progress_bar, null)
-
-
             pickup.setOnClickListener {
                 val intent = Intent(Intent.ACTION_PICK)
                 intent.type = "image/*"
@@ -130,8 +114,7 @@ class AggiungiFotoActivity: AppCompatActivity() {
                 pickup!!.isEnabled=false
             }
 
-
-            //Upload the image in the imageview widget
+            // Carica img e aggiunge allo storage
             upload!!.setOnClickListener {
                 val formatter = SimpleDateFormat("yyyy_MM_dd_HH_mm_ss", Locale.getDefault())
                 val now = Date()
@@ -139,42 +122,36 @@ class AggiungiFotoActivity: AppCompatActivity() {
                 immagini!!.add(nameImg)
                 val storageReference = FirebaseStorage.getInstance().getReference("images/$nameImg")
                 nomeImageView!!.isDrawingCacheEnabled = true
-                nomeImageView!!.buildDrawingCache()
-                val bitmap = (nomeImageView!!.drawable as BitmapDrawable).bitmap
+                nomeImageView.buildDrawingCache()
+                val bitmap = (nomeImageView.drawable as BitmapDrawable).bitmap
                 val baos = ByteArrayOutputStream()
                 bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
                 val data = baos.toByteArray()
 
-                //Upload the image
                 val uploadTask = storageReference.putBytes(data)
-                //When the image is uploaded the dialog will be closed
-                uploadTask.addOnCompleteListener {
-                    // dialog.dismiss()
-                }
                 uploadTask.addOnFailureListener {
-                    Toast.makeText(applicationContext, "Upload failed", Toast.LENGTH_LONG).show()
+                    Toast.makeText(applicationContext, "Errore nell'aggiunta", Toast.LENGTH_LONG).show()
                 }.addOnSuccessListener {
-                    Toast.makeText(applicationContext, "Uploaded successfully", Toast.LENGTH_LONG)
+                    Toast.makeText(applicationContext, "Immagine aggiunta", Toast.LENGTH_LONG)
                         .show()
                     pickup!!.isEnabled = true
-                    upload!!.isEnabled = false
+                    upload.isEnabled = false
 
 
                     GlobalScope.launch {
                         FirebaseDbWrapper(applicationContext).modificaImmagineFromAnnuncio(
                             applicationContext,
-                            codiceAnn!!,
+                            codiceAnn,
                             immagini!!
                         )
                     }
                     val intent = Intent(applicationContext, MainActivity::class.java)
                     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    //intent.putExtra("codice", codiceAnn)
                     startActivity(intent)
                 }
             }
         }
-
-
     }
+
+
 }
