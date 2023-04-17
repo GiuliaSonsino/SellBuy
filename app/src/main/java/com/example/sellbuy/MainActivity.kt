@@ -26,10 +26,7 @@ import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.auth.FirebaseAuth
 import com.pranavpandey.android.dynamic.toasts.DynamicToast
 import kotlinx.coroutines.*
-import models.AnnuncioViewModel
-import models.Categoria
-import models.FirebaseDbWrapper
-import models.FirebaseStorageWrapper
+import models.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -241,7 +238,7 @@ class MainActivity : AppCompatActivity() {
         builder.setPositiveButton("Aggiungi") { dialog, which ->
             val nome = input.text.toString()
             GlobalScope.launch {
-                val cat = Categoria(nome)
+                val cat = Categoria(nome.trim().capitalize())
                 FirebaseDbWrapper(applicationContext).creaCategoria(cat)
                 val intent = Intent(applicationContext, MainActivity::class.java)
                 startActivity(intent)
@@ -277,6 +274,7 @@ class MainActivity : AppCompatActivity() {
                     applicationContext,
                     utenteSelezionato
                 )
+                //FirebaseAuthWrapper(applicationContext).deleteUser(utenteSelezionato)
                 val listaImmaginiDaEliminare =FirebaseDbWrapper(applicationContext).deleteAnnunciUtente(
                     applicationContext,
                     utenteSelezionato

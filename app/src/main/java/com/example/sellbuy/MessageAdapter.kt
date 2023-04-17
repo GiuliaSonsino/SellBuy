@@ -1,25 +1,16 @@
 package com.example.sellbuy
 
-import android.content.ContentValues.TAG
 import android.content.Context
-import android.os.Message
-import android.provider.Settings
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.ktx.Firebase
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.launch
-import models.FirebaseDbWrapper
 
-class MessageAdapter(val context: Context, val messageList: ArrayList<models.Message>, val id:String): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class MessageAdapter(val context: Context, private val messageList: ArrayList<models.Message>, val id:String): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    val ITEM_RECEIVE = 1
-    val ITEM_SENT = 2
+    private val itemReceive = 1
+    private val itemSent = 2
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         if(viewType==1) {
@@ -39,27 +30,13 @@ class MessageAdapter(val context: Context, val messageList: ArrayList<models.Mes
     }
 
 
-
-
-
     override fun getItemViewType(position: Int): Int {
-        //var idUser:String?=null
-        /*GlobalScope.launch {
-            idUser = FirebaseDbWrapper(context).getIdUtenteFromEmail(
-                context,
-                FirebaseAuth.getInstance().currentUser?.email!!
-            )
-            Log.i(TAG, "quiiiiiii id loggatooo $idUser")
-        }*/
-
-
         val currentMessage = messageList[position]
-        // così sono io che mando // if(FirebaseAuth.getInstance().currentUser?.email.equals(currentMessage.sender)) {
         if (id == currentMessage.sender) {
-            return ITEM_SENT
+            return itemSent
         }
         else {
-            return ITEM_RECEIVE
+            return itemReceive
         }
     }
 
@@ -77,11 +54,11 @@ class MessageAdapter(val context: Context, val messageList: ArrayList<models.Mes
 
 
     class SentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
-        val sentMessage = itemView.findViewById<TextView>(R.id.txt_sent_message)
+        val sentMessage: TextView = itemView.findViewById(R.id.txt_sent_message)
     }
 
 
     class ReceiveViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
-        val receiveMessage = itemView.findViewById<TextView>(R.id.txt_receive_message)
+        val receiveMessage: TextView = itemView.findViewById(R.id.txt_receive_message)
     }
 }

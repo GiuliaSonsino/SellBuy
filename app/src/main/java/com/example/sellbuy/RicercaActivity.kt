@@ -1,18 +1,14 @@
 package com.example.sellbuy
 
-import android.content.ContentProviderClient
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
-import android.location.LocationManager
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -29,7 +25,7 @@ import models.FirebaseDbWrapper
 import models.RicercaSalvata
 import com.google.android.gms.maps.model.LatLng
 import android.Manifest
-
+import android.annotation.SuppressLint
 
 
 class RicercaActivity: AppCompatActivity() {
@@ -80,14 +76,12 @@ class RicercaActivity: AppCompatActivity() {
         searchView.setQuery(parolaDigitata, false) //imposto il valore che arriva dall'esterno
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            //when user confirm the search
             override fun onQueryTextSubmit(p0: String?): Boolean {
                 parola = p0 ?: ""
                 parolaDigitata = parola
                 return false
             }
 
-            // when user is writing
             override fun onQueryTextChange(p0: String?): Boolean {
                 parola = p0 ?: ""
                 parolaDigitata = parola
@@ -171,13 +165,7 @@ class RicercaActivity: AppCompatActivity() {
             }
         }
 
-/*
-        val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
-        val location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER)
-        val currentLatLng =
-            location?.let { com.google.android.gms.maps.model.LatLng(it.latitude, location.longitude) }*/
-
-
+        // permission per localiz
         if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION)
 
@@ -187,9 +175,6 @@ class RicercaActivity: AppCompatActivity() {
             fusedLocationClient.lastLocation.addOnSuccessListener { location : Location? ->
                 if(location!=null) {
                     currentLatLng = LatLng(location.latitude,location.longitude)
-                }
-                else {
-
                 }
             }
         }
@@ -202,8 +187,7 @@ class RicercaActivity: AppCompatActivity() {
     }
 
 
-
-
+    @SuppressLint("NotifyDataSetChanged")
     fun createList(parola: String, prezzo: String, spedizione : String, distanza : String): MutableList<AnnuncioViewModel> {
         var count = 0
         if (auth.currentUser != null) {
@@ -213,7 +197,7 @@ class RicercaActivity: AppCompatActivity() {
                 filteredList.clear()
                 for (record in an) {
                     val nomeAn = record.nome
-                    val imageName = record.foto?.get(0) //get the filename from the edit text
+                    val imageName = record.foto?.get(0)
                     val prezzoAn = record.prezzo
                     val codice = codici[count]
                     val nuovoan =
@@ -237,7 +221,6 @@ class RicercaActivity: AppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        val firebaseAuth = FirebaseAuth.getInstance()
         when (item.itemId) {
             R.id.ricercheSalvate -> {
                 val intent = Intent(applicationContext, RicercheSalvateActivity::class.java)

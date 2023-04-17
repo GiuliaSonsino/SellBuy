@@ -1,5 +1,6 @@
 package com.example.sellbuy
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -25,7 +26,6 @@ class RecensioniActivity : AppCompatActivity() {
 
         val recyclerview = findViewById<RecyclerView>(R.id.recyclerviewRecensioni)
         title="Recensioni"
-        //mList= createList()
         emailRecensioni = intent.getStringExtra("emailRecensioni").toString()
         recyclerview.layoutManager = LinearLayoutManager(this)
         adapter = RecensioneAdapter(applicationContext, mList, emailRecensioni)
@@ -39,6 +39,7 @@ class RecensioniActivity : AppCompatActivity() {
 
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun createList(): MutableList<Recensione> {
         if (auth.currentUser != null) {
             GlobalScope.launch {

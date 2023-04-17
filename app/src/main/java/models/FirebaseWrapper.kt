@@ -14,6 +14,7 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
+import com.google.rpc.context.AttributeContext.Auth
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -33,6 +34,21 @@ class FirebaseAuthWrapper(private val context: Context) {
     fun getUid(): String {
         return auth.currentUser!!.uid
     }
+
+
+/*
+    fun deleteUser(id: String) {
+        FirebaseAuth.getInstance().dele
+        FirebaseAuth.getInstance().deleteUser(id)
+        FirebaseAuth.getInstance().del
+        var us = auth.currentUser
+        us.de
+        var user = FirebaseAuth.getInstance().cur
+        auth.currentUser.deleteUser(id)
+    }
+
+ */
+
 
 /*
     fun signUp(email: String, password: String): Boolean {
@@ -563,6 +579,39 @@ class FirebaseDbWrapper(context: Context) {
         return email[0]
     }
 
+    //restituisce true se l'utente è nel DB. serve per le chat per non mostrare chat con utenti eliminati
+    fun isUtenteinDB(context: Context, id:String): Boolean {
+        val lock = ReentrantLock()
+        val condition = lock.newCondition()
+        var ris = false
+        var idUtente:String?=null
+        var mail:String?=null
+        if (id != null) {
+            ris=false
+            GlobalScope.launch {
+                FirebaseDbWrapper(context).dbref.addValueEventListener(object :
+                    ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val children = snapshot.child("Utenti").children
+                        for (child in children) {
+                            idUtente=child.key.toString()
+                            if(idUtente==id) {
+                                ris=true
+                            }
+                        }
+                        lock.withLock { condition.signal() }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.w(ContentValues.TAG, "Failed to read value", error.toException())
+                    }
+                })
+            }
+            lock.withLock { condition.await() }
+        }
+        return ris
+    }
+
 
     fun getChats(context: Context, id:String): MutableList<Message> {
         val lock = ReentrantLock()
@@ -871,7 +920,7 @@ class FirebaseDbWrapper(context: Context) {
                                 }
                             }
                             if(spedizione.equals("No")) {
-                                if( nome!!.lowercase().contains(parola.lowercase()) && prez!!.toDouble()<=prezzo.toDouble() && !spediz!!) {
+                                if(nome!!.lowercase().contains(parola.lowercase()) && prez!!.toDouble()<=prezzo.toDouble() && !spediz!!) {
                                     if (distanzaInserita == "") {
                                         annList.add(child.getValue(Annuncio::class.java)!!)
                                     } else {

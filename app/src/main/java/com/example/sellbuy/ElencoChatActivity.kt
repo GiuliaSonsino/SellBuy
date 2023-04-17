@@ -64,9 +64,10 @@ class ElencoChatActivity : AppCompatActivity() {
                     val codiceAn=record.codiceArticolo
 
                     val nuovaChat = Message(mess, idUserLoggato, idUtente,codiceAn)
+                    val isUtenteInDB = FirebaseDbWrapper(applicationContext).isUtenteinDB(applicationContext,idUtente!!)
                     val id= idUtente + codiceAn
                     // controllo se nuovaChat esiste e se è già presente nella lista
-                    if (nuovaChat != null && id !in listaKeyChat)  {
+                    if (nuovaChat != null && id !in listaKeyChat && isUtenteInDB)  {
                         listaKeyChat.add(id)
                         chatList.add(nuovaChat)
                     }

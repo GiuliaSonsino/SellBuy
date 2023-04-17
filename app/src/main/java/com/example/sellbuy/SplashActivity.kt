@@ -10,6 +10,7 @@ import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.drawable.DrawableCompat
@@ -20,10 +21,10 @@ class SplashActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        var unwrappeddrawable: Drawable? = AppCompatResources.getDrawable(applicationContext, android.R.drawable.ic_dialog_alert)
-        var wrappedDrawable = DrawableCompat.wrap(unwrappeddrawable!!)
+        val unwrappeddrawable: Drawable? = AppCompatResources.getDrawable(applicationContext, android.R.drawable.ic_dialog_alert)
+        val wrappedDrawable = DrawableCompat.wrap(unwrappeddrawable!!)
         DrawableCompat.setTint(wrappedDrawable, Color.rgb(204, 119, 34))
-        /*if (!isNetworkAvailable) {
+        if (!isNetworkAvailable) {
             AlertDialog.Builder(this)
                 .setIcon(wrappedDrawable)
                 .setTitle("Questa applicazione ha bisogno di una connessione ad Internet per funzionare in modo corretto")
@@ -33,7 +34,7 @@ class SplashActivity: AppCompatActivity() {
                 ) { dialogInterface, i -> finish() }.show()
         }
 
-        else if (isNetworkAvailable) {*/
+        else if (isNetworkAvailable) {
 
             val firebaseWrapper = FirebaseAuthWrapper(this)
             if (!firebaseWrapper.isAuthenticated()) {
@@ -52,22 +53,20 @@ class SplashActivity: AppCompatActivity() {
 
                 val nextBtn: Button = findViewById(R.id.prosegui)
                 nextBtn.setOnClickListener{
-                        if (autoCompleteTextView.text.toString() != "") {
-                            var ruoloselez = autoCompleteTextView.text.toString()
-                            val intent = Intent(applicationContext, RegistrationActivity::class.java)
-                            intent.putExtra("ruolo", ruoloselez)
-                            startActivity(intent)
-                        }
-                        else {
-                            Toast.makeText(
-                                applicationContext,
-                                "Devi selezionare un ruolo prima di proseguire",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
+                    if (autoCompleteTextView.text.toString() != "") {
+                        val ruoloselez = autoCompleteTextView.text.toString()
+                        val intent = Intent(applicationContext, RegistrationActivity::class.java)
+                        intent.putExtra("ruolo", ruoloselez)
+                        startActivity(intent)
                     }
-
-
+                    else {
+                        Toast.makeText(
+                            applicationContext,
+                            "Devi selezionare un ruolo prima di proseguire",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
             }
             else {
                 val intent = Intent(this, MainActivity::class.java)
@@ -75,27 +74,27 @@ class SplashActivity: AppCompatActivity() {
                 finish()
             }
         }
-   /* }*/
+    }
 
-    val isNetworkAvailable: Boolean
-        get() {
-            val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-            if (connectivityManager != null) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    val capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
-                    if (capabilities != null) {
-                        if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
-                            return true
-                        }
-                        else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
-                            return true
-                        }
-                        else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
-                            return true
-                        }
+    private val isNetworkAvailable: Boolean
+    get() {
+        val connectivityManager = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        if (connectivityManager != null) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                val capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+                if (capabilities != null) {
+                    if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR)) {
+                        return true
+                    }
+                    else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)) {
+                        return true
+                    }
+                    else if (capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)) {
+                        return true
                     }
                 }
             }
-            return false
         }
+        return false
+    }
 }

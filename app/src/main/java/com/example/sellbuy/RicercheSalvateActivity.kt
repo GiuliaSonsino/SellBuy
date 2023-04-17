@@ -1,9 +1,7 @@
 package com.example.sellbuy
 
-import android.content.ContentValues.TAG
+import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
-import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,7 +11,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import models.AnnuncioViewModel
 import models.FirebaseDbWrapper
 import models.RicercaSalvata
 
@@ -50,6 +47,7 @@ class RicercheSalvateActivity: AppCompatActivity() {
     }
 
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun createList(): MutableList<RicercaSalvata> {
         if (auth.currentUser != null) {
             GlobalScope.launch {

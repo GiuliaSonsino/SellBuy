@@ -1,16 +1,12 @@
 package com.example.sellbuy
 
-import android.content.ContentValues
-import android.content.ContentValues.TAG
+
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.AutoCompleteTextView
 import android.widget.Button
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.textfield.TextInputLayout
 import com.pranavpandey.android.dynamic.toasts.DynamicToast
 import kotlinx.coroutines.*
 import models.FirebaseDbWrapper
@@ -55,8 +51,8 @@ class PagamentoActivity: AppCompatActivity() {
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-                    return false
-                }
+                return false
+            }
 
             else if (cvv!!.text.toString().length < 3) {
                 runOnUiThread {

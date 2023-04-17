@@ -32,10 +32,10 @@ class SearchMapActivity : AppCompatActivity(), OnMapReadyCallback, LocationListe
     GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener{
 
     private var mMap: GoogleMap? = null
-    internal lateinit var mLastLocation: Location
-    internal var mCurrLocationMarker: Marker? = null
-    internal var mGoogleApiClient: GoogleApiClient? = null
-    internal lateinit var mLocationRequest: LocationRequest
+    private lateinit var mLastLocation: Location
+    private var mCurrLocationMarker: Marker? = null
+    private var mGoogleApiClient: GoogleApiClient? = null
+    private lateinit var mLocationRequest: LocationRequest
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -79,7 +79,7 @@ class SearchMapActivity : AppCompatActivity(), OnMapReadyCallback, LocationListe
         val latLng = LatLng(location.latitude, location.longitude)
         val markerOptions = MarkerOptions()
         markerOptions.position(latLng)
-        markerOptions.title("Current Position")
+        markerOptions.title("Posizione attuale")
         markerOptions.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
         mCurrLocationMarker = mMap!!.addMarker(markerOptions)
 
@@ -92,7 +92,6 @@ class SearchMapActivity : AppCompatActivity(), OnMapReadyCallback, LocationListe
     }
 
     override fun onConnected(p0: Bundle?) {
-
         mLocationRequest = LocationRequest()
         mLocationRequest.interval = 1000
         mLocationRequest.fastestInterval = 1000
@@ -116,13 +115,11 @@ class SearchMapActivity : AppCompatActivity(), OnMapReadyCallback, LocationListe
 
     fun searchLocation(view: View){
         val locationSearch: EditText = findViewById(R.id.et_search)
-        var location: String
-        location = locationSearch.text.toString().trim()
+        val location: String = locationSearch.text.toString().trim()
         var addressList: List<Address>? = null
-
         if (location == null || location == ""){
-            Toast.makeText(this, "provide location", Toast.LENGTH_SHORT).show()
-        }else{
+            Toast.makeText(this, "Inserire luogo", Toast.LENGTH_SHORT).show()
+        }else {
             val geoCoder = Geocoder(this)
             try {
                 addressList = geoCoder.getFromLocationName(location, 1)

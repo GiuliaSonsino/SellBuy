@@ -495,10 +495,19 @@ class AnnuncioActivity : AppCompatActivity() {
                     )
                     FirebaseStorageWrapper(applicationContext).deleteImgsFromStorage(applicationContext,immagini!!)
                     if (ris) {
-                        finish()
-                        val intent = Intent(applicationContext, AreaPersonaleActivity::class.java)
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-                        startActivity(intent)
+                        val isAmm = FirebaseDbWrapper(applicationContext).isAmministratore(applicationContext)
+                        if(isAmm) {
+                            val intent = Intent(applicationContext, AreaPersonaleAmministratoreAct::class.java)
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+                            startActivity(intent)
+                            finish()
+                        }
+                        else {
+                            val intent = Intent(applicationContext, AreaPersonaleActivity::class.java)
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+                            startActivity(intent)
+                            finish()
+                        }
                     }
                 }
             }
