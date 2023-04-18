@@ -14,7 +14,6 @@ import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
-import com.google.rpc.context.AttributeContext.Auth
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
@@ -23,7 +22,6 @@ import kotlin.concurrent.withLock
 
 class FirebaseAuthWrapper(private val context: Context) {
 
-    //private var auth: FirebaseAuth = Firebase.auth
     private var auth: FirebaseAuth = FirebaseAuth.getInstance()
 
 
@@ -31,9 +29,6 @@ class FirebaseAuthWrapper(private val context: Context) {
         return auth.currentUser != null
     }
 
-    fun getUid(): String {
-        return auth.currentUser!!.uid
-    }
 
 
 /*
@@ -49,25 +44,6 @@ class FirebaseAuthWrapper(private val context: Context) {
 
  */
 
-
-/*
-    fun signUp(email: String, password: String): Boolean {
-        var ris = false
-        this.auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                ris = true
-            }
-            else {
-                Toast.makeText(
-                    context,
-                    "Registrazione fallita: ${task.exception!!.message}",
-                    Toast.LENGTH_LONG
-                ).show()
-            }
-        }
-        return ris
-    }
-*/
 
     fun signUp(email: String, password: String) {
         this.auth.createUserWithEmailAndPassword(email, password).addOnCompleteListener { task ->
@@ -90,39 +66,6 @@ class FirebaseDbWrapper(context: Context) {
     private val db = Firebase.database("https://sellbuy-abe26-default-rtdb.firebaseio.com/")
     var dbref = db.reference
 
-/*
-    // returns false if user's email is in DB
-    fun checkEmailUnica(context: Context, email: String): Boolean {
-        val lock = ReentrantLock()
-        val condition = lock.newCondition()
-        var ris=true
-        if (context != null) {
-            GlobalScope.launch {
-                FirebaseDbWrapper(context).dbref.addValueEventListener(object :
-                    ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        val children = snapshot.child("Utenti").children
-                        for (child in children) {
-                            val list = child.value as HashMap<*, *>
-                            for(record in list) {
-                                if (record.key!! == "email" && record.value!! == email) {
-                                    ris = false
-                                }
-                            }
-                        }
-                        lock.withLock { condition.signal() }
-                    }
-
-                    override fun onCancelled(error: DatabaseError) {
-                        Log.w(ContentValues.TAG, "Failed to read value", error.toException())
-                    }
-                })
-            }
-            lock.withLock { condition.await() }
-        }
-        return ris
-    }
-*/
     fun getTutteEmailUtenti(context: Context): MutableList<String> {
     val lock = ReentrantLock()
     val condition = lock.newCondition()
@@ -136,7 +79,7 @@ class FirebaseDbWrapper(context: Context) {
                     for (child in children) {
                         val list = child.value as HashMap<*, *>
                         for (record in list) {
-                            var valore = record.value.toString()
+                            val valore = record.value.toString()
                             if (record.key!! == "email") {
                                 List.add(valore)
                             }
@@ -157,8 +100,6 @@ class FirebaseDbWrapper(context: Context) {
 
 
 
-
-
     fun isProprietarioAnnuncio(context: Context, codice: String): Boolean  {
         var flag = false
         val utenteLoggato = FirebaseAuth.getInstance().currentUser?.email
@@ -171,7 +112,7 @@ class FirebaseDbWrapper(context: Context) {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val children = snapshot.child("Annunci").children
                         for (child in children) {
-                            val list = child.getValue() as HashMap<String, String>
+                            val list = child.getValue() as HashMap<*, *>
                             if(child.key==codice) {
                                 for (record in list) {
                                     if (record.key!!.equals("email") && record.value!!.equals(utenteLoggato)) {
@@ -239,7 +180,7 @@ class FirebaseDbWrapper(context: Context) {
     fun getTuttiAnnunci(context: Context): MutableList<Annuncio> {
         val lock = ReentrantLock()
         val condition = lock.newCondition()
-        var annList: MutableList<Annuncio> = mutableListOf()
+        val annList: MutableList<Annuncio> = mutableListOf()
         if (context != null) {
             GlobalScope.launch {
                 FirebaseDbWrapper(context).dbref.addValueEventListener(object :
@@ -247,7 +188,7 @@ class FirebaseDbWrapper(context: Context) {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val children = snapshot.child("Annunci").children
                         for (child in children) {
-                            annList!!.add(child.getValue(Annuncio::class.java)!!)
+                            annList.add(child.getValue(Annuncio::class.java)!!)
                         }
                         lock.withLock { condition.signal() }
                     }
@@ -330,7 +271,7 @@ class FirebaseDbWrapper(context: Context) {
         val condition = lock.newCondition()
         val maill = Firebase.auth.currentUser?.email
 
-        var annList: MutableList<Annuncio> = mutableListOf()
+        val annList: MutableList<Annuncio> = mutableListOf()
         if (maill != null) {
             GlobalScope.launch {
                 annList.clear()
@@ -339,7 +280,7 @@ class FirebaseDbWrapper(context: Context) {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val children = snapshot.child("Annunci").children
                         for (child in children) {
-                            val list = child.getValue() as HashMap<String, String>
+                            val list = child.getValue() as HashMap<*, *>
                             for (record in list) {
                                 if(!record.key.equals("foto")) {
                                     if(record.key.equals("email") && record.value.equals(maill)) {
@@ -368,7 +309,7 @@ class FirebaseDbWrapper(context: Context) {
         val condition = lock.newCondition()
         val maill = Firebase.auth.currentUser?.email
         var codicetmp=""
-        var keyList: MutableList<String?> = mutableListOf()
+        val keyList: MutableList<String?> = mutableListOf()
         if (maill != null) {
             GlobalScope.launch {
                 FirebaseDbWrapper(context).dbref.addValueEventListener(object :
@@ -377,7 +318,7 @@ class FirebaseDbWrapper(context: Context) {
                         val children = snapshot.child("Annunci").children
                         for (child in children) {
                             codicetmp=child.key.toString()
-                            val list = child.getValue() as HashMap<String, String>
+                            val list = child.getValue() as HashMap<*, *>
                             for (record in list) {
                                 if(!record.key.equals("foto")) {
                                     if(record.key.equals("email") && record.value.equals(maill)) {
@@ -404,7 +345,7 @@ class FirebaseDbWrapper(context: Context) {
         val lock = ReentrantLock()
         val condition = lock.newCondition()
         var codicetmp=""
-        var keyList: MutableList<String?> = mutableListOf()
+        val keyList: MutableList<String?> = mutableListOf()
         if (context != null) {
             GlobalScope.launch {
                 FirebaseDbWrapper(context).dbref.addValueEventListener(object :
@@ -460,7 +401,7 @@ class FirebaseDbWrapper(context: Context) {
     fun getRecensioniFromUtente(context: Context, emailutente:String): MutableList<Recensione> {
         val lock = ReentrantLock()
         val condition = lock.newCondition()
-        var rec : MutableList<Recensione> = mutableListOf()
+        val rec : MutableList<Recensione> = mutableListOf()
         if (emailutente != null) {
             GlobalScope.launch {
                 FirebaseDbWrapper(context).dbref.addValueEventListener(object :
@@ -504,9 +445,8 @@ class FirebaseDbWrapper(context: Context) {
     fun getIdUtenteFromEmail(context: Context, email:String): String? {
         val lock = ReentrantLock()
         val condition = lock.newCondition()
-        var annuncio= Annuncio()
-        var idUtente:String?=null
-        var keyList: MutableList<String?> = mutableListOf()
+        var idUtente: String?
+        val keyList: MutableList<String?> = mutableListOf()
         if (email != null) {
             GlobalScope.launch {
                 FirebaseDbWrapper(context).dbref.addValueEventListener(object :
@@ -515,7 +455,7 @@ class FirebaseDbWrapper(context: Context) {
                         val children = snapshot.child("Utenti").children
                         for (child in children) {
                             idUtente=child.key.toString()
-                            val list = child.getValue() as HashMap<String, String>
+                            val list = child.getValue() as HashMap<*, *>
                             for (record in list) {
                                 if(!record.key.equals("foto")) {
                                     if(record.key.equals("email") && record.value.equals(email)) {
@@ -540,10 +480,9 @@ class FirebaseDbWrapper(context: Context) {
     fun getEmailFromIdUtente(context: Context, id:String): String? {
         val lock = ReentrantLock()
         val condition = lock.newCondition()
-        var annuncio= Annuncio()
-        var email: MutableList<String?> = mutableListOf()
-        var idUtente:String?=null
-        var mail:String?=null
+        val email: MutableList<String?> = mutableListOf()
+        var idUtente: String?
+        var mail: String?
         if (id != null) {
             email.clear()
             GlobalScope.launch {
@@ -554,17 +493,16 @@ class FirebaseDbWrapper(context: Context) {
                         for (child in children) {
                             idUtente=child.key.toString()
                             if(idUtente==id) {
-                                val list = child.getValue() as HashMap<String, String>
+                                val list = child.getValue() as HashMap<*, *>
                                 for (record in list) {
                                     if(!record.key.equals("foto")) {
                                         if(record.key.equals("email")) {
-                                            mail=record.value
+                                            mail= record.value as String?
                                             email.add(mail)
                                         }
                                     }
                                 }
                             }
-
                         }
                         lock.withLock { condition.signal() }
                     }
@@ -584,8 +522,7 @@ class FirebaseDbWrapper(context: Context) {
         val lock = ReentrantLock()
         val condition = lock.newCondition()
         var ris = false
-        var idUtente:String?=null
-        var mail:String?=null
+        var idUtente: String?
         if (id != null) {
             ris=false
             GlobalScope.launch {
@@ -616,7 +553,7 @@ class FirebaseDbWrapper(context: Context) {
     fun getChats(context: Context, id:String): MutableList<Message> {
         val lock = ReentrantLock()
         val condition = lock.newCondition()
-        var chatList: MutableList<Message> = mutableListOf()
+        val chatList: MutableList<Message> = mutableListOf()
         if (id != null) {
             GlobalScope.launch {
                 FirebaseDbWrapper(context).dbref.addValueEventListener(object :
@@ -629,7 +566,7 @@ class FirebaseDbWrapper(context: Context) {
                             var c=0
                             for(message in messages) {
                                 if(c==0) {
-                                    var e = message.getValue() as HashMap<*, *>
+                                    val e = message.getValue() as HashMap<*, *>
                                     for (y in e) {
                                         if ((y.key.equals("receiver") && y.value.equals(id)) || (y.key.equals(
                                                 "sender"
@@ -667,7 +604,7 @@ class FirebaseDbWrapper(context: Context) {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val children = snapshot.child("Annunci").children
                         for (child in children) {
-                            var key = child.key.toString()
+                            val key = child.key.toString()
                             if (key == codice) {
                                 child.ref.removeValue()
                                 ris = true
@@ -686,14 +623,14 @@ class FirebaseDbWrapper(context: Context) {
         return ris
     }
 
-    //this function updates user's credit
+    //aggiorna credito utente
     suspend fun modificaCreditoUtente(context: Context, codiceUtente: String, creditoNuovo : Double) {
         val dbRef = FirebaseDbWrapper(context).dbref.child("Utenti").child(codiceUtente).child("credito")
         dbRef.setValue(creditoNuovo).await()
 
     }
 
-    //we use this function for adding a new photo in Annuncio and also for deleting one
+    //per aggiungere o eliminare img da un Annuncio
     suspend fun modificaImmagineFromAnnuncio(context: Context, codice: String, immagini: List<String>?) {
         val dbRef = FirebaseDbWrapper(context).dbref.child("Annunci").child(codice).child("foto")
         if (immagini != null) {
@@ -785,11 +722,10 @@ class FirebaseDbWrapper(context: Context) {
     }
 
 
-
+/*
     fun ricercaConFiltri(context: Context, parola: String, prezzo: String, spedizione: String?): MutableList<Annuncio> {
         val lock = ReentrantLock()
         val condition = lock.newCondition()
-        var tr: Boolean
         val annList: MutableList<Annuncio> = mutableListOf()
         if (context != null) {
             GlobalScope.launch {
@@ -813,7 +749,6 @@ class FirebaseDbWrapper(context: Context) {
                                     if(record.key.equals("spedizione") && record.value==true) {
                                         spediz = true
                                     }
-
                                 }
                             }
                             if(spedizione.equals("Tutti")) {
@@ -845,6 +780,8 @@ class FirebaseDbWrapper(context: Context) {
         }
         return annList
     }
+
+ */
 
 
     fun stringToLatLng(inputString: String): LatLng? {
@@ -954,8 +891,8 @@ class FirebaseDbWrapper(context: Context) {
     fun ricercaKeysConFiltriELocalizzazione(context: Context, parola: String, prezzo: String, spedizione: String?, distanzaInserita: String, posizioneAttuale: LatLng): MutableList<String> {
         val lock = ReentrantLock()
         val condition = lock.newCondition()
-        var chiavi: MutableList<String> = mutableListOf()
-        var codicetmp = ""
+        val chiavi: MutableList<String> = mutableListOf()
+        var codicetmp: String
         if (context != null) {
             GlobalScope.launch {
                 FirebaseDbWrapper(context).dbref.addValueEventListener(object :
@@ -1045,66 +982,6 @@ class FirebaseDbWrapper(context: Context) {
         return chiavi
     }
 
-    fun ricercaKeysFromFiltri(context: Context, parola: String, prezzo: String, spedizione: String?): MutableList<String> {
-        val lock = ReentrantLock()
-        val condition = lock.newCondition()
-        var chiavi: MutableList<String> = mutableListOf()
-        var codicetmp = ""
-        if (context != null) {
-            GlobalScope.launch {
-                FirebaseDbWrapper(context).dbref.addValueEventListener(object :
-                    ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        val children = snapshot.child("Annunci").children
-                        for (child in children) {
-                            codicetmp=child.key.toString()
-                            val list = child.getValue() as HashMap<*, *>
-                            var nome:String?=null
-                            var prez:String?=null
-                            var spediz: Boolean? = false
-                            for (record in list) {
-                                if(!record.key.equals("foto")) {
-                                    if(record.key.equals("nome")) {
-                                        nome = record.value.toString()
-                                    }
-                                    if(record.key.equals("prezzo")) {
-                                        prez = record.value.toString()
-                                    }
-                                    if(record.key.equals("spedizione") && record.value==true) {
-                                        spediz = true
-                                    }
-                                }
-                            }
-                            if(spedizione.equals("Tutti")) {
-                                if( nome!!.lowercase().contains(parola.lowercase()) && prez!!.toDouble()<=prezzo.toDouble() ) {
-                                    chiavi.add(codicetmp)
-                                }
-                            }
-                            if(spedizione.equals("Si")) {
-                                if( nome!!.lowercase().contains(parola.lowercase()) && prez!!.toDouble()<=prezzo.toDouble() && spediz!!) {
-                                    chiavi.add(codicetmp)
-                                }
-                            }
-                            if(spedizione.equals("No")) {
-                                if( nome!!.lowercase().contains(parola.lowercase()) && prez!!.toDouble()<=prezzo.toDouble() && !spediz!!) {
-                                    chiavi.add(codicetmp)
-                                }
-                            }
-
-                        }
-                        lock.withLock { condition.signal() }
-                    }
-
-                    override fun onCancelled(error: DatabaseError) {
-                        Log.w(ContentValues.TAG, "Failed to read value", error.toException())
-                    }
-                })
-            }
-            lock.withLock { condition.await() }
-        }
-        return chiavi
-    }
-
 
     // Ritorna proprio le RicercheSalvate di un utente
     fun getRicercheSalvateFromEmail(context: Context): MutableList<RicercaSalvata> {
@@ -1121,7 +998,7 @@ class FirebaseDbWrapper(context: Context) {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val children = snapshot.child("RicercheSalvate").children
                         for (child in children) {
-                            val list = child.getValue() as HashMap<String, String>
+                            val list = child.getValue() as HashMap<*, *>
                             for (record in list) {
                                 if(record.key.equals("email") && record.value.equals(maill)) {
                                     ricercheList.add(child.getValue(RicercaSalvata::class.java)!!)
@@ -1218,7 +1095,6 @@ class FirebaseDbWrapper(context: Context) {
     }
 
 
-
     fun getUtenti(context: Context): MutableList<String> {
         val lock = ReentrantLock()
         val condition = lock.newCondition()
@@ -1232,7 +1108,7 @@ class FirebaseDbWrapper(context: Context) {
                     ValueEventListener {
                     override fun onDataChange(snapshot: DataSnapshot) {
                         val children = snapshot.child("Utenti").children
-                        var nome: String = ""
+                        var nome = ""
                         for (child in children) {
                             val list = child.getValue() as HashMap<*, *>
                             for (record in list) {
@@ -1263,7 +1139,6 @@ class FirebaseDbWrapper(context: Context) {
         val lock = ReentrantLock()
         val condition = lock.newCondition()
         var count=0
-
         if (email != null) {
             count=0
             GlobalScope.launch {
@@ -1324,7 +1199,7 @@ class FirebaseDbWrapper(context: Context) {
     fun deleteAnnunciUtente(context: Context, nomeUtente: String) : MutableList<String>{
         val lock = ReentrantLock()
         val condition = lock.newCondition()
-        var tmp=false
+        var tmp: Boolean
         val immaginiDaCancellare : MutableList<String> = mutableListOf()
         GlobalScope.launch {
             immaginiDaCancellare.clear()
@@ -1392,7 +1267,6 @@ class FirebaseDbWrapper(context: Context) {
         dbref.child("Categorie").child(categoria.nome).setValue(categoria)
     }
 }
-
 
 
 

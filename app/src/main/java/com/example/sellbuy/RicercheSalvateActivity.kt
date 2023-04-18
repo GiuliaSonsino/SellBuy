@@ -1,11 +1,18 @@
 package com.example.sellbuy
 
+import android.Manifest
 import android.annotation.SuppressLint
+import android.content.pm.PackageManager
+import android.location.Location
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -23,6 +30,10 @@ class RicercheSalvateActivity: AppCompatActivity() {
     private var listener: ListCompleteListener? = null
     private var num : Int = 0
 
+    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private val PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION =123
+    private var currentLatLng : LatLng? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ricerche_salvate)
@@ -39,6 +50,20 @@ class RicercheSalvateActivity: AppCompatActivity() {
                 numRicerche!!.text = size.toString()
             }
         })
+
+        // permission per localiz
+        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION), PERMISSIONS_REQUEST_ACCESS_FINE_LOCATION)
+
+        }
+        else {
+            fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
+            fusedLocationClient.lastLocation.addOnSuccessListener { location : Location? ->
+                if(location!=null) {
+                    currentLatLng = LatLng(location.latitude,location.longitude)
+                }
+            }
+        }
     }
 
     override fun onStart() {
@@ -60,8 +85,8 @@ class RicercheSalvateActivity: AppCompatActivity() {
                     val prezzo = record.prezzo
                     val spedizione = record.spedizione
                     val localizzazione = record.localizzazione
-                    val annunci = FirebaseDbWrapper(applicationContext).ricercaConFiltri(applicationContext,parola,prezzo,spedizione)
-                    val nuovaRicerca = RicercaSalvata(email,parola,prezzo,spedizione,localizzazione!!, annunci)
+                    val annunci = FirebaseDbWrapper(applicationContext).ricercaConFiltriELocalizzazione(applicationContext,parola,prezzo,spedizione,localizzazione!!,currentLatLng!!)
+                    val nuovaRicerca = RicercaSalvata(email,parola,prezzo,spedizione,localizzazione, annunci)
                     if (nuovaRicerca != null) {
                         listaRic.add(nuovaRicerca)
                     }
