@@ -35,7 +35,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="MODIFICA DESCRIZIONE: "
+                android:text="@string/mod_descr"
                 android:textSize="15sp"
                 android:paddingStart="5dp"/>
 
@@ -43,7 +43,6 @@
                 android:id="@+id/edit_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Descrizione dell'annunciooooddhdh jdjdjdj dididididiid DKDDF"
                 android:textSize="15sp"
                 android:gravity="top"
                 android:textColor="@color/black"
@@ -63,7 +62,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="MODIFICA PREZZO: "
+                android:text="@string/mod_prezzo"
                 android:textSize="15sp"
                 android:paddingStart="5dp"/>
 
@@ -71,7 +70,6 @@
                 android:id="@+id/edit_price"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:text="159"
                 android:textSize="16sp"
                 android:textColor="@color/black"
                 android:paddingStart="5dp"
@@ -96,7 +94,7 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="MODIFICA CONDIZIONI: "
+                android:text="@string/mod_condiz"
                 android:textSize="15sp"
                 android:layout_weight="35"
                 android:paddingStart="5dp"/>
@@ -107,7 +105,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="60"
                 android:layout_height="wrap_content"
-                android:hint="Condizioni">
+                android:hint="@string/condizioni">
 
                 <AutoCompleteTextView
                     android:id="@+id/edit_condizioni"
@@ -128,7 +126,7 @@
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="MODIFICA CATEGORIA: "
+                android:text="@string/mod_categoria"
                 android:layout_weight="35"
                 android:textSize="15sp"
                 android:paddingStart="5dp" />
@@ -139,7 +137,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="60"
-                android:hint="Categoria">
+                android:hint="@string/categoria">
 
 
 
@@ -159,7 +157,8 @@
             android:layout_height="50dp"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
-            android:text="@string/switch_spediz" />
+            android:text="@string/switch_spediz"
+            tools:ignore="UseSwitchCompatOrMaterialXml" />
 
 
         <LinearLayout
@@ -170,7 +169,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="LUOGO INSERITO ATTUALMENTE: "
+                android:text="@string/luogo_ins"
                 android:textSize="15sp"
                 android:paddingStart="5dp"/>
 
@@ -222,7 +221,7 @@
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:textColor="@color/white"
-            android:text="Modifica localizzazione"
+            android:text="@string/btn_mod_loc"
             android:layout_gravity="center"/>
 
         <Button
@@ -230,7 +229,7 @@
             android:backgroundTint="@color/verde_scuro"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Salva"
+            android:text="@string/salva"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:visibility="visible"

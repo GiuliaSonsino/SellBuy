@@ -23,7 +23,7 @@
         android:layout_marginTop="15dp"
         android:layout_marginStart="5dp"
         android:layout_marginEnd="5dp"
-        android:hint="Sono un...">
+        android:hint="@string/sono_un">
 
         <AutoCompleteTextView
             android:id="@+id/autoCompleteTextView"
@@ -47,7 +47,6 @@
         android:layout_height="wrap_content"
         android:text="@string/btn_accedi"
         android:gravity="center|bottom"
-        android:layout_marginTop="8dp"
-        />
+        android:layout_marginTop="8dp" />
 
 </LinearLayout>

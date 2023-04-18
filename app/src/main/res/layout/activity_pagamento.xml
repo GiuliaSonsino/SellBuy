@@ -9,7 +9,7 @@
         android:id="@+id/titolareCartaTv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Titolare carta"
+        android:text="@string/titolare_carta"
         android:textSize="16sp"
         android:textStyle="bold" />
 
@@ -17,7 +17,7 @@
         android:id="@+id/titolareAcTv"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:hint="Nome e Cognome"
+        android:hint="@string/nome_cognome"
         android:maxLength="16"
         android:inputType="text"/>
 
@@ -26,7 +26,7 @@
         android:id="@+id/numeroCartaTv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Inserire numero carta"
+        android:text="@string/num_carta"
         android:textSize="16sp"
         android:textStyle="bold" />
 
@@ -43,7 +43,7 @@
         android:id="@+id/CVVTv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Inserire CVV"
+        android:text="@string/cvv"
         android:textSize="16sp"
         android:textStyle="bold" />
 
@@ -59,7 +59,7 @@
         android:id="@+id/importoTv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Inserire importo (€)"
+        android:text="@string/importo"
         android:textSize="16sp"
         android:textStyle="bold" />
 
@@ -69,7 +69,6 @@
         android:layout_height="50dp"
         android:hint="0.0 "
         android:inputType="numberDecimal"/>
-
 
     <Button
         android:id="@+id/btnImporto"

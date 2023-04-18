@@ -18,7 +18,7 @@
         android:layout_height="wrap_content"
         android:textColor="@color/white"
         android:layout_marginTop="10dp"
-        android:text="Acquisto avvenuto"
+        android:text="@string/acquisto_avvenuto"
         android:textSize="30dp"
         android:gravity="center"/>
 
@@ -33,7 +33,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/white"
-            android:text="Ti rimangono: € "
+            android:text="@string/soldi_rimasti"
             android:textSize="17dp"
             android:gravity="center"/>
 
@@ -52,7 +52,7 @@
         android:id="@+id/back_to_home"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Torna alla home"
+        android:text="@string/btn_home"
         android:backgroundTint="@color/white"
         android:textColor="@color/black"
         android:layout_marginTop="50dp"

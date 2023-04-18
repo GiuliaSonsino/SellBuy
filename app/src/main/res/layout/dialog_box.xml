@@ -6,7 +6,6 @@
     <ImageView
         android:id="@+id/imgDialog"
         android:layout_width="350dp"
-        android:layout_height="350dp"
-        />
+        android:layout_height="350dp" />
 
 </LinearLayout>

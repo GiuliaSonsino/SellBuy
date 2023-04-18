@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Sell&amp;Buy</string>
     <string name="splash">Seleziona il tuo ruolo</string>
+    <string name="sono_un">Sono un...</string>
     <string-array name="ruoli">
         <item>Amministratore</item>
         <item>Utente</item>
@@ -8,7 +9,9 @@
     <string name="prosegui">Prosegui</string>
     <string name="btn_accedi">Hai già un account? Accedi</string>
     <string name="str_accedi">Login</string>
+    <string name="la_tua_pwd">La tua password</string>
     <string name="loginBtn">Accedi</string>
+    <string name="registratiBtn">Registrati</string>
     <string name="titolo_add">Crea un nuovo annuncio</string>
     <string name="nome_articolo">Nome</string>
     <string name="cat_articolo">Categoria</string>
@@ -35,6 +38,70 @@
     <string name="cerca">Cerca</string>
     <string name="cerca_luogo">Cerca luogo</string>
     <string name="modifica_luogo">Modifica luogo</string>
-
+    <string name="acquisto_avvenuto">Acquisto avvenuto</string>
+    <string name="soldi_rimasti">Ti rimangono: € </string>
+    <string name="btn_home">Torna alla home</string>
+    <string name="inserisci_titolo">Inserisci titolo dell\'annuncio</string>
+    <string name="inserisci_categoria">Seleziona categoria dell\'annuncio</string>
+    <string name="inserisci_descrizione">Inserisci descrizione dell\'annuncio</string>
+    <string name="condizioni_oggetto">Condizioni oggetto</string>
+    <string name="prezzo">Prezzo (€)</string>
+    <string name="scegli">Scegli</string>
+    <string name="carica">Carica</string>
+    <string name="salva_loc">Salva localizzazione</string>
+    <string name="titolo_ann">Titolo dell\'annuncio</string>
+    <string name="txtv_add_img">Aggiungi un immagine e caricala subito dopo</string>
+    <string name="rec_utente">Recensioni utente</string>
+    <string name="descrizione">DESCRIZIONE: </string>
+    <string name="prezzo_ann">PREZZO: </string>
+    <string name="condizioni">CONDIZIONI: </string>
+    <string name="categoria">CATEGORIA:</string>
+    <string name="luogo_prov">LUOGO DI PROVENIENZA: </string>
+    <string name="il_venditore">Il venditore</string>
+    <string name="a_spedire">a spedire</string>
+    <string name="chiedi_info">CHIEDI INFORMAZIONI</string>
+    <string name="acquista">ACQUISTA</string>
+    <string name="scrivi_qui">Scrivi qui</string>
+    <string name="elimina">ELIMINA</string>
+    <string name="tutti_gli_ann">TUTTI GLI ANNUNCI</string>
+    <string name="mod_descr">MODIFICA DESCRIZIONE: </string>
+    <string name="mod_prezzo">MODIFICA PREZZO: </string>
+    <string name="mod_condiz">MODIFICA CONDIZIONI: </string>
+    <string name="mod_categoria">MODIFICA CATEGORIA: </string>
+    <string name="luogo_ins">LUOGO INSERITO ATTUALMENTE: </string>
+    <string name="btn_mod_loc">MODIFICA LOCALIZZAZIONE</string>
+    <string name="titolare_carta">Titolare carta</string>
+    <string name="nome_cognome">Nome e Cognome</string>
+    <string name="num_carta">Inserire numero carta</string>
+    <string name="cvv">Inserire CVV</string>
+    <string name="importo">Inserire importo (€)</string>
+    <string name="nome">Nome</string>
+    <string name="cognome">Cognome</string>
+    <string name="email">Email</string>
+    <string name="num_tel">Numero di telefono</string>
+    <string name="password">Password</string>
+    <string name="conf_pwd">Conferma password</string>
+    <string name="salva">SALVA</string>
+    <string name="registrami">REGISTRAMI</string>
+    <string name="fino_a">Fino a...</string>
+    <string name="disp_spedire">Disponibilità a spedire</string>
+    <string name="distanza">Distanza (Km)</string>
+    <string name="ovunque">Ovunque</string>
+    <string name="ric_salvate">Ricerche salvate</string>
+    <string name="i_miei_annunci">I miei annunci</string>
+    <string name="mie_rec">LE MIE RECENSIONI</string>
+    <string name="amm">Amministratore</string>
+    <string name="stat">Statistiche</string>
+    <string name="ut_reg">Numero utenti registrati: </string>
+    <string name="an_vendita">Numero annunci in vendita: </string>
+    <string name="an_per_utente">Numero annunci in vendita per utente</string>
+    <string name="seleziona">Seleziona</string>
+    <string name="mostra">Mostra</string>
+    <string name="rec_di">Recensione di: </string>
+    <string name="voto">Voto al servizio: </string>
+    <string name="rec">Recensione: </string>
+    <string name="prezzo_max">Prezzo massimo (€): </string>
+    <string name="txtv_spedire">Disponibilità a spedire: </string>
+    <string name="max_dist">Distanza massima (Km): </string>
 
 </resources>

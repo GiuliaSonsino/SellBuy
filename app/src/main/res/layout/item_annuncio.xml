@@ -9,8 +9,7 @@
     android:layout_margin="10dp"
     app:cardElevation="6dp"
     app:cardBackgroundColor="@color/panna"
-    app:cardCornerRadius="20dp"
-    >
+    app:cardCornerRadius="20dp" >
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -22,9 +21,7 @@
         <ImageView
             android:id="@+id/imageview"
             android:layout_width="60dp"
-            android:layout_height="60dp"
-
-            />
+            android:layout_height="60dp"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -37,7 +34,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="10dp"
                 android:layout_marginLeft="15dp"
-                android:text="Item"
+                android:text="Scarpe"
                 android:textSize="20sp"
                 android:textColor="@color/black"
                 android:textStyle="bold" />
@@ -54,8 +51,7 @@
                     android:layout_marginStart="10dp"
                     android:text="29"
                     android:textSize="15sp"
-                    android:textColor="@color/black"
-                    />
+                    android:textColor="@color/black" />
 
                 <TextView
                     android:id="@+id/euro"

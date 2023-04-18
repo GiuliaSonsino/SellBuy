@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -45,7 +44,7 @@
                 android:backgroundTint="@color/design_default_color_error"
                 android:layout_gravity="center_vertical"
                 android:drawableLeft="@drawable/baseline_delete_24"
-                android:text="Elimina"/>
+                android:text="@string/elimina"/>
 
         </LinearLayout>
         <!--fine sez1-->
@@ -70,7 +69,7 @@
                 android:backgroundTint="@color/design_default_color_error"
                 android:layout_gravity="center_vertical"
                 android:drawableLeft="@drawable/baseline_delete_24"
-                android:text="elimina"/>
+                android:text="@string/elimina"/>
 
         </LinearLayout>
         <!--fine sez2-->
@@ -95,7 +94,7 @@
                 android:backgroundTint="@color/design_default_color_error"
                 android:layout_gravity="center_vertical"
                 android:drawableLeft="@drawable/baseline_delete_24"
-                android:text="elimina"/>
+                android:text="@string/elimina"/>
 
         </LinearLayout>
         <!--fine sez3-->
@@ -120,7 +119,7 @@
                 android:backgroundTint="@color/design_default_color_error"
                 android:layout_gravity="center_vertical"
                 android:drawableLeft="@drawable/baseline_delete_24"
-                android:text="elimina"/>
+                android:text="@string/elimina"/>
 
         </LinearLayout>
         <!--fine sez4-->
@@ -145,7 +144,7 @@
                 android:backgroundTint="@color/design_default_color_error"
                 android:layout_gravity="center_vertical"
                 android:drawableLeft="@drawable/baseline_delete_24"
-                android:text="elimina"/>
+                android:text="@string/elimina"/>
 
         </LinearLayout>
     </LinearLayout>

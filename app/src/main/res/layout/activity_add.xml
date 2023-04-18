@@ -34,7 +34,7 @@
             android:id="@+id/nomeAcTv"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:hint="Inserisci titolo dell'annuncio"/>
+            android:hint="@string/inserisci_titolo"/>
 
 
         <TextView
@@ -50,7 +50,7 @@
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="match_parent"
             android:layout_height="57dp"
-            android:hint="Seleziona categoria dell'annuncio">
+            android:hint="@string/inserisci_categoria">
 
             <AutoCompleteTextView
                 android:id="@+id/categoriaAcTv"
@@ -71,7 +71,7 @@
             android:id="@+id/descrizioneAcTv"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:hint="Inserisci descrizione dell'annuncio"/>
+            android:hint="@string/inserisci_descrizione"/>
 
 
         <LinearLayout
@@ -87,7 +87,7 @@
                 android:layout_width="0dp"
                 android:layout_weight="70"
                 android:layout_height="wrap_content"
-                android:hint="Condizioni oggetto">
+                android:hint="@string/condizioni_oggetto">
 
                 <AutoCompleteTextView
                     android:id="@+id/statoAcTv"
@@ -150,7 +150,7 @@
                 android:id="@+id/pickUpImg"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Scegli"
+                android:text="@string/scegli"
                 android:backgroundTint="@color/panna"
                 android:textColor="@color/black"
                 android:layout_marginEnd="5dp"
@@ -166,7 +166,7 @@
                 android:id="@+id/uploadImg"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Carica"
+                android:text="@string/carica"
                 android:textColor="@color/white"
                 android:layout_marginStart="5dp"
                 android:backgroundTint="@color/verde_scuro"
@@ -215,7 +215,7 @@
             android:layout_width="wrap_content"
             android:layout_height="50dp"
             android:textColor="@color/white"
-            android:text="Salva localizzazione"
+            android:text="@string/salva_loc"
             android:layout_gravity="center"/>
 
         <View

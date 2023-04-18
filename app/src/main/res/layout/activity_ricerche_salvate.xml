@@ -16,7 +16,7 @@
             android:layout_marginStart="7dp"
             android:textColor="@color/black"
             android:textSize="16sp"
-            android:text="Ricerche salvate: "/>
+            android:text="@string/ric_salvate"/>
 
         <TextView
             android:id="@+id/num_ricerche"

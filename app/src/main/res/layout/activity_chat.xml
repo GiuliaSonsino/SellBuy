@@ -61,7 +61,7 @@
             android:layout_weight="80"
             android:background="@drawable/edtxt_background"
             android:paddingLeft="10dp"
-            android:hint="Scrivi qui" />
+            android:hint="@string/scrivi_qui" />
 
         <ImageView
             android:id="@+id/imgFreccia"
@@ -71,11 +71,6 @@
             android:layout_weight="20"
             />
 
-
-
     </LinearLayout>
-
-
-
 
 </RelativeLayout>

@@ -38,7 +38,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
         android:layout_marginEnd="5dp"
-        android:hint="La tua password">
+        android:hint="@string/la_tua_pwd">
 
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
@@ -58,7 +58,7 @@
         android:id="@+id/registrationBtn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Registrati"
+        android:text="@string/registratiBtn"
         android:backgroundTint="@color/verde_scuro"
         android:layout_marginStart="5dp"
         android:layout_marginEnd="5dp" />

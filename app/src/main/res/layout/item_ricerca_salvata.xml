@@ -34,8 +34,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Prezzo massimo (€): "
-                android:textSize="15dp"
+                android:text="@string/prezzo_max"
+                android:textSize="15sp"
                 android:textColor="@color/black"/>
 
             <TextView
@@ -43,7 +43,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="400"
-                android:textSize="15dp"
+                android:textSize="15sp"
                 android:textColor="@color/black"/>
         </LinearLayout>
 
@@ -55,8 +55,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Disponibilità a spedire: "
-                android:textSize="15dp"
+                android:text="@string/txtv_spedire"
+                android:textSize="15sp"
                 android:textColor="@color/black"/>
 
             <TextView
@@ -64,7 +64,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Si"
-                android:textSize="15dp"
+                android:textSize="15sp"
                 android:textColor="@color/black"/>
         </LinearLayout>
 
@@ -76,8 +76,8 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Distanza massima (Km): "
-                android:textSize="15dp"
+                android:text="@string/max_dist"
+                android:textSize="15sp"
                 android:textColor="@color/black"/>
 
             <TextView
@@ -85,7 +85,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="60"
-                android:textSize="15dp"
+                android:textSize="15sp"
                 android:textColor="@color/black"/>
         </LinearLayout>
     </LinearLayout>

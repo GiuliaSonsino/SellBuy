@@ -27,7 +27,7 @@
                 android:layout_height="wrap_content"
                 android:layout_margin="5dp"
                 android:text=" Ludovico"
-                android:textSize="25dp"
+                android:textSize="25sp"
                 android:textStyle="bold"
                 android:textColor="@color/black"
                 android:layout_gravity="center"/>
@@ -47,15 +47,13 @@
                     android:id="@+id/ruolo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text=" Amministratore"
-                    android:textSize="17dp"
+                    android:text="@string/amm"
+                    android:textSize="17sp"
                     android:textColor="@color/black"
                     android:layout_gravity="center"
                     android:layout_marginStart="4dp"/>
 
-
             </LinearLayout>
-
 
 
             <LinearLayout
@@ -80,9 +78,7 @@
                     android:layout_marginStart="4dp"/>
 
             </LinearLayout>
-
         </LinearLayout>
-
     </LinearLayout>
 
     <View
@@ -94,8 +90,8 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Statistiche"
-        android:textSize="30dp"
+        android:text="@string/stat"
+        android:textSize="30sp"
         android:textStyle="bold"
         android:textColor="@color/black"
         android:layout_marginStart="5dp"/>
@@ -109,7 +105,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Numero utenti registrati: "/>
+            android:text="@string/ut_reg"/>
 
         <TextView
             android:id="@+id/num_utenti_tot"
@@ -130,7 +126,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Numero annunci in vendita: "/>
+            android:text="@string/an_vendita"/>
 
         <TextView
             android:id="@+id/num_oggetti_tot"
@@ -144,10 +140,9 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Numero annunci in vendita per utente"
+        android:text="@string/an_per_utente"
         android:layout_marginStart="5sp"
-        android:layout_marginTop="15sp"
-        />
+        android:layout_marginTop="15sp" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -162,7 +157,7 @@
             android:layout_weight="57"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
-            android:hint="Seleziona">
+            android:hint="@string/seleziona">
 
             <AutoCompleteTextView
                 android:id="@+id/edit_utenti"
@@ -176,7 +171,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textSize="10sp"
-            android:text="mostra"
+            android:text="@string/mostra"
             android:layout_marginStart="5dp"
             android:backgroundTint="@color/panna"
             android:textColor="@color/black"
@@ -188,15 +183,13 @@
             android:id="@+id/num_annunci_utente"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="3 "
+            android:text="3"
             android:textSize="15sp"
             android:layout_weight="7"
             android:layout_gravity="center"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="5dp"/>
 
-
     </LinearLayout>
-
 
 </LinearLayout>

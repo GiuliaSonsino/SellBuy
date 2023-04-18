@@ -42,7 +42,6 @@
         </LinearLayout>
 
 
-
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
@@ -76,7 +75,7 @@
                 android:id="@+id/tv_info_recensioni"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Recensioni utente"
+                android:text="@string/rec_utente"
                 android:textSize="12dp"
                 android:layout_marginTop="5dp"
                 android:paddingStart="15dp"
@@ -84,8 +83,8 @@
                 android:clickable="true"
                 android:focusable="true"/>
 
-
         </LinearLayout>
+
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -184,7 +183,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="DESCRIZIONE: "
+                android:text="@string/descrizione"
                 android:textSize="15sp"
                 android:paddingStart="5dp"/>
             <TextView
@@ -206,7 +205,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="PREZZO: "
+                android:text="@string/prezzo_ann"
                 android:textSize="15sp"
                 android:paddingStart="5dp"/>
 
@@ -237,7 +236,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="CONDIZIONI: "
+                android:text="@string/condizioni"
                 android:textSize="15sp"
                 android:paddingStart="5dp"/>
 
@@ -261,7 +260,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="CATEGORIA: "
+                android:text="@string/categoria"
                 android:textSize="15sp"
                 android:paddingStart="5dp"/>
 
@@ -286,7 +285,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="LUOGO DI PROVENIENZA: "
+                android:text="@string/luogo_prov"
                 android:textSize="15sp"
                 android:paddingStart="5dp"/>
 
@@ -311,7 +310,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Il venditore"
+                android:text="@string/il_venditore"
                 android:textColor="@color/black"
                 android:textSize="15sp"
                 android:paddingStart="5dp"/>
@@ -328,7 +327,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="a spedire"
+                android:text="@string/a_spedire"
                 android:textSize="15sp"
                 android:textColor="@color/black"
                 android:paddingStart="5dp"/>
@@ -341,7 +340,7 @@
             android:layout_height="wrap_content"
             android:backgroundTint="@color/panna"
             android:shadowColor="@color/verde_past"
-            android:text="Chiedi informazioni"
+            android:text="@string/chiedi_info"
             android:textColor="@color/black"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
@@ -353,7 +352,7 @@
             android:backgroundTint="@color/verde_scuro"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Acquista"
+            android:text="@string/acquista"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:visibility="visible"

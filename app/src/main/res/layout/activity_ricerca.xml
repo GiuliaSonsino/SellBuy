@@ -14,7 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:iconifiedByDefault="false"
-            android:queryHint="Cerca..."/>
+            android:queryHint="@string/cerca"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -31,7 +31,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Prezzo (€)"
+                    android:text="@string/prezzo"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:layout_marginTop="5dp"/>
@@ -42,15 +42,13 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Fino a...">
+                    android:hint="@string/fino_a">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="numberDecimal" />
                 </com.google.android.material.textfield.TextInputLayout>
-
-
 
 
             </LinearLayout>
@@ -65,7 +63,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Disponibilità a spedire"
+                    android:text="@string/disp_spedire"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:layout_marginTop="5dp"/>
@@ -93,7 +91,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Distanza(Km)"
+                    android:text="@string/distanza"
                     android:textSize="16sp"
                     android:textStyle="bold"
                     android:layout_marginTop="5dp"/>
@@ -103,7 +101,7 @@
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Ovunque">
+                    android:hint="@string/ovunque">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
@@ -126,7 +124,7 @@
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:drawableLeft="@drawable/baseline_filtri_search_24"
-                android:text="Cerca"
+                android:text="@string/cerca"
                 android:layout_gravity="center"
                 android:layout_weight="75"/>
 
@@ -137,16 +135,14 @@
                 android:text="@string/salva_ricerca"
                 android:textColor="@color/quantum_yellow700"
                 android:clickable="true"
-                android:textSize="15dp"
+                android:textSize="15sp"
                 android:textStyle="bold"
                 android:focusable="true"
                 android:layout_weight="25"
                 android:layout_gravity="center|end"
-                android:layout_marginStart="10dp"
-                />
+                android:layout_marginStart="10dp" />
 
         </LinearLayout>
-
 
 
         <androidx.recyclerview.widget.RecyclerView
