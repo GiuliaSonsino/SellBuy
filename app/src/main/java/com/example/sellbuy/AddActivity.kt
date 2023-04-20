@@ -160,7 +160,6 @@ class AddActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
             else {
                 Toast.makeText(this, "Localizzazione salvata", Toast.LENGTH_SHORT).show()
             }
-
         }
 
         // per scegliere img
@@ -194,7 +193,7 @@ class AddActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
         upload!!.setOnClickListener {
             // progress bar
             message.text = "Caricamento immagine"
-            builder.setView(dialogView)
+            builder.setView(dialogView) // dialogView contiene xml progress_bar
             builder.setCancelable(false)
             val parent = dialogView.parent as ViewGroup?
             parent?.removeView(dialogView)
@@ -365,7 +364,6 @@ class AddActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
         if (mCurrLocationMarker != null){
             mCurrLocationMarker!!.remove()
         }
-
         val latLng = LatLng(location.latitude, location.longitude)
         val markerOptions = MarkerOptions()
         markerOptions.position(latLng)
@@ -382,7 +380,6 @@ class AddActivity : AppCompatActivity(), OnMapReadyCallback, LocationListener,
     }
 
     override fun onConnected(p0: Bundle?) {
-
         mLocationRequest = LocationRequest()
         mLocationRequest.interval = 1000
         mLocationRequest.fastestInterval = 1000

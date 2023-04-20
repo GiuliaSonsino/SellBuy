@@ -7,7 +7,6 @@ class Message {
     var receiver: String? = null
     var codiceArticolo: String? = null
 
-
     constructor(){}
 
     constructor(contenuto: String?,sender: String?, receiver: String?, codiceArticolo: String?) {

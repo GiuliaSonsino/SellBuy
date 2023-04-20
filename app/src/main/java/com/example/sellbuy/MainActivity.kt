@@ -48,9 +48,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        notificationManager =
-            getSystemService(
-                Context.NOTIFICATION_SERVICE) as NotificationManager
+        notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         createNotificationChannel()
 
         val recyclerview = findViewById<RecyclerView>(R.id.recyclerview)
@@ -95,8 +93,8 @@ class MainActivity : AppCompatActivity() {
         val channel = NotificationChannel(CHANNEL_ID, "Sell&Buy channel", importance)
         channel.description = "All the news from your app"
         notificationManager.createNotificationChannel(channel)
-        channel.lightColor = Color.RED
     }
+
 
     private fun sendNotification() {
         val resultIntent = Intent(this, RicercheSalvateActivity::class.java)
@@ -110,7 +108,6 @@ class MainActivity : AppCompatActivity() {
         val notification = NotificationCompat.Builder(this, CHANNEL_ID)
             .setContentTitle("Annuncio inserito")
             .setContentText("È stato inserito un annuncio relativo alla tua ricerca.")
-
 
             .setSmallIcon(android.R.drawable.ic_dialog_info)
             .setPriority(NotificationCompat.PRIORITY_HIGH)

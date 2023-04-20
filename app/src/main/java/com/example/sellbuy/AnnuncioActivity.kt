@@ -99,6 +99,7 @@ class AnnuncioActivity : AppCompatActivity() {
                 val coordinate = stringToLatLng(stringaCoordinate!!)
                 val nomeCitta = getCityName(applicationContext, coordinate!!)
                 luogo.text = nomeCitta
+                // visualizza immagini
                 immagini = ann.foto
                 strMainImm = immagini?.get(0)
                 storag = Firebase.storage.reference.child("images/$strMainImm")
