@@ -99,6 +99,38 @@ class FirebaseDbWrapper(context: Context) {
     }
 
 
+    fun getTutteEmailUtentiEliminati(context: Context): MutableList<String>? {
+        val lock = ReentrantLock()
+        val condition = lock.newCondition()
+        val List: MutableList<String> = mutableListOf()
+        if (context != null) {
+            GlobalScope.launch {
+                FirebaseDbWrapper(context).dbref.addValueEventListener(object :
+                    ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val children = snapshot.child("UtentiEliminati").children
+                        for (child in children) {
+                            val list = child.value as HashMap<*, *>
+                            for (record in list) {
+                                val valore = record.value.toString()
+                                if (record.key!! == "email") {
+                                    List.add(valore)
+                                }
+                            }
+                        }
+                        lock.withLock { condition.signal() }
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                        Log.w(ContentValues.TAG, "Failed to read value", error.toException())
+                    }
+                })
+            }
+            lock.withLock { condition.await() }
+        }
+        return List
+    }
+
 
     fun isProprietarioAnnuncio(context: Context, codice: String): Boolean  {
         var flag = false
@@ -1265,6 +1297,10 @@ class FirebaseDbWrapper(context: Context) {
 
     fun creaCategoria(categoria : Categoria) {
         dbref.child("Categorie").child(categoria.nome).setValue(categoria)
+    }
+
+    fun creaUtenteEliminato(utente : UtenteEliminato) {
+        dbref.child("UtentiEliminati").push().setValue(utente)
     }
 }
 

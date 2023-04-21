@@ -267,11 +267,9 @@ class MainActivity : AppCompatActivity() {
         builder.setPositiveButton("Elimina") { dialog, which ->
             val utenteSelezionato= utenti[selectedRating]
             GlobalScope.launch {
-                FirebaseDbWrapper(applicationContext).deleteUtente(
-                    applicationContext,
-                    utenteSelezionato
-                )
-                //FirebaseAuthWrapper(applicationContext).deleteUser(utenteSelezionato)
+                FirebaseDbWrapper(applicationContext).deleteUtente(applicationContext, utenteSelezionato)
+                val utenteEliminato = UtenteEliminato(utenteSelezionato)
+                FirebaseDbWrapper(applicationContext).creaUtenteEliminato(utenteEliminato)
                 val listaImmaginiDaEliminare =FirebaseDbWrapper(applicationContext).deleteAnnunciUtente(
                     applicationContext,
                     utenteSelezionato
@@ -284,7 +282,6 @@ class MainActivity : AppCompatActivity() {
                 }
                 finish()
             }
-
         }
         builder.setNegativeButton("Annulla") { dialog, which ->
             val intent = Intent(applicationContext, MainActivity::class.java)

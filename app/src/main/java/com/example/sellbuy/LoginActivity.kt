@@ -8,9 +8,14 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.pranavpandey.android.dynamic.toasts.DynamicToast
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import models.FirebaseDbWrapper
 
 
 class LoginActivity: AppCompatActivity() {
+
+    var listaUtentiEliminati : MutableList<String> = mutableListOf()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_login)
@@ -29,16 +34,24 @@ class LoginActivity: AppCompatActivity() {
                 DynamicToast.makeWarning(this,"Inserire email e password",Toast.LENGTH_SHORT).show()
             }
             else {
-                auth.signInWithEmailAndPassword(mail,password).addOnCompleteListener {
-                    if(it.isSuccessful) {
-                        DynamicToast.makeSuccess(this, "Ciao $mail",Toast.LENGTH_SHORT).show()
-                        val intent= Intent(this,MainActivity::class.java)
-                        startActivity(intent)
-                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-                        finish()
-                    }
-                    else {
-                        DynamicToast.makeError(this,"Email o password errati",Toast.LENGTH_LONG).show()
+                if(listaUtentiEliminati.contains(mail)) {
+                    DynamicToast.makeError(this,"Utente eliminato",Toast.LENGTH_LONG).show()
+                }
+                else {
+                    auth.signInWithEmailAndPassword(mail, password).addOnCompleteListener {
+                        if (it.isSuccessful) {
+                            DynamicToast.makeSuccess(this, "Ciao $mail", Toast.LENGTH_SHORT).show()
+                            val intent = Intent(this, MainActivity::class.java)
+                            startActivity(intent)
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+                            finish()
+                        } else {
+                            DynamicToast.makeError(
+                                this,
+                                "Email o password errati",
+                                Toast.LENGTH_LONG
+                            ).show()
+                        }
                     }
                 }
             }
@@ -55,5 +68,12 @@ class LoginActivity: AppCompatActivity() {
     override fun onBackPressed() {
         finishAffinity()
         finish()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        GlobalScope.launch {
+            listaUtentiEliminati = FirebaseDbWrapper(applicationContext).getTutteEmailUtentiEliminati(applicationContext)!!
+        }
     }
 }

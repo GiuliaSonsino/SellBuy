@@ -17,6 +17,7 @@ import models.Utente
 
 class RegistrationActivity: AppCompatActivity() {
     var list : MutableList<String> = mutableListOf()
+    var listaUtentiEliminati: MutableList<String> = mutableListOf()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -181,6 +182,14 @@ class RegistrationActivity: AppCompatActivity() {
                     ).show()
                     return false
                 }
+                else if(listaUtentiEliminati.contains(emailReg.editText?.text.toString())) {
+                    DynamicToast.makeWarning(
+                        applicationContext,
+                        "Utente eliminato, è necessaria un'altra email",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    return false
+                }
                 else {
                     return true
                 }
@@ -232,6 +241,7 @@ class RegistrationActivity: AppCompatActivity() {
         super.onStart()
         GlobalScope.launch {
             list = FirebaseDbWrapper(applicationContext).getTutteEmailUtenti(applicationContext)
+            listaUtentiEliminati = FirebaseDbWrapper(applicationContext).getTutteEmailUtentiEliminati(applicationContext)!!
         }
     }
 }
