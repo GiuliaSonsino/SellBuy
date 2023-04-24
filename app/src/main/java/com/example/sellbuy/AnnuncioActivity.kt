@@ -123,7 +123,7 @@ class AnnuncioActivity : AppCompatActivity() {
                     View.INVISIBLE.also { im1.visibility = it }
                 }
                 if (immagini?.size!! >= 3) {
-                    strImmagine1 = immagini?.get(2)
+                    strImmagine2 = immagini?.get(2)
                     storag = Firebase.storage.reference.child("images/$strImmagine2")
                     storag.downloadUrl.addOnSuccessListener { url ->
                         if (applicationContext != null) {
@@ -136,7 +136,7 @@ class AnnuncioActivity : AppCompatActivity() {
                     View.INVISIBLE.also { im2.visibility = it }
                 }
                 if (immagini?.size!! >= 4) {
-                    strImmagine1 = immagini?.get(3)
+                    strImmagine3 = immagini?.get(3)
                     storag = Firebase.storage.reference.child("images/$strImmagine3")
                     storag.downloadUrl.addOnSuccessListener { url ->
                         if (applicationContext != null) {
@@ -149,7 +149,7 @@ class AnnuncioActivity : AppCompatActivity() {
                     View.INVISIBLE.also { im3.visibility = it }
                 }
                 if (immagini?.size!! >= 5) {
-                    strImmagine1 = immagini?.get(4)
+                    strImmagine4 = immagini?.get(4)
                     storag = Firebase.storage.reference.child("images/$strImmagine4")
                     storag.downloadUrl.addOnSuccessListener { url ->
                         if (applicationContext != null) {

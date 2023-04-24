@@ -20,7 +20,6 @@
                 android:id="@+id/tv_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Titolo dell'annuncio"
                 android:textColor="@color/black"
                 android:textSize="25sp"
                 android:textStyle="bold"
@@ -64,7 +63,6 @@
                 android:id="@+id/tv_autore"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Giorgio"
                 android:textColor="@color/black"
                 android:textSize="20dp"
                 android:layout_marginTop="5dp"
@@ -104,7 +102,6 @@
                 android:id="@+id/tv_num_tel"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="5476933215"
                 android:textColor="@color/black"
                 android:textSize="20dp"
                 android:layout_marginTop="5dp"
@@ -213,7 +210,6 @@
                 android:id="@+id/tv_price"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="159"
                 android:textSize="16sp"
                 android:textColor="@color/black"
                 android:paddingStart="5dp" />
@@ -244,7 +240,6 @@
                 android:id="@+id/tv_condition"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="nuovo"
                 android:textSize="16sp"
                 android:textColor="@color/black"
                 android:paddingStart="5dp" />
@@ -268,7 +263,6 @@
                 android:id="@+id/tv_category"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="giardinaggio"
                 android:textSize="16sp"
                 android:textColor="@color/black"
                 android:paddingStart="5dp" />
@@ -293,7 +287,6 @@
                 android:id="@+id/tv_luogo"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Alessandria"
                 android:textSize="16sp"
                 android:textColor="@color/black"
                 android:paddingStart="5dp" />
@@ -319,7 +312,6 @@
                 android:id="@+id/tv_spedizione"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="è disposto"
                 android:textSize="16sp"
                 android:textColor="@color/black"
                 android:paddingStart="5dp" />
