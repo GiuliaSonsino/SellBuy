@@ -113,7 +113,7 @@ class RicercaActivity: AppCompatActivity() {
                 if (b) {
                     val annunciFromRicerca = FirebaseDbWrapper(applicationContext).ricercaConFiltriELocalizzazione(
                         applicationContext,
-                        parola,
+                        parolaDigitata,
                         prezzo.editText?.text.toString(),
                         spedizioni.text.toString(),
                         distanza.editText?.text.toString(),
@@ -121,7 +121,7 @@ class RicercaActivity: AppCompatActivity() {
                     )
                     val ricerca = RicercaSalvata(
                         emailLoggato!!,
-                        parola,
+                        parolaDigitata,
                         prezzo.editText?.text.toString(),
                         spedizioni.text.toString(),
                         distanza.editText?.text.toString(),

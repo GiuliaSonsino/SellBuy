@@ -754,66 +754,6 @@ class FirebaseDbWrapper(context: Context) {
     }
 
 
-/*
-    fun ricercaConFiltri(context: Context, parola: String, prezzo: String, spedizione: String?): MutableList<Annuncio> {
-        val lock = ReentrantLock()
-        val condition = lock.newCondition()
-        val annList: MutableList<Annuncio> = mutableListOf()
-        if (context != null) {
-            GlobalScope.launch {
-                FirebaseDbWrapper(context).dbref.addValueEventListener(object :
-                    ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        val children = snapshot.child("Annunci").children
-                        for (child in children) {
-                            val list = child.getValue() as HashMap<*, *>
-                            var nome:String?=null
-                            var prez:String?=null
-                            var spediz: Boolean? = false
-                            for (record in list) {
-                                if(!record.key.equals("foto")) {
-                                    if(record.key.equals("nome")) {
-                                        nome = record.value.toString()
-                                    }
-                                    if(record.key.equals("prezzo")) {
-                                        prez = record.value.toString()
-                                    }
-                                    if(record.key.equals("spedizione") && record.value==true) {
-                                        spediz = true
-                                    }
-                                }
-                            }
-                            if(spedizione.equals("Tutti")) {
-                                if( nome!!.lowercase().contains(parola.lowercase()) && prez!!.toDouble()<=prezzo.toDouble() ) {
-                                    annList.add(child.getValue(Annuncio::class.java)!!)
-                                }
-                            }
-                            if(spedizione.equals("Si")) {
-                                if( nome!!.lowercase().contains(parola.lowercase()) && prez!!.toDouble()<=prezzo.toDouble() && spediz!!) {
-                                    annList.add(child.getValue(Annuncio::class.java)!!)
-                                }
-                            }
-                            if(spedizione.equals("No")) {
-                                if( nome!!.lowercase().contains(parola.lowercase()) && prez!!.toDouble()<=prezzo.toDouble() && !spediz!!) {
-                                    annList.add(child.getValue(Annuncio::class.java)!!)
-                                }
-                            }
-
-                        }
-                        lock.withLock { condition.signal() }
-                    }
-
-                    override fun onCancelled(error: DatabaseError) {
-                        Log.w(ContentValues.TAG, "Failed to read value", error.toException())
-                    }
-                })
-            }
-            lock.withLock { condition.await() }
-        }
-        return annList
-    }
-
- */
 
 
     fun stringToLatLng(inputString: String): LatLng? {
