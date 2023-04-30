@@ -5,12 +5,13 @@ import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
+import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Color
 import android.location.Location
 import android.os.Bundle
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.*
@@ -24,9 +25,14 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.ValueEventListener
 import com.pranavpandey.android.dynamic.toasts.DynamicToast
 import kotlinx.coroutines.*
 import models.*
+import java.util.concurrent.locks.ReentrantLock
+import kotlin.concurrent.withLock
 
 
 class MainActivity : AppCompatActivity() {
@@ -44,6 +50,8 @@ class MainActivity : AppCompatActivity() {
     private val CHANNEL_ID = "it.uniupo.news"
     private val NOTIFICATION_ID = 1
 
+
+    var ris = false
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -72,6 +80,7 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+    @OptIn(DelicateCoroutinesApi::class)
     override fun onStart() {
         super.onStart()
         mList = createList()
@@ -159,6 +168,7 @@ class MainActivity : AppCompatActivity() {
         }
         return deferred.await()
     }
+
 
 
 
