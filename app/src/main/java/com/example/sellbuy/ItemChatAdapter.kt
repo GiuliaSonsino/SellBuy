@@ -16,7 +16,7 @@ class ItemChatAdapter( context: Context,private val chatList: MutableList<Messag
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.user_layout, parent, false)
+            .inflate(R.layout.chat_layout, parent, false)
         return ViewHolder(view)
     }
 
